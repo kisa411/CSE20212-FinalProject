@@ -36,29 +36,29 @@ int SingaporeanPuzzle::playPuzzle() { //returns the amount of points player shou
 			answer = tolower(answer); //make the answer lower-case
 		}
 		if ( answer.compare(correct)==0 ) { //user's answer matches the correct answer
-			cout << "Congratulations! You got it correct!";
-			cout << explanation....;
+			cout << "Congratulations! You got it correct!" << endl;
+
 			if ( tryNumber == 1 ) { //got the answer on the first try
 				cout << "You got it correct on your first try, so I won't steal anything from you this time!" << endl;
-				player1.changePoints(-points);
+				return points;
 			} else ( tryNumber == 2 ) { //got the answer on the second try
 				cout << "You got it correct but on your second try - for wasting my time I'm going to take some stuff from you!" << endl;
 				cout << "Oh no! The robber stole 30 points worth of ingredients from your bag!" << endl;
 				points+=30;
-				player1.changePoints(-points);
+				return points;
 			} else ( tryNumber == 3 ) { //got the answer on the third try
 				cout << "You got it correct but on your third try - for wasting my time I'm going to take some stuff from you!" << endl;
 				cout << "Oh no! The robber stole 60 points worth of ingredients from your bag!" << endl;
 				points+=60;
-				player1.changePoints(-points);
+				return points;
 			}
 		}
 	}
 	//if player is unable to solve the puzzle in 3 tries, 
 	cout << "You're taking too long to come up with the correct answer! For wasting so much of my time I'm going to steal a lot of stuff from you!" << endl;
-	cout << "Oh no! The robber stole 100 points worth of ingredients from your bag!" << endl;
+	cout << "Oh no! The robber stole 100 points worth of ingredients from your bag! You need to brush up on your logical thinking skills!" << endl;
 	points+=100;
-	player1.changePoints(-points);
+	return points;
 
 }
 
