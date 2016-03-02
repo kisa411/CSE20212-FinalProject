@@ -1,3 +1,8 @@
+/* Emily Koh
+FCII Final Project
+Spring 2016
+Alphabet Puzzle Class
+*/
 #ifndef ALPHABET_H
 #define ALPHABET_H
 #include <iostream>

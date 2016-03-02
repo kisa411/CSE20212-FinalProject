@@ -1,3 +1,8 @@
+/* Emily Koh
+FCII Final Project
+Spring 2016
+Singaporean Math Puzzle class
+*/
 #ifndef SINGAPOREAN_H
 #define SINGAPOREAN_H
 using namespace std;

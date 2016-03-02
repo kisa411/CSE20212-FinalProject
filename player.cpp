@@ -1,3 +1,8 @@
+/* Emily Koh
+FCII Final Project
+Spring 2016
+Player Class
+*/
 #include <iostream>
 #include "player.h"
 using namespace std;
@@ -12,4 +17,8 @@ void Player::changePoints( int change ) { //change must be negative for subtract
  
 int Player::getPoints() { //accessor method for player's points
 	return points;
+}
+
+void Player::move() { 
+	//TODO
 }

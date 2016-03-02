@@ -1,3 +1,8 @@
+/* Emily Koh
+FCII Final Project
+Spring 2016
+Singaporean Math Puzzle class
+*/
 #include <iostream>
 #include <string>
 #include "singaporeanMathPuzzle.h"

@@ -1,3 +1,8 @@
+/* Emily Koh
+FCII Final Project
+Spring 2016
+Alphabet Puzzle Class
+*/
 #include <iostream>
 #include "alphabetPuzzle.h"
 #include "player.h"
