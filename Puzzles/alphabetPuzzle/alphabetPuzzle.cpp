@@ -5,7 +5,7 @@ Alphabet Puzzle Class
 */
 #include <iostream>
 #include "alphabetPuzzle.h"
-#include "player.h"
+//#include "player.h"
 using namespace std;
 
 AlphabetPuzzle::AlphabetPuzzle() { //default constructor
