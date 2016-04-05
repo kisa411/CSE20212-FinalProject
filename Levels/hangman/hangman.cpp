@@ -34,27 +34,19 @@ int Hangman::playPuzzle() { //play the puzzle
 		cout << "Here's the word before your guess: " << display << endl;
 		cout << "What letter would you like to try? Please only use capital letters." << endl;
 		cin >> letter;
-		// letter = (int (*)(int))toupper( letter ); //standardize user input to capital letters
+		letter = ::toupper( letter ); //standardize user input to capital letters
 
-
-		/*NEED TO FIX*/
-		int foundLetter = word.find(letter); //look for the guessed letter in the hangman word
-
-		char replaceWith;
-		char letterC[1]; 
-		letterC[0] = letter.c_str(); //change the letter string into a C-style string so that strcpy() function works
-		strcpy(replaceWith, letterC); //store the guessed letter as a character so that the .replace() function can compare the two accurately
-
-		if ( foundLetter!= -1 ) { //the letter was found in the word, so need to replace all the underscores with the guessed letter
-			display.replace(display.begin(), display.end(), '_', replaceWith); //replace all instances of the "_" with the actual letter
+		while ( word.find(letter) != word.end() ) { //look for the letter in the word
+			int letterPosition = word.find(letter);
+			word[letterPosition] == "."; //change the letter to . so that it won't be found again
+			display[letterPosition] = letter; //display the letter in the hangman game
+			word.find(letter);
 		}
-		/*END FIX NEEDED SECTION*/
 
 
 		cout << "Here's the word after your guess: " << display << endl << endl;
 
-		int foundUnderscore = display.find("_"); //found will be -1 if the query wasn't found in the string; otherwise it will be the position of the where the query was in the string
-		if ( foundUnderscore == -1 ) { //the word was completed, hangman puzzle was solved
+		if ( display.find("_")==display.end() ) { //underscores no longer exist in the display string, the word was completed, hangman puzzle was solved
 			cout << "You solved the puzzle! Congrats! Now let's go save that cat!" << endl;
 		} else if ( tries==0 ) { //player has run out of tries
 			cout << "This was your last chance to guess a letter but you weren't able to solve the hangman puzzle! :(" << endl;
