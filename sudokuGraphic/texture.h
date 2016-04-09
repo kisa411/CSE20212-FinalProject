@@ -12,7 +12,7 @@ class LTexture
 {
 	public:
 		//Initializes variables
-		LTexture(SDL_Window*, SDL_Renderer*, int SCREEN_WIDTH, int SCREEN_HEIGHT);
+		LTexture(SDL_Window*, SDL_Renderer*, TTF_Font* gFont = NULL);
 
 		//Deallocates memory
 		~LTexture();

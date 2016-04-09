@@ -13,9 +13,9 @@ void Puzzle::setCheck()
 
 
 Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int nSCREEN_WIDTH, int nSCREEN_HEIGHT):
-	gSpriteSheetTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-	gBackgroundTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-	gSelectorTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), SCREEN_WIDTH(nSCREEN_WIDTH), \
+	gSpriteSheetTexture(ngWindow, ngRenderer), \
+	gBackgroundTexture(ngWindow, ngRenderer), \
+	gSelectorTexture(ngWindow, ngRenderer), SCREEN_WIDTH(nSCREEN_WIDTH), \
 	SCREEN_HEIGHT(nSCREEN_HEIGHT), gWindow(ngWindow), gRenderer(ngRenderer)
 {
 	// Open File
