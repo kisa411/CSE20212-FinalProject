@@ -1,6 +1,6 @@
 #include "puzzle.h"
 #include "sdl_win_wrap.h"
-#include <SDL2/SDL_ttf.h>
+#include <SDL2_ttf/SDL_ttf.h>
 
 
 void Puzzle::setCheck()
