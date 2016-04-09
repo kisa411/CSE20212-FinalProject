@@ -90,6 +90,10 @@ void LTexture::free()
 		mWidth = 0;
 		mHeight = 0;
 	}
+	if(gFont != NULL)
+	{
+		TTF_CloseFont( gFont );
+	}
 }
 
 

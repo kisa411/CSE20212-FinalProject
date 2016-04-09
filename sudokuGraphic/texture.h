@@ -2,7 +2,8 @@
 #define TEXTURE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 
 using namespace std;
@@ -47,10 +48,11 @@ class LTexture
 		
 		SDL_Window* gWindow ;
 		SDL_Renderer* gRenderer;
+		TTF_Font* gFont;
 		
 		// Window Dimensions
-		const int SCREEN_WIDTH;
-		const int SCREEN_HEIGHT;
+		int SCREEN_WIDTH;
+		int SCREEN_HEIGHT;
 };
 
 #endif

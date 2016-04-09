@@ -18,7 +18,7 @@ using namespace std;
 class Puzzle
 {
 	public:
-	Puzzle(string fileName, SDL_Window*, SDL_Renderer*, int width, int height); // constructor
+	Puzzle(string fileName, SDL_Window*, SDL_Renderer*); // constructor
 	~Puzzle(); // Destructor
 	void interactive();
 	void solve();
@@ -51,8 +51,8 @@ class Puzzle
 	// Renderer and Window
 	//The window we'll be rendering to
 	SDL_Window* gWindow;
-	const int SCREEN_WIDTH;
-	const int SCREEN_HEIGHT;
+	int SCREEN_WIDTH;
+	int SCREEN_HEIGHT;
 
 	//The window renderer
 	SDL_Renderer* gRenderer;
