@@ -2,8 +2,13 @@
 #define TEXTURE_H
 
 #include <SDL2/SDL.h>
+<<<<<<< HEAD
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
+=======
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+>>>>>>> 1d5e38c38f06a1df9e73ca7f5f2a6d7564cdf742
 #include <string>
 
 using namespace std;
@@ -13,7 +18,7 @@ class LTexture
 {
 	public:
 		//Initializes variables
-		LTexture(SDL_Window*, SDL_Renderer*, int SCREEN_WIDTH, int SCREEN_HEIGHT);
+		LTexture(SDL_Window*, SDL_Renderer*, TTF_Font* gFont = NULL);
 
 		//Deallocates memory
 		~LTexture();
@@ -48,10 +53,11 @@ class LTexture
 		
 		SDL_Window* gWindow ;
 		SDL_Renderer* gRenderer;
+		TTF_Font* gFont;
 		
 		// Window Dimensions
-		const int SCREEN_WIDTH;
-		const int SCREEN_HEIGHT;
+		int SCREEN_WIDTH;
+		int SCREEN_HEIGHT;
 };
 
 #endif

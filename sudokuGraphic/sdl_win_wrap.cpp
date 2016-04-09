@@ -15,6 +15,7 @@ SDL_Win_Wrap::~SDL_Win_Wrap()
 	gRenderer = NULL;
 
 	//Quit SDL subsystems
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }

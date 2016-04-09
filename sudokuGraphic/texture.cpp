@@ -90,6 +90,10 @@ void LTexture::free()
 		mWidth = 0;
 		mHeight = 0;
 	}
+	if(gFont != NULL)
+	{
+		TTF_CloseFont( gFont );
+	}
 }
 
 
@@ -148,10 +152,11 @@ void LTexture::render( int x, int y, int width, int height, SDL_Rect* clip ) // 
 }
 
 
-LTexture::LTexture(SDL_Window *ngWindow, SDL_Renderer *ngRenderer, int nSCREEN_WIDTH, int nSCREEN_HEIGHT):
-	SCREEN_WIDTH(nSCREEN_WIDTH), SCREEN_HEIGHT(nSCREEN_HEIGHT)
+LTexture::LTexture(SDL_Window *ngWindow, SDL_Renderer *ngRenderer, TTF_Font* ngFont):
+	gFont(ngFont)
 {
 	//Initialize
+	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;

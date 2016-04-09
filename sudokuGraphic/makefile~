@@ -1,4 +1,0 @@
-all: test
-
-test: main.cpp puzzle.cpp sdl_win_wrapgdb.cpp texture.cpp puzzleElement.cpp
-	g++ $^ -o test -g -gdwarf-2 -lSDL2_image

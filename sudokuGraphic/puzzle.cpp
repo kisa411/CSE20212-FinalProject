@@ -1,6 +1,6 @@
 #include "puzzle.h"
 #include "sdl_win_wrap.h"
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 
 void Puzzle::setCheck()
@@ -12,14 +12,17 @@ void Puzzle::setCheck()
 }
 
 
-Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int nSCREEN_WIDTH, int nSCREEN_HEIGHT):
-	gSpriteSheetTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-	gBackgroundTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-	gSelectorTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), SCREEN_WIDTH(nSCREEN_WIDTH), \
-	SCREEN_HEIGHT(nSCREEN_HEIGHT), gWindow(ngWindow), gRenderer(ngRenderer)
+Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+	gSpriteSheetTexture(ngWindow, ngRenderer), \
+	gBackgroundTexture(ngWindow, ngRenderer), \
+	gSelectorTexture(ngWindow, ngRenderer), \
+	gWindow(ngWindow), gRenderer(ngRenderer)
 {
+	// Store Window Dimensions
+	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 	// Open File
 	FILE *puzzleFile;
+	
 	if((puzzleFile = fopen(fileName.c_str(), "r")) == NULL)
 	{
 		cout << "Error: Could not open file: " << fileName << endl << endl;
