@@ -40,8 +40,7 @@ bool SDL_Win_Wrap::init()
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
-	}
-	else
+	} else
 	{
 		//Set texture filtering to linear
 		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
@@ -76,7 +75,14 @@ bool SDL_Win_Wrap::init()
 				{
 					printf( "SDL_image could not initialize! SDL_mage Error: %s\n", IMG_GetError() );
 					success = false;
-				}
+                }
+                //Initialize SDL_ttf
+                if( TTF_Init() == -1 )
+                {
+                    printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+                    success = false;
+                }
+
 			}
 		}
 	}

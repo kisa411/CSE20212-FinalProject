@@ -2,7 +2,7 @@
 #define TEXTURE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 #include <string>
 
 using namespace std;
@@ -19,6 +19,11 @@ class LTexture
 
 		//Loads image at specified path
 		bool loadFromFile(string path );
+    
+#ifdef _SDL_TTF_H
+    //Creates image from font string
+    bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+#endif
 
 		//Deallocates texture
 		void free();
