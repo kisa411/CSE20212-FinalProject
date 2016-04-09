@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5205FE811CB9A04400D729C5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE801CB9A04400D729C5 /* main.cpp */; };
+		5205FE8E1CB9A08000D729C5 /* alphabetPuzzle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */; };
+		5205FE8F1CB9A08000D729C5 /* main_alphabet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,13 @@
 /* Begin PBXFileReference section */
 		5205FE7D1CB9A04400D729C5 /* AlphabetPuzzle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AlphabetPuzzle; sourceTree = BUILT_PRODUCTS_DIR; };
 		5205FE801CB9A04400D729C5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5205FE871CB9A08000D729C5 /* alphabetpuzzle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = alphabetpuzzle.png; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetpuzzle.png; sourceTree = "<group>"; };
+		5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = alphabetPuzzle.cpp; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetPuzzle.cpp; sourceTree = "<group>"; };
+		5205FE891CB9A08000D729C5 /* alphabetPuzzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = alphabetPuzzle.h; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetPuzzle.h; sourceTree = "<group>"; };
+		5205FE8A1CB9A08000D729C5 /* Amatic-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Amatic-Bold.ttf"; path = "../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/Amatic-Bold.ttf"; sourceTree = "<group>"; };
+		5205FE8B1CB9A08000D729C5 /* AmaticSC-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AmaticSC-Regular.ttf"; path = "../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/AmaticSC-Regular.ttf"; sourceTree = "<group>"; };
+		5205FE8C1CB9A08000D729C5 /* lazy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = lazy.ttf; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/lazy.ttf; sourceTree = "<group>"; };
+		5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main_alphabet.cpp; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/main_alphabet.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +67,13 @@
 			isa = PBXGroup;
 			children = (
 				5205FE801CB9A04400D729C5 /* main.cpp */,
+				5205FE871CB9A08000D729C5 /* alphabetpuzzle.png */,
+				5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */,
+				5205FE891CB9A08000D729C5 /* alphabetPuzzle.h */,
+				5205FE8A1CB9A08000D729C5 /* Amatic-Bold.ttf */,
+				5205FE8B1CB9A08000D729C5 /* AmaticSC-Regular.ttf */,
+				5205FE8C1CB9A08000D729C5 /* lazy.ttf */,
+				5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */,
 			);
 			path = AlphabetPuzzle;
 			sourceTree = "<group>";
@@ -118,7 +134,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5205FE8E1CB9A08000D729C5 /* alphabetPuzzle.cpp in Sources */,
 				5205FE811CB9A04400D729C5 /* main.cpp in Sources */,
+				5205FE8F1CB9A08000D729C5 /* main_alphabet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
