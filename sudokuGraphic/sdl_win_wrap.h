@@ -2,7 +2,7 @@
 #define SDL_WIN_WRAP
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 
 class SDL_Win_Wrap
 {
