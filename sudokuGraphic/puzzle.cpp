@@ -16,8 +16,33 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	gSpriteSheetTexture(ngWindow, ngRenderer), \
 	gBackgroundTexture(ngWindow, ngRenderer), \
 	gSelectorTexture(ngWindow, ngRenderer), \
+	message(ngWindow, ngRenderer),\
 	gWindow(ngWindow), gRenderer(ngRenderer)
+	
 {
+	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 20);
+	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
+	if(bodyFont == NULL || titleFont == NULL)
+	{
+		cout << "Could not load font" << endl;
+		correctlyInitialized = false;
+		return;
+	}
+	message.setFont(bodyFont);
+	
+	fontColor = {0,0,0}; // Black
+	
+	LTexture* text_buffer;
+	
+	text_buffer = new LTexture(ngWindow, ngRenderer, titleFont);
+	instructions.push_back(text_buffer);
+	for(int i = 0; i < 10 ; i++)
+	{
+		text_buffer = new LTexture(ngWindow, ngRenderer, bodyFont);
+		instructions.push_back(text_buffer);
+	}
+	correctlyInitialized = true;
+	
 	// Store Window Dimensions
 	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 	// Open File
@@ -26,6 +51,7 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	if((puzzleFile = fopen(fileName.c_str(), "r")) == NULL)
 	{
 		cout << "Error: Could not open file: " << fileName << endl << endl;
+		correctlyInitialized = false;
 		return;
 	}
 	
@@ -69,6 +95,7 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	if(thePuzzle.size() != 9)
 	{
 		cout << " File is not formatted correctly" << endl;
+		correctlyInitialized = false;
 		return;		
 	}
 	
@@ -77,8 +104,30 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	selector.y = 0;
 	if(!loadMedia())
 	{
+		correctlyInitialized = false;
 		return;
 	}
+	
+	if(!setInstructions())
+	{
+		correctlyInitialized = false;
+		return;
+	}
+}
+
+
+bool Puzzle::setInstructions()
+{
+	
+	if((instructions[0]->loadFromRenderedText("INSTRUCTIONS", fontColor)) &&
+		(instructions[1]->loadFromRenderedTextWrapped("Move Selector Using Arrows", fontColor, 192)) &&
+		(instructions[2]->loadFromRenderedTextWrapped("Press a number key to set value", fontColor, 192)) &&
+		(instructions[3]->loadFromRenderedTextWrapped("Remove entry by pressing 0", fontColor, 192)))
+		return true;
+	return false;
+	
+	
+	
 }
 
 Puzzle::~Puzzle()
@@ -86,6 +135,9 @@ Puzzle::~Puzzle()
 	gSpriteSheetTexture.free();
 	gSelectorTexture.free();
 	gBackgroundTexture.free();
+	message.free();
+	for(auto& x: instructions) delete x;
+	
 }
 
 bool Puzzle::checkCol(int value, int col)
@@ -155,6 +207,12 @@ bool Puzzle::checkSolved()
 
 void Puzzle::interactive()
 {
+	if(!correctlyInitialized)
+	{
+		cout << "Sudoku was not initialized correctly. Cannot play" << endl;
+		return;
+	}
+	
 	int value = 'a'; // dumb value to start loop
 	int row;
 	int col;
@@ -172,7 +230,7 @@ void Puzzle::interactive()
 		{
 			if( thePuzzle[selector.y][selector.x].getIsConstant())
 			{
-				cout << "Sorry! You can't change the puzzle!" << endl;
+				updateMessage("Sorry! You can't change the puzzle!");
 			}
 			else if (checkValue(value, selector.y, selector.x))
 			{
@@ -180,13 +238,13 @@ void Puzzle::interactive()
 			}
 			else
 			{
-				cout << "Value cannot be placed there" << endl;
+				updateMessage("Value cannot be placed there");
 			}
 			if(checkSolved())
 			{
 				gameover = true;
 				display();
-				cout << "Congratulations! You solved the puzzle!" << endl;
+				updateMessage("Congratulations! You solved the puzzle!");
 			}
 		}
 	}
@@ -196,13 +254,17 @@ void Puzzle::interactive()
 void Puzzle::display()
 {
 	int num;
-	int corner_x = 13;
-	int corner_y = 10;
-	int box_w = 45;
-	int box_h = 45;
+	int corner_x = 12;
+	int corner_y = 9;
+	double box_w =39.8;
+	double box_h = 39.334;
 	SDL_RenderClear( gRenderer );
 	// Render Background
 	gBackgroundTexture.render(0,0, NULL);
+	
+	// Render Text
+	displayInstructions();
+	displayMessage();
 	
 	// Render Numbers on Screen
 	for(int row = 0; row < 9; row++)
@@ -211,12 +273,13 @@ void Puzzle::display()
 		{
 			num = thePuzzle[row][col].getValue();
 			if(num != 0)
-				gSpriteSheetTexture.render(corner_x + ((box_w+5)*col), corner_y+((box_h+6)*row), box_w, box_h, &gSpriteClips[num]);
+				gSpriteSheetTexture.render((int)(corner_x + (box_w+5.0)*col + 2), (int)(corner_y+(box_h+6.0)*row + 1), (int)box_w, (int)box_h, &gSpriteClips[num]);
+			//cout << (int)(corner_y+(box_h+6.0)*row) <<":"<<row<<":"<<col<<endl;
 			
 		}
 	}
 	// Render Selector
-	gSelectorTexture.render(corner_x + (box_w+5)*selector.x, corner_y + (box_h+6)*selector.y, NULL);
+	gSelectorTexture.render((int)(corner_x + (box_w+5.0)*selector.x), (int)(corner_y + (box_h+6.0)*selector.y), 42, 43, NULL);
 	
 	// Update Screen
 	SDL_RenderPresent( gRenderer );
@@ -420,117 +483,96 @@ vector< vector <int> > Puzzle::getIntVector()
 
 void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool& changeValue)
 {
-	bool toContinue = false;
-	while(!toContinue)
+	while(SDL_PollEvent(&e))
 	{
-		SDL_WaitEvent(NULL);
-		while(SDL_PollEvent(&e))
+		if(e.type == SDL_QUIT)
 		{
-			if(e.type == SDL_QUIT)
+			gameover = true;
+		}
+		else if(e.type == SDL_KEYDOWN)
+		{
+			switch(e.key.keysym.sym)
 			{
-				gameover = true;
-				toContinue = true;
-			}
-			else if(e.type == SDL_KEYDOWN)
-			{
-				switch(e.key.keysym.sym)
-				{
-					case SDLK_UP:
-						if(selector.y > 0)
-						{
-							selector.y--;
-							toContinue = true;;
-						}
-						break;
-					case SDLK_DOWN:
-						if(selector.y < 8)
-						{
-							selector.y++;
-							toContinue = true;
-						}
-						break;
-					case SDLK_LEFT:
-						if(selector.x >0)
-						{
-							selector.x--;
-							toContinue = true;
-						}
-						break;
-					case SDLK_RIGHT:
-						if(selector.x < 8)
-						{
-							selector.x++;
-							toContinue = true;
-						}
-						break;
-					case SDLK_0:
-					case SDLK_KP_0:
-						value = 0;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_1:
-					case SDLK_KP_1:
-						value = 1;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_2:
-					case SDLK_KP_2:
-						value = 2;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_3:
-					case SDLK_KP_3:
-						value = 3;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_4:
-					case SDLK_KP_4:
-						value = 4;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_5:
-					case SDLK_KP_5:
-						value = 5;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_6:
-					case SDLK_KP_6:
-						value = 6;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_7:
-					case SDLK_KP_7:
-						value = 7;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_8:
-					case SDLK_KP_8:
-						value = 8;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_9:
-					case SDLK_KP_9:
-						value = 9;
-						changeValue = true;
-						toContinue = true;
-						break;
-					case SDLK_q:
-						gameover=1;
-						changeValue = true;
-						toContinue = true;
-						break;
-					default:
-						;
-				}
+				case SDLK_UP:
+					if(selector.y > 0)
+					{
+						selector.y--;
+					}
+					break;
+				case SDLK_DOWN:
+					if(selector.y < 8)
+					{
+						selector.y++;
+					}
+					break;
+				case SDLK_LEFT:
+					if(selector.x >0)
+					{
+						selector.x--;
+					}
+					break;
+				case SDLK_RIGHT:
+					if(selector.x < 8)
+					{
+						selector.x++;
+					}
+					break;
+				case SDLK_0:
+				case SDLK_KP_0:
+					value = 0;
+					changeValue = true;
+					break;
+				case SDLK_1:
+				case SDLK_KP_1:
+					value = 1;
+					changeValue = true;
+					break;
+				case SDLK_2:
+				case SDLK_KP_2:
+					value = 2;
+					changeValue = true;
+					break;
+				case SDLK_3:
+				case SDLK_KP_3:
+					value = 3;
+					changeValue = true;
+					break;
+				case SDLK_4:
+				case SDLK_KP_4:
+					value = 4;
+					changeValue = true;
+					break;
+				case SDLK_5:
+				case SDLK_KP_5:
+					value = 5;
+					changeValue = true;
+					break;
+				case SDLK_6:
+				case SDLK_KP_6:
+					value = 6;
+					changeValue = true;
+					break;
+				case SDLK_7:
+				case SDLK_KP_7:
+					value = 7;
+					changeValue = true;
+					break;
+				case SDLK_8:
+				case SDLK_KP_8:
+					value = 8;
+					changeValue = true;
+					break;
+				case SDLK_9:
+				case SDLK_KP_9:
+					value = 9;
+					changeValue = true;
+					break;
+				case SDLK_q:
+					gameover=1;
+					changeValue = true;
+					break;
+				default:
+					;
 			}
 		}
 	}
@@ -576,4 +618,44 @@ bool Puzzle::loadMedia()
 	}
 
 	return success;
+}
+
+
+void Puzzle::displayInstructions()
+{
+	point text_ref;
+	
+	text_ref.x = 430;
+	text_ref.y = 32;
+	
+	int current_height = text_ref.y;
+	
+	instructions[0]->render(text_ref.x, current_height);
+	current_height += instructions[0]->getHeight() + 8;
+	for(int i = 1; i < 10; i++)
+	{
+		if(instructions[i] != NULL)
+		{
+			instructions[i]->render(text_ref.x, current_height);
+			current_height += instructions[i]->getHeight() + 4;
+		}
+	}
+}
+
+
+
+void Puzzle::displayMessage()
+{
+	point text_ref;
+	text_ref.x = 12;
+	text_ref.y = 430;
+	
+	message.render(text_ref.x, text_ref.y);
+}
+
+void Puzzle::updateMessage(string nMessage)
+{
+	message.free();
+	
+	message.loadFromRenderedText(nMessage.c_str(), fontColor); 
 }

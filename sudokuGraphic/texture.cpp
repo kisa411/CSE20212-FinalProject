@@ -1,5 +1,17 @@
 #include "texture.h"
 
+LTexture::LTexture(SDL_Window *ngWindow, SDL_Renderer *ngRenderer, TTF_Font* nFont):
+	Font(nFont)
+{
+	//Initialize
+	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+	mTexture = NULL;
+	mWidth = 0;
+	mHeight = 0;
+	gRenderer = ngRenderer;
+	gWindow = ngWindow;
+}
+
 bool LTexture::loadFromFile(string path)
 {
 	bool success;
@@ -43,14 +55,13 @@ bool LTexture::loadFromFile(string path)
 	return success;
 }
 
-#ifdef _SDL_TTF_H
 bool LTexture::loadFromRenderedText( string textureText, SDL_Color textColor )
 {
     //Get rid of preexisting texture
     free();
     
     //Render text surface
-    SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
+    SDL_Surface* textSurface = TTF_RenderText_Blended( Font, textureText.c_str(), textColor );
     if( textSurface != NULL )
     {
         //Create texture from surface pixels
@@ -78,7 +89,42 @@ bool LTexture::loadFromRenderedText( string textureText, SDL_Color textColor )
     //Return success
     return mTexture != NULL;
 }
-#endif
+
+
+bool LTexture::loadFromRenderedTextWrapped(string textureText, SDL_Color textColor, int wrapLength)
+{
+	   //Get rid of preexisting texture
+    free();
+    
+    //Render text surface
+    SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped( Font, textureText.c_str(), textColor, wrapLength );
+    if( textSurface != NULL )
+    {
+        //Create texture from surface pixels
+        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+        if( mTexture == NULL )
+        {
+            printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+        }
+        else
+        {
+            //Get image dimensions
+            mWidth = textSurface->w;
+            mHeight = textSurface->h;
+        }
+        
+        //Get rid of old surface
+        SDL_FreeSurface( textSurface );
+    }
+    else
+    {
+        printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+    }
+    
+    
+    //Return success
+    return mTexture != NULL;
+}
 
 void LTexture::free()
 {
@@ -90,78 +136,76 @@ void LTexture::free()
 		mWidth = 0;
 		mHeight = 0;
 	}
-	if(gFont != NULL)
-	{
-		TTF_CloseFont( gFont );
-	}
+	
 }
 
 
 void LTexture::render( int x, int y, double wprop, double hprop, SDL_Rect* clip ) // Alters image by given proportions
 {
-	//Set rendering space and render to screen
-	SDL_Rect renderQuad;
-	if(clip == NULL)
+	if(mTexture != NULL)
 	{
-		renderQuad.x  = x;
-		renderQuad.y = y;
-		renderQuad.w = mWidth*wprop;
-		renderQuad.h = mHeight*hprop;
+		//Set rendering space and render to screen
+		SDL_Rect renderQuad;
+		if(clip == NULL)
+		{
+			renderQuad.x  = x;
+			renderQuad.y = y;
+			renderQuad.w = mWidth*wprop;
+			renderQuad.h = mHeight*hprop;
+		}
+		else
+		{
+			renderQuad.x  = x;
+			renderQuad.y = y;
+			renderQuad.w = (clip->w)*wprop;
+			renderQuad.h = (clip->h)*hprop;
+		}
+		//Render to screen
+		SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
 	}
-	else
-	{
-		renderQuad.x  = x;
-		renderQuad.y = y;
-		renderQuad.w = (clip->w)*wprop;
-		renderQuad.h = (clip->h)*hprop;
-	}
-	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
 }
 
 void LTexture::render( int x, int y, SDL_Rect* clip ) // Renders clip of image in original size
 {
-	SDL_Rect renderQuad;
-	//Set rendering space and render to screen
-	if(clip == NULL)
+	if(mTexture != NULL)
 	{
-		renderQuad.x  = x;
-		renderQuad.y = y;
-		renderQuad.w = mWidth;
-		renderQuad.h = mHeight;
-	}
-	else
-	{
-		renderQuad.x  = x;
-		renderQuad.y = y;
-		renderQuad.w = clip->w;
-		renderQuad.h = clip->h;
-	}
+		SDL_Rect renderQuad;
+		//Set rendering space and render to screen
+		if(clip == NULL)
+		{
+			renderQuad.x  = x;
+			renderQuad.y = y;
+			renderQuad.w = mWidth;
+			renderQuad.h = mHeight;
+		}
+		else
+		{
+			renderQuad.x  = x;
+			renderQuad.y = y;
+			renderQuad.w = clip->w;
+			renderQuad.h = clip->h;
+		}
 
-	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+		//Render to screen
+		SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+	}
 }
 
 void LTexture::render( int x, int y, int width, int height, SDL_Rect* clip ) // Renders image in exact given size
 {
-	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, width, height };
+	if(mTexture != NULL)
+	{
+		//Set rendering space and render to screen
+		SDL_Rect renderQuad = { x, y, width, height };
 
-	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+		//Render to screen
+		SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+	}
 }
 
-
-LTexture::LTexture(SDL_Window *ngWindow, SDL_Renderer *ngRenderer, TTF_Font* ngFont):
-	gFont(ngFont)
+void LTexture::setFont(TTF_Font* nFont)
 {
-	//Initialize
-	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-	mTexture = NULL;
-	mWidth = 0;
-	mHeight = 0;
-	gRenderer = ngRenderer;
-	gWindow = ngWindow;
+	Font = nFont;
 }
 
 LTexture::~LTexture()

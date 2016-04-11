@@ -13,7 +13,7 @@ class LTexture
 {
 	public:
 		//Initializes variables
-		LTexture(SDL_Window*, SDL_Renderer*, TTF_Font* gFont = NULL);
+		LTexture(SDL_Window*, SDL_Renderer*, TTF_Font* Font = NULL);
 
 		//Deallocates memory
 		~LTexture();
@@ -24,6 +24,7 @@ class LTexture
 #ifdef _SDL_TTF_H
     //Creates image from font string
     bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+    bool loadFromRenderedTextWrapped(string textrueText, SDL_Color textColor, int wrapLength);
 #endif
 
 		//Deallocates texture
@@ -33,10 +34,13 @@ class LTexture
 		void render( int x, int y, double wprop, double hprop, SDL_Rect* clip = NULL ); // Renders image with altered proportions.
 		void render( int x, int y, SDL_Rect* clip = NULL); // Overloaded version renders image in original size
 		void render( int x, int y, int width, int height, SDL_Rect* clip = NULL);
+		
 		//Gets image dimensions
 		int getWidth();
 		int getHeight();
 		
+		// Text
+		void setFont(TTF_Font*);
 
 	private:
 		//The actual hardware texture
@@ -48,7 +52,7 @@ class LTexture
 		
 		SDL_Window* gWindow ;
 		SDL_Renderer* gRenderer;
-		TTF_Font* gFont;
+		TTF_Font* Font;
 		
 		// Window Dimensions
 		int SCREEN_WIDTH;
