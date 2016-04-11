@@ -1,0 +1,262 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5205FE811CB9A04400D729C5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE801CB9A04400D729C5 /* main.cpp */; };
+		5205FE8E1CB9A08000D729C5 /* alphabetPuzzle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */; };
+		5205FE8F1CB9A08000D729C5 /* main_alphabet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5205FE7B1CB9A04400D729C5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		5205FE7D1CB9A04400D729C5 /* AlphabetPuzzle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AlphabetPuzzle; sourceTree = BUILT_PRODUCTS_DIR; };
+		5205FE801CB9A04400D729C5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5205FE871CB9A08000D729C5 /* alphabetpuzzle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = alphabetpuzzle.png; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetpuzzle.png; sourceTree = "<group>"; };
+		5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = alphabetPuzzle.cpp; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetPuzzle.cpp; sourceTree = "<group>"; };
+		5205FE891CB9A08000D729C5 /* alphabetPuzzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = alphabetPuzzle.h; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/alphabetPuzzle.h; sourceTree = "<group>"; };
+		5205FE8A1CB9A08000D729C5 /* Amatic-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Amatic-Bold.ttf"; path = "../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/Amatic-Bold.ttf"; sourceTree = "<group>"; };
+		5205FE8B1CB9A08000D729C5 /* AmaticSC-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AmaticSC-Regular.ttf"; path = "../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/AmaticSC-Regular.ttf"; sourceTree = "<group>"; };
+		5205FE8C1CB9A08000D729C5 /* lazy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = lazy.ttf; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/lazy.ttf; sourceTree = "<group>"; };
+		5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main_alphabet.cpp; path = ../../../../../Local_FinalProjectFiles/FinalProject/FinalProject/main_alphabet.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5205FE7A1CB9A04400D729C5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5205FE741CB9A04300D729C5 = {
+			isa = PBXGroup;
+			children = (
+				5205FE7F1CB9A04400D729C5 /* AlphabetPuzzle */,
+				5205FE7E1CB9A04400D729C5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5205FE7E1CB9A04400D729C5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5205FE7D1CB9A04400D729C5 /* AlphabetPuzzle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5205FE7F1CB9A04400D729C5 /* AlphabetPuzzle */ = {
+			isa = PBXGroup;
+			children = (
+				5205FE801CB9A04400D729C5 /* main.cpp */,
+				5205FE871CB9A08000D729C5 /* alphabetpuzzle.png */,
+				5205FE881CB9A08000D729C5 /* alphabetPuzzle.cpp */,
+				5205FE891CB9A08000D729C5 /* alphabetPuzzle.h */,
+				5205FE8A1CB9A08000D729C5 /* Amatic-Bold.ttf */,
+				5205FE8B1CB9A08000D729C5 /* AmaticSC-Regular.ttf */,
+				5205FE8C1CB9A08000D729C5 /* lazy.ttf */,
+				5205FE8D1CB9A08000D729C5 /* main_alphabet.cpp */,
+			);
+			path = AlphabetPuzzle;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5205FE7C1CB9A04400D729C5 /* AlphabetPuzzle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5205FE841CB9A04400D729C5 /* Build configuration list for PBXNativeTarget "AlphabetPuzzle" */;
+			buildPhases = (
+				5205FE791CB9A04400D729C5 /* Sources */,
+				5205FE7A1CB9A04400D729C5 /* Frameworks */,
+				5205FE7B1CB9A04400D729C5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AlphabetPuzzle;
+			productName = AlphabetPuzzle;
+			productReference = 5205FE7D1CB9A04400D729C5 /* AlphabetPuzzle */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5205FE751CB9A04300D729C5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Emily Koh";
+				TargetAttributes = {
+					5205FE7C1CB9A04400D729C5 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 5205FE781CB9A04300D729C5 /* Build configuration list for PBXProject "AlphabetPuzzle" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5205FE741CB9A04300D729C5;
+			productRefGroup = 5205FE7E1CB9A04400D729C5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5205FE7C1CB9A04400D729C5 /* AlphabetPuzzle */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5205FE791CB9A04400D729C5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5205FE8E1CB9A08000D729C5 /* alphabetPuzzle.cpp in Sources */,
+				5205FE811CB9A04400D729C5 /* main.cpp in Sources */,
+				5205FE8F1CB9A08000D729C5 /* main_alphabet.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5205FE821CB9A04400D729C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		5205FE831CB9A04400D729C5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5205FE851CB9A04400D729C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5205FE861CB9A04400D729C5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5205FE781CB9A04300D729C5 /* Build configuration list for PBXProject "AlphabetPuzzle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5205FE821CB9A04400D729C5 /* Debug */,
+				5205FE831CB9A04400D729C5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5205FE841CB9A04400D729C5 /* Build configuration list for PBXNativeTarget "AlphabetPuzzle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5205FE851CB9A04400D729C5 /* Debug */,
+				5205FE861CB9A04400D729C5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5205FE751CB9A04300D729C5 /* Project object */;
+}
