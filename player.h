@@ -14,10 +14,11 @@ public:
 	Player(); //default constructor
 	changePoints( int change ); //change the player's total points 
 	int getPoints(); //accessor method for player's points
-	void move(); //function that allows the player to move 
+	void setGender( string g ); //set the gender of the player
 
 private:
 	int points; 
+	string gender;
 
 };
 

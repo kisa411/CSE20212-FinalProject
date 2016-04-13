@@ -19,6 +19,6 @@ int Player::getPoints() { //accessor method for player's points
 	return points;
 }
 
-void Player::move() { 
-	//TODO
+void Player::setGender( string g ) {
+	gender = g;
 }
