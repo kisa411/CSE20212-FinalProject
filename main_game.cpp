@@ -38,9 +38,6 @@ int main () {
 	char gender = open.display(); //get the gender of the player
 	player.setGender( gender );
 
-	/*-----------connectthefour instance*----------*/
-
-
 	/*-----------cryptography instance*----------*/
 
 
