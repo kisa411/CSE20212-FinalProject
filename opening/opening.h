@@ -8,14 +8,13 @@ using namespace std;
 class Opening {
 
 public:
-	Opening( SDL_Window*, SDL_Renderer* ); //default constructor
+	Opening( SDL_Window*, SDL_Renderer* ); //constructor
     ~Opening(); //destructor
-    void display(); //display, update player gender
+    char display(); //display, update player gender
 
 private:
 	//SDL member variables and helper functions
     LTexture gBackgroundTexture;
-    LTexture gTextTexture;
     LTexture gInputTextTexture;
     LTexture gPromptTextTexture;
     

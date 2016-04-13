@@ -13,10 +13,16 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include "sdl_win_wrap.hpp"
+#include "sdl_win_wrap.h"
 #include "texture.hpp"
+
 #include "player.h"
-#include "alphabetPuzzle.hpp"
+#include "opening.h"
+#include "alphabetPuzzle.h"
+#include "hangman.h"
+#include "cardDeck.h"
+#include "singaporePuzzle.h"
+#include "ending.h"
 
 
 using namespace std;
@@ -24,28 +30,42 @@ using namespace std;
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
 
-	//make player instance
+	/*-----------player instance*----------*/
 	Player player;
 
-	//make opening instance
+	/*-----------opening instance*----------*/
+	Opening open( window_instance.getWindow(), window_instance.getRenderer() );
+	char gender = open.display(); //get the gender of the player
+	player.setGender( gender );
 
-	//make connectthefour instance <?>
+	/*-----------connectthefour instance*----------*/
 
-	//make cryptography instance
 
-	//make hangman instance
+	/*-----------cryptography instance*----------*/
 
-	//make river crossing instance
 
-	//make sudoku instance
+	/*-----------hangman instance*----------*/
 
-	//make alphabet puzzle instance
 
-	//make blackjack instance
+	/*-----------river crossing instance*----------*/
 
-	//make singapore instance
 
-	//make ending instance
+	/*-----------sudoku instance*----------*/
+
+
+	/*-----------alphabet puzzle instance*----------*/
+
+
+	/*-----------blackjack instance*----------*/
+
+
+	/*-----------singapore instance*----------*/
+
+
+	/*-----------ending instance*----------*/
+	Ending end( window_instance.getWindow(), window_instance.getRenderer(), player.getPoints(), player.getGender() );
+	end.display();
+
 }
 
 

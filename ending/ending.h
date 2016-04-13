@@ -8,7 +8,7 @@ using namespace std;
 class Ending {
 	
 public:
-	Ending( SDL_Window*, SDL_Renderer* ); //default constructor
+	Ending( SDL_Window*, SDL_Renderer* , int, char ); //default constructor
     ~Ending(); //destructor
     void display(); //display 
 
@@ -16,8 +16,6 @@ private:
 	//SDL member variables and helper functions
     LTexture gBackgroundTexture;
     LTexture gTextTexture;
-    LTexture gInputTextTexture;
-    LTexture gPromptTextTexture;
     
     //the window we'll be rendering to
     SDL_Window* gWindow;
@@ -28,6 +26,9 @@ private:
     TTF_Font *gFont; //font to use
     
     bool loadMedia();
+
+    int pointTotal;
+    char gender;
 
 
 };
