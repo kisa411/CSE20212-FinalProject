@@ -30,6 +30,8 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    nummoves=0;
    numtries=1;
 
+   loadMedia();
+
 }
 
 Rivercrossing::~Rivercrossing() {
@@ -66,6 +68,7 @@ void Rivercrossing::play() {
    //not game over or success
    int game=finished();
    while (game==1) {
+      display();
       change=false;
       //change is true when position of one of 3 items is changed
       manageEvents(e, change, changeboat);
@@ -78,6 +81,7 @@ void Rivercrossing::play() {
 	 display();
 	 switch (finished()) {
 	    case 2:
+	       display();
 	       //wolf ate goat, game over! ask to try again(click y)
 	       cout << "The wolf has ate the sheep! Game over!" << endl;
 	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
@@ -93,6 +97,7 @@ void Rivercrossing::play() {
 	       }
 	       break;
 	    case 3:
+	       display();
 	       //goat ate cabbage, game over! ask to try again(click y)
 	       cout << "The sheep has ate the cabbage! Game over!" << endl;
 	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
@@ -108,6 +113,7 @@ void Rivercrossing::play() {
 	       }
 	       break;
 	    case 0:
+	       display();
 	       //success!
 	       points=100/numtries;
 	       cout << "The farmer is so thankful for your help! You finished in " << numtries << " tries, so you get " << points << " points!" << endl;
@@ -127,8 +133,6 @@ void Rivercrossing::play() {
       }
 
    }
-
-   //check conditions of finished()
 
 }
 
@@ -157,9 +161,9 @@ int Rivercrossing::finished() {
 	 return 3;
       }
    }
-   else {
-      return 1;
-   }
+
+   return 1;
+   
 
 }
 
@@ -456,7 +460,7 @@ bool Rivercrossing::loadMedia() {
       printf("failed to load cabbage texture\n");
       success=false;
    }
-   if (!gBoat.loadFromFile("images/farmerandboat1.jpg")) {
+   if (!gBoat.loadFromFile("images/farmerandboat1.png")) {
       printf("failed to load boat texture\n");
       success=false;
    }
