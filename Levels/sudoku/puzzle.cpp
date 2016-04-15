@@ -1,247 +1,661 @@
-#include <iostream>
-#include <fstream> //for file input and output
-#include <vector>
-#include <string>
-#include <cstring>
 #include "puzzle.h"
+#include "sdl_win_wrap.h"
+#include <SDL2/SDL_ttf.h>
 
-using namespace std;
 
-template <typename T>
-Puzzle<T>::Puzzle( string filename ) { //constructor - 1 is sudoku, 2 is wordoku
-	//string word;
-	int i, j;
-	int size = 9; //size = number of rows
-	T c; //c is the thing to get from the file
+void Puzzle::setCheck()
+{
+	for(int i = 0; i < 10; i++)
+	{
+		check.push_back(i); // convert int to char
+	}
+}
 
+
+Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+	gSpriteSheetTexture(ngWindow, ngRenderer), \
+	gBackgroundTexture(ngWindow, ngRenderer), \
+	gSelectorTexture(ngWindow, ngRenderer), \
+	message(ngWindow, ngRenderer),\
+	gWindow(ngWindow), gRenderer(ngRenderer)
 	
+{
+	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 20);
+	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
+	if(bodyFont == NULL || titleFont == NULL)
+	{
+		cout << "Could not load font" << endl;
+		correctlyInitialized = false;
+		return;
+	}
+	message.setFont(bodyFont);
+	
+	fontColor = {0,0,0}; // Black
+	
+	LTexture* text_buffer;
+	
+	text_buffer = new LTexture(ngWindow, ngRenderer, titleFont);
+	instructions.push_back(text_buffer);
+	for(int i = 0; i < 10 ; i++)
+	{
+		text_buffer = new LTexture(ngWindow, ngRenderer, bodyFont);
+		instructions.push_back(text_buffer);
+	}
+	correctlyInitialized = true;
+	
+	// Store Window Dimensions
+	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+	// Open File
+	FILE *puzzleFile;
+	
+	if((puzzleFile = fopen(fileName.c_str(), "r")) == NULL)
+	{
+		cout << "Error: Could not open file: " << fileName << endl << endl;
+		correctlyInitialized = false;
+		return;
+	}
+	
+	vector <puzzleElement> buffer;
+	puzzleElement singleContainer;
+	int c;
+	
+	setCheck();
+	
+	// Read in puzzle from file
+	for(int row = 0; row< 9; row++)
+	{
+		buffer.clear();
+		c = fgetc(puzzleFile);
+		for(int col = 0; c != '\n' && c != EOF; col++)
+		{
+			if(!checkAllowed(c)) // Check if value is appropriate
+			{
+				cout << "Wrong value in file" << endl;
+				return;
+			}
+			
+			if(c == '0')
+			{
+				singleContainer.setAll(c - '0', 0); // This makes the value not constant
+				buffer.push_back(singleContainer);
+			}
+			else
+			{
+				singleContainer.setAll(c - '0', 1); // This makes the value constant
+				buffer.push_back(singleContainer);
+			}
+			c = fgetc(puzzleFile); // Catch space
+			if(c == ' ') // Catches any extra space at the end of the line
+			{
+				c = fgetc(puzzleFile);
+			}
+		}
+		thePuzzle.push_back(buffer);
+	}
+	if(thePuzzle.size() != 9)
+	{
+		cout << " File is not formatted correctly" << endl;
+		correctlyInitialized = false;
+		return;		
+	}
+	
+	// Initialize Other Variables
+	selector.x = 0;
+	selector.y = 0;
+	if(!loadMedia())
+	{
+		correctlyInitialized = false;
+		return;
+	}
+	
+	if(!setInstructions())
+	{
+		correctlyInitialized = false;
+		return;
+	}
+}
 
-	for ( i=0; i<size; i++ ) { //put empty vectors in the rows of the overall vector
-		puzzleVector.push_back( vector<T>() ); //puts 9 empty vectors in the overarching vector - () after vector<T> calls on the constructor
-		filename >> c; //read in the first character from the file
-		while ( c ) {
-			for ( i=0; i<size; i++ ) { //for each empty vector row
-				for ( j=0; j<9; j++ ) { //read in 9 characters from file and put them in the vector
-					puzzleVector[i].push_back(c);
-					if ( c != 0 ) { //if the program reads in a number that was originally in the puzzle, then it should store the position so that later the user can't erase that default value
-						defaultRow.push_back(i); //store row position
-						defaultCol.push_back(j); //store col position
+
+bool Puzzle::setInstructions()
+{
+	
+	if((instructions[0]->loadFromRenderedText("INSTRUCTIONS", fontColor)) &&
+		(instructions[1]->loadFromRenderedTextWrapped("Move Selector Using Arrows", fontColor, 192)) &&
+		(instructions[2]->loadFromRenderedTextWrapped("Press a number key to set value", fontColor, 192)) &&
+		(instructions[3]->loadFromRenderedTextWrapped("Remove entry by pressing 0", fontColor, 192)))
+		return true;
+	return false;
+	
+	
+	
+}
+
+Puzzle::~Puzzle()
+{
+	gSpriteSheetTexture.free();
+	gSelectorTexture.free();
+	gBackgroundTexture.free();
+	message.free();
+	for(auto& x: instructions) delete x;
+	
+}
+
+bool Puzzle::checkCol(int value, int col)
+{
+		for(int i = 0; i < 9; i++)
+		{
+			if(value == thePuzzle[i][col].getValue())
+				return false;
+		}
+		return true;
+}
+
+bool Puzzle::checkRow(int value, int row)
+{
+		for(int i = 0; i < 9; i++)
+		{
+			if(value == thePuzzle[row][i].getValue())
+				return false;
+		}
+		return true;
+}
+
+bool Puzzle::checkSquare(int value, int row, int col)
+{
+		// Determine Square
+		int i, j;
+		
+		int rowStart = ((row)/3)*3; // Determines what is the first row of the square in 0-8 range
+													// Truncates value and then scales it again
+		int colStart = ((col)/3)*3;
+		
+		for(int i = rowStart; i < (rowStart+3); i++)
+		{
+			for(int j = colStart; j< (colStart+3); j++)
+			{
+				if(value == thePuzzle[i][j].getValue())
+					return false;
+			}
+		}
+		return true;
+}
+
+bool Puzzle::checkValue(int value, int row, int col)
+{
+	if(value == 0)
+		return true;
+	else if(checkCol(value, col) && checkRow(value, row) && checkSquare(value, row, col))
+		return true;
+	else
+		return false;
+}
+
+bool Puzzle::checkSolved()
+{
+	for(int i = 0; i < 9; i++)
+	{
+		for(int j = 0; j <9; j++)
+		{
+			if(thePuzzle[i][j].getValue() == 0)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void Puzzle::interactive()
+{
+	if(!correctlyInitialized)
+	{
+		cout << "Sudoku was not initialized correctly. Cannot play" << endl;
+		return;
+	}
+	
+	int value = 'a'; // dumb value to start loop
+	int row;
+	int col;
+	bool gameover = false;
+	SDL_Event e;
+	bool changeValue;
+	
+	while(!gameover)
+	{
+		changeValue = false;
+		display();
+		manageEvents(e, value, gameover, changeValue);
+		
+		if(changeValue)
+		{
+			if( thePuzzle[selector.y][selector.x].getIsConstant())
+			{
+				updateMessage("Sorry! You can't change the puzzle!");
+			}
+			else if (checkValue(value, selector.y, selector.x))
+			{
+				thePuzzle[selector.y][selector.x].setValue(value);
+			}
+			else
+			{
+				updateMessage("Value cannot be placed there");
+			}
+			if(checkSolved())
+			{
+				gameover = true;
+				display();
+				updateMessage("Congratulations! You solved the puzzle!");
+			}
+		}
+	}
+}
+
+
+void Puzzle::display()
+{
+	int num;
+	int corner_x = 12;
+	int corner_y = 9;
+	double box_w =39.8;
+	double box_h = 39.334;
+	SDL_RenderClear( gRenderer );
+	// Render Background
+	gBackgroundTexture.render(0,0, NULL);
+	
+	// Render Text
+	displayInstructions();
+	displayMessage();
+	
+	// Render Numbers on Screen
+	for(int row = 0; row < 9; row++)
+	{
+		for(int col = 0; col < 9; col++)
+		{
+			num = thePuzzle[row][col].getValue();
+			if(num != 0)
+				gSpriteSheetTexture.render((int)(corner_x + (box_w+5.0)*col + 2), (int)(corner_y+(box_h+6.0)*row + 1), (int)box_w, (int)box_h, &gSpriteClips[num]);
+			//cout << (int)(corner_y+(box_h+6.0)*row) <<":"<<row<<":"<<col<<endl;
+			
+		}
+	}
+	// Render Selector
+	gSelectorTexture.render((int)(corner_x + (box_w+5.0)*selector.x), (int)(corner_y + (box_h+6.0)*selector.y), 42, 43, NULL);
+	
+	// Update Screen
+	SDL_RenderPresent( gRenderer );
+}
+
+bool Puzzle::checkAllowed( int c ) // test if value is in the string of possible chars
+{
+	bool isThere = 0;
+	int size =check.size();
+	c = c - '0';
+	
+	for(int i = 0; i < size; i++)
+	{
+		if (check[i] == c)
+		{
+			isThere = 1;
+		}
+	}
+	return isThere;
+}
+
+int Puzzle::singleton() // Checks whether a value is only possible in one of the boxes in a row, col, or square
+{
+	int row, col, inserts, test_num, count;
+	int sqrow, sqcol;
+	int rightRow, rightCol;
+	
+	
+	inserts=0;
+	
+	// Check in Rows
+	for(row = 0; row < 9; row++)
+	{
+		for(test_num = 1; test_num < 10; test_num++)
+		{
+			count = 0;
+			for(col = 0; col < 9; col++)
+			{
+				if(thePuzzle[row][col].getValue() == '0') // Check that location is empty
+				{
+					if(checkValue(test_num + '0', row, col))
+					{
+						count++;
+						// If there is only one, the following will contain the right position
+						rightRow=row;
+						rightCol=col;
 					}
-					filename >> c; //read in next character from the file
 				}
 			}
-		}
-	}
-
-	
-}
-
-
-
-template <typename T>
-void Puzzle<T>::printPuzzle() { //prints out the puzzle that was read in from the file - need to use iterator
-	int j, row = 9;
-	vector<int>::const_iterator i; //make an iterator so that program can go through each element of the vector and print it out
-
-	for ( j=0; j<row; j++ ) {
-		for( i = puzzleVector[j].begin(); i != puzzleVector[j].end()-1; ++i ) { //print out vector values
-			cout << *i << " "; //* is necessary so that it prints out the value that the iterator is pointing to
-		}
-	}
-
-}
-
-template <typename T>
-void Puzzle<T>::playPuzzle() { //start the sudoku puzzle 
-	int choice, row, col, loop = 1;
-	T value;
-
-	while ( loop == 1 ) {
-		cout << "What would you like to do? 1. Place a value.\n 2. Erase a value.\n 3. Print the current board.\n 4. Quit the game.\n" << endl;
-		cin >> choice;
-
-		switch (choice) {
-			case 1:
-				cout << "What is the value that you would like to put in?" << endl;
-				cin >> value;
-				cout << "What is the row number that you would like to put the value in?" << endl;
-				cin >> row;
-				cout << "What is the column number that you would like to put the value in?" << endl;
-				cin >> col;
-				puzzleVector.insertValue( value, row, col );
-				if ( puzzleVector.isComplete() == 1 ) {
-					cout << "You've successfully completed the puzzle! Congrats :)" << endl;
-					puzzleVector.printPuzzle();
-					cout << "Now quitting the game.\n" << endl;
-					loop = 0;
-				}
-				break;
-			case 2:
-				cout << "What is the row number you want to erase a value from?" << endl;
-				cin >> row;
-				cout << "What is the column number you want to erase a value from?" << endl;
-				cin >> col;
-				puzzleVector.eraseValue( row, col );
-				break;
-			case 3:
-				puzzleVector.printPuzzle();
-				break;
-			case 4:
-				loop = 0;
-				break;
-		}
-	}
-	
-}
-
-template <typename T>
-bool Puzzle<T>::checkRow( T &value, int row ) { //checks to see if user input is valid in a row
-	int i;
-	for ( i=0; i<9; i++ ) { 
-		if ( puzzleVector[row-1].getValue(i) != value ) { //if the number that the user wants to put in the board is not already in that row, then return true
-			return true;
-		} 
-	}
-
-	cout << "The row already has that value." << endl;
-	return false; //did not pass the check, return false
-}
-
-template <typename T>
-bool Puzzle<T>::checkCol( T &value, int col ) { //checks to see if user input is valid in a column 
-	int i;
-	for ( i=0; i<9; i++ ) {
-		if ( puzzleVector[i].getValue(col-1) != value ) { //if the number that the user wants to put in the board is not already in that column, then return true
-			return true;
-		} 
-	}
-
-	cout << "The column already has that value." << endl;
-	return false; //did not pass the check, return false
-}
-
-template <typename T>
-bool Puzzle<T>::checkGrid( T &value, int row, int col ) { //checks to see if user input is valid in the mini-grid
-	int i, j;
-
-	//set all the row and column values to start from top row, left square so that you can just go through the mini-grid from the same spot each time
-	if ( row%3==1 ) {
-		if ( col%3==1 ) { //top row, left square
-			i = row; 
-			j = col;
-		} else if ( col%3==2 ) { //top row, middle square
-			i = row;
-			j = col-1;
-		} else if ( col%3==0 ) { //top row, right square
-			i = row;
-			j = col-2;
-		}
-	} else if ( row%3==2 ) {
-		if ( col%3==1 ) { //middle row, left square
-			i = row-1; 
-			j = col;
-		} else if ( col%3==2 ) { //middle row, middle square
-			i = row-1;
-			j = col-1;
-		} else if ( col%3==0 ) { //middle row, right square
-			i = row-1;
-			j = col-2;
-		}
-	} else if ( row%3==0 ) {
-		if ( col%3==1 ) { //bottom row, left square
-			i = row-2; 
-			j = col;
-		} else if ( col%3==2 ) { //bottom row, middle square
-			i = row-2;
-			j = col-1;
-		} else if ( col%3==0 ) { //bottom row, right square
-			i = row-2;
-			j = col-2;
-		}
-	}
-
-	
-	for ( i=row; i<row+3; i++ ) {
-		for ( j=col; j<col+3; j++ ) {
-			if ( puzzleVector[i-1].getValue(j-1)!=value ) {
-				return true; //value is not in the mini-grid, can be placed
+			if(count == 1) // If only one square can contain the tested number, place is there.
+			{
+				thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+				inserts++;
 			}
 		}
 	}
 	
-	cout << "The grid already has that value." << endl;
-	return false; //value is in the mini-grid, cannot be placed
-}
-
-template <typename T>
-void Puzzle<T>::insertValue( T &value, int row, int col ) { //puts an integer or character at the place user wants to place 
-	int i;
-
-	for ( i=0; i<defaultRow.size(); i++ ) { //loop through stored positions of default values and if position corresponds with one of the values then say 'no'
-		if ( (row-1) == defaultRow[i] && (col-1) == defaultCol[i] ) {
-			cout << "That's a default value - you can't erase that." << endl;
-		} else { //otherwise allow the user to insert value 
-			if ( checkRow( value, row ) ) { //if row is clear
-				if ( checkCol( value, col ) ) { //if column is clear
-					if ( checkGrid( value, row, col ) ) { //if grid is clear
-						insertValue( value, row, col ); //place value
-						cout << "Value was successfully placed at row: " << row << " and column: " << col << endl;
+	// Check in Columns
+	for(col = 0; col < 9; col++)
+	{
+		for(test_num = 1; test_num < 10; test_num++)
+		{
+			count = 0;
+			for(row = 0; row < 9; row++)
+			{
+				if(thePuzzle[row][col].getValue() == '0') // Check that location is empty
+				{
+					if(checkValue(test_num + '0', row, col))
+					{
+						count++;
+						// If there is only one, the following will contain the right position
+						rightRow = row;
+						rightCol = col;
 					}
 				}
-			} else {
-				cout << "Sorry, that's not a valid position since the value overlaps with a pre-existing value on the board. Try again!" << endl << endl;
+			}
+			if(count == 1)
+			{
+				thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+				inserts++;
 			}
 		}
 	}
-
-}
-
-template <typename T>
-void Puzzle<T>::eraseValue( int row, int col ) { //erases the value at the position 
+	int rowmax, rowmin;
+	int colmax, colmin;
 	
-	int i;
-
-	// vector<T>::const_iterator i = col; //make an iterator so that program can go through each element of the vector and print it out
-
-	//if the user tries to erase default cells, then don't let them
-	for ( i=0; i<defaultRow.size(); i++ ) { //loop through stored positions of default values and if position corresponds with one of the values then say 'no'
-		if ( (row-1) == defaultRow[i] && (col-1) == defaultCol[i] ) {
-			cout << "That's a default value - you can't erase that." << endl;
-		} else { //otherwise allow the user to erase value
-			puzzleVector[row-1].erase(col-1); //erase the value at the given position
-			cout << "The value was erased." << endl;
-		}
-	}
-
-}
-
-template <typename T>
-bool Puzzle<T>::isComplete() { //checks if puzzle was completed correctly
-	if ( isEmpty()==false ) {//if all spots are filled
-		return true; //the puzzle was completed correctly
-	}
-
-	return false; //the puzzle is incorrect
-
-}
-
-template <typename T>
-bool Puzzle<T>::isEmpty() { //check if there are no empty values (check for 0s)
-	int i, j;
-
-	for ( i=0; i<9; i++ ) {
-		for ( j=0; j<9; j++ ) {
-			if ( puzzleVector[i].getValue(j)==0 ) {
-				cout << "One of the squares is blank. Please make sure you fill out the whole puzzle." << endl;
-				return true; //found an empty spot
+	// Check in Square
+	for(sqrow=0; sqrow < 3; sqrow++)
+	{
+		for(sqcol=0; sqcol < 3; sqcol++)
+		{
+			rowmin = 3*sqrow;
+			rowmax = rowmin + 3;
+			colmin = 3*sqcol;
+			colmax = colmin + 3;
+			for(test_num = 1; test_num < 10; test_num++)
+			{
+				count = 0;
+				for(row=rowmin; row < rowmax; row++)
+				{
+					for(col=colmin; col < colmax; col++)
+					{
+						if(thePuzzle[row][col].getValue() == '0')
+						{
+							if(checkValue(test_num + '0', row, col))
+							{
+								count++;
+								// If there is only one, the following will contain the right position
+								rightRow=row;
+								rightCol=col;
+							}
+						}
+					}
+				}
+				if(count == 1)
+				{
+					thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+					inserts++;
+				}
 			}
 		}
 	}
+	
+	return inserts;
+	
+}
 
-	return false; //all spots are filled
+
+int Puzzle::single_possibility() // Checks 
+{
+	int row, col, test_num, count, inserts;
+	int rightNum;
+	inserts=0;
+	
+	for(row = 0; row < 9; row++)
+	{
+		for(col = 0; col < 9; col++)
+		{
+			count = 0;
+			if(thePuzzle[row][col].getValue() == '0')
+			{
+				for(test_num = 1; test_num < 10; test_num++)
+				{
+					if(checkValue(test_num + '0', row, col))
+					{
+						count++;
+						// If there is only one number that can be placed, the following will contain the right number after the loop
+						rightNum=test_num;
+					}
+				}
+				if(count == 1)
+				{
+					thePuzzle[row][col].setValue(rightNum + '0');
+					inserts++;
+				}
+			}
+		}
+	}
+	return inserts;
+}
+
+
+void Puzzle::solve()
+{
+	int inserts;
+	do // Do loop until no more insertions are made by any of the algorithms
+	{
+		inserts = 0;
+		inserts += singleton();
+		inserts += single_possibility();
+
+	} while (inserts > 0);
+	
+	if(checkSolved())
+	{
+		cout << "Here is the solution!" << endl;
+		display();
+	}
+	else
+	{
+		cout << "A solution could not be found" << endl;
+		cout << "This is what we got" << endl;
+		display();
+	}
+}
+
+vector< vector <int> > Puzzle::getIntVector()
+{
+	vector< vector <int> > intVector;
+	vector<int> buffer;
+	for(int i = 0; i < 9; i++)
+	{
+		for(int j = 0; j < 9; j++)
+		{
+			buffer.push_back(thePuzzle[i][j].getValue());
+		}
+		intVector.push_back(buffer);
+	}
+	return intVector;
+}
+
+void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool& changeValue)
+{
+	while(SDL_PollEvent(&e))
+	{
+		if(e.type == SDL_QUIT)
+		{
+			gameover = true;
+		}
+		else if(e.type == SDL_KEYDOWN)
+		{
+			switch(e.key.keysym.sym)
+			{
+				case SDLK_UP:
+					if(selector.y > 0)
+					{
+						selector.y--;
+					}
+					break;
+				case SDLK_DOWN:
+					if(selector.y < 8)
+					{
+						selector.y++;
+					}
+					break;
+				case SDLK_LEFT:
+					if(selector.x >0)
+					{
+						selector.x--;
+					}
+					break;
+				case SDLK_RIGHT:
+					if(selector.x < 8)
+					{
+						selector.x++;
+					}
+					break;
+				case SDLK_0:
+				case SDLK_KP_0:
+					value = 0;
+					changeValue = true;
+					break;
+				case SDLK_1:
+				case SDLK_KP_1:
+					value = 1;
+					changeValue = true;
+					break;
+				case SDLK_2:
+				case SDLK_KP_2:
+					value = 2;
+					changeValue = true;
+					break;
+				case SDLK_3:
+				case SDLK_KP_3:
+					value = 3;
+					changeValue = true;
+					break;
+				case SDLK_4:
+				case SDLK_KP_4:
+					value = 4;
+					changeValue = true;
+					break;
+				case SDLK_5:
+				case SDLK_KP_5:
+					value = 5;
+					changeValue = true;
+					break;
+				case SDLK_6:
+				case SDLK_KP_6:
+					value = 6;
+					changeValue = true;
+					break;
+				case SDLK_7:
+				case SDLK_KP_7:
+					value = 7;
+					changeValue = true;
+					break;
+				case SDLK_8:
+				case SDLK_KP_8:
+					value = 8;
+					changeValue = true;
+					break;
+				case SDLK_9:
+				case SDLK_KP_9:
+					value = 9;
+					changeValue = true;
+					break;
+				case SDLK_q:
+					gameover=1;
+					changeValue = true;
+					break;
+				default:
+					;
+			}
+		}
+	}
+}
+
+bool Puzzle::loadMedia()
+{
+	const int startx = 0;
+	const int starty = 142;
+	const int width = 88;
+	const int height = 104;
+	//Loading success flag
+	bool success = true;
+
+	//Load sprite sheet texture
+	if( !gSpriteSheetTexture.loadFromFile( "numbers.png" ) )
+	{
+		printf( "Failed to load sprite sheet texture!\n" );
+		success = false;
+	}
+	else
+	{
+		//Make Sprite clips from spriteSheet
+		for(int i = 0; i < 10; i++)
+		{
+			gSpriteClips[i].x = startx + width*i + 4*i;
+			gSpriteClips[i].y = starty;
+			gSpriteClips[i].w = width;
+			gSpriteClips[i].h = height;
+		}
+	}
+	
+	if( !gBackgroundTexture.loadFromFile( "sudoku_background.png" ))
+	{
+		printf( "Failed to load sprite sheet texture!\n" );
+		success = false;
+	}
+	
+	if( !(gSelectorTexture.loadFromFile("selector.png")))
+	{
+		printf("Failed to load selector\n");
+		success = false;
+	}
+
+	return success;
+}
+
+
+void Puzzle::displayInstructions()
+{
+	point text_ref;
+	
+	text_ref.x = 430;
+	text_ref.y = 32;
+	
+	int current_height = text_ref.y;
+	
+	instructions[0]->render(text_ref.x, current_height);
+	current_height += instructions[0]->getHeight() + 8;
+	for(int i = 1; i < 10; i++)
+	{
+		if(instructions[i] != NULL)
+		{
+			instructions[i]->render(text_ref.x, current_height);
+			current_height += instructions[i]->getHeight() + 4;
+		}
+	}
 }
 
 
 
+void Puzzle::displayMessage()
+{
+	point text_ref;
+	text_ref.x = 12;
+	text_ref.y = 430;
+	
+	message.render(text_ref.x, text_ref.y);
+}
 
-
+void Puzzle::updateMessage(string nMessage)
+{
+	message.free();
+	
+	message.loadFromRenderedText(nMessage.c_str(), fontColor); 
+}

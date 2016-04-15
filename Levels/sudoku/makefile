@@ -1,10 +1,7 @@
-all: puzzle
+all: test
 
-puzzle: main.o 
-	g++ main.o -o puzzle
-
-main.o: main.cpp puzzle.h
-	g++ -c main.cpp
+test: main.cpp puzzle.cpp sdl_win_wrap.cpp texture.cpp puzzleElement.cpp
+	g++ $^ -o test -g -gdwarf-2 -std=c++0x -lSDL2_image -lSDL2_ttf
 
 clean:
-	rm -f *o puzzle
+	rm test
