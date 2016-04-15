@@ -29,7 +29,8 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    position=1;
    nummoves=0;
    numtries=1;
-
+	
+   loadMedia();
 }
 
 Rivercrossing::~Rivercrossing() {
@@ -59,20 +60,21 @@ void Rivercrossing::play() {
    bool changeboat;
    int points;
    char choice;
+   bool exit = false;
 
    //initial display
    display();
 
    //not game over or success
    int game=finished();
-   while (game==1) {
+   while (game==1 && exit == false) {
       change=false;
       //change is true when position of one of 3 items is changed
-      manageEvents(e, change, changeboat);
+      manageEvents(e, change, changeboat, exit);
+      if(exit == true)
+      	break;
       //if something changed position, render images again and display
-      if(change) {
 	 display();
-      }
       //if boat changed, chek if game over
       if(changeboat) {
 	 display();
@@ -157,9 +159,7 @@ int Rivercrossing::finished() {
 	 return 3;
       }
    }
-   else {
-      return 1;
-   }
+   return 1;
 
 }
 
@@ -257,19 +257,14 @@ void Rivercrossing::display() {
 
 }
 
-void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat) {
+void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat, bool &exit) {
 
-   bool toContinue = false;
    int pos;
 
-   while(!toContinue) {
-
-      SDL_WaitEvent(NULL);
-
-      while(SDL_PollEvent(&e)) {
+   while(SDL_PollEvent(&e)) {
 
 	 if(e.type == SDL_QUIT) {
-	    toContinue = true;
+	 	exit = true;
 	 }
 
 	 //boat movement with arrow keys
@@ -324,8 +319,8 @@ void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat) {
 		  break;
 	    }
 	 }
-      }
-   }
+  }
+
 }
          
 

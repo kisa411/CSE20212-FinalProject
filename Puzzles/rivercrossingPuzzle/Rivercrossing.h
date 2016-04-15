@@ -35,7 +35,7 @@ class Rivercrossing {
       bool loadMedia();
 
       //manage events
-      void manageEvents(SDL_Event &e, bool &change, bool &changeboat);
+      void manageEvents(SDL_Event &e, bool &change, bool &changeboat, bool &end);
 
       //textures and clips
       LTexture gBackgroundTexture;
