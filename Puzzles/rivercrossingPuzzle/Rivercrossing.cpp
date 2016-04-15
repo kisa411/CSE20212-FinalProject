@@ -9,13 +9,11 @@
 #define cabbage 4
 
 Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer): 
-   gBackgroundTexture(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-   gSheep(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-   gWolf(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-   gCabbage(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-   gBoat(ngWindow, ngRenderer, nSCREEN_WIDTH, nSCREEN_HEIGHT), \
-   SCREEN_WIDTH(nSCREEN_WIDTH), \
-   SCREEN_HEIGHT(nSCREEN_HEIGHT), \
+   gBackgroundTexture(ngWindow, ngRenderer), \
+   gSheep(ngWindow, ngRenderer), \
+   gWolf(ngWindow, ngRenderer), \
+   gCabbage(ngWindow, ngRenderer), \
+   gBoat(ngWindow, ngRenderer), \
    gWindow(ngWindow), \
    gRenderer(ngRenderer)
 
