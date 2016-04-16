@@ -19,19 +19,20 @@ public:
     AlphabetPuzzle( SDL_Window*, SDL_Renderer* ); //default constructor
     ~AlphabetPuzzle(); //destructor
     void displayTown(); //display the town
-    void displayPuzzle(); //display the puzzle picture
+    // void displayPuzzle(); //display the puzzle picture
     int playPuzzle(); //main driver function for alphabet puzzle
     int determineEnding(); //determing the results of the game
     
 private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     bool complete; //checks to see if user has solved puzzle or not
-    bool questionAnswered; //checks to see if user has gotten the right answer
+    // bool questionAnswered; //checks to see if user has gotten the right answer
 
     //SDL member variables and helper functions
     LTexture gBackgroundTexture;
     LTexture gPuzzleTexture;
     LTexture gTextTexture;
+    LTexture gMathTexture;
     LTexture gInputTextTexture;
     LTexture gPromptTextTexture;
     
@@ -44,7 +45,7 @@ private:
     TTF_Font *gFont; //font to use
     
    
-    bool handleEvent( SDL_Event& e, int tryNumber ); //Handles mouse event
+    bool completed( int tryNumber ); //determine ending depending on tryNumber
     bool loadMedia(); //Loads necessary media
     string userInput(); //take in user input
     bool validate( string userInput ); //check user input against correct answer 
