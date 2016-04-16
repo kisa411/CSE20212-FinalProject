@@ -4,7 +4,7 @@
 
 
 //constructor
-Ending::Ending( SDL_Window* gWindow, SDL_Renderer* gRenderer, int points, char g ) : gBackgroundTexture(gWindow, gRenderer), gTextTexture(gWindow, gRenderer) {
+Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, char g ) : gBackgroundTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) {
 	pointTotal = points;
 	gender = g;
 	loadMedia();
@@ -22,8 +22,8 @@ void Ending::display() {
 
 	SDL_RenderClear( gRenderer );
 	// Render Background
-	gBackgroundTexture.render(0,0, NULL);
-	gTextTexture.render(0, 0, NULL);
+	gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+	gTextTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 	/*
 	if ( pointTotal> ... ) { //good ending
@@ -52,6 +52,9 @@ void Ending::display() {
 		}
 	}
 	*/
+
+	//Update screen
+    SDL_RenderPresent( gRenderer );
 }
 
 //load media
@@ -106,7 +109,7 @@ bool Ending::loadMedia() {
 	}
 	
 	//Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 24 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -116,6 +119,7 @@ bool Ending::loadMedia() {
     {
         //Render the prompt
         SDL_Color textColor = { 0, 0, 0, 0xFF };
+        gTextTexture.setFont(gFont);
         if( !gTextTexture.loadFromRenderedTextWrapped( "You've finally arrived at the palace! You see your friend has already set out a picnic blanket so you head over with your picnic basket.\n", textColor, 350 ) )
         {
             printf( "Failed to render prompt text!\n" );
