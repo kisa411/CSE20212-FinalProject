@@ -42,7 +42,10 @@ class Rivercrossing {
       LTexture gWolf;
       LTexture gCabbage;
       LTexture gBoat;
+      LTexture gText;
+
 //LTexture gText;
+
 
       //renderer and window
       //window we are rendering to

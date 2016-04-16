@@ -14,6 +14,7 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gWolf(ngWindow, ngRenderer), \
    gCabbage(ngWindow, ngRenderer), \
    gBoat(ngWindow, ngRenderer), \
+   gText(ngWindow, ngRenderer), \
    gWindow(ngWindow), \
    gRenderer(ngRenderer)
 
@@ -40,6 +41,7 @@ Rivercrossing::~Rivercrossing() {
    gWolf.free();
    gCabbage.free();
    gBoat.free();
+   gText.free();
 
 }
 
