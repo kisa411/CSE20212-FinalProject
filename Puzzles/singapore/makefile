@@ -1,14 +1,7 @@
-all: singapore
+all: test
 
-singapore: main.o singaporeanMathPuzzle.o 
-	g++ main.o singaporeanMathPuzzle.o -o singapore
-
-main.o: main.cpp
-	g++ -c main.cpp
-
-singaporeanMathPuzzle.o: singaporeanMathPuzzle.cpp
-	g++ -c singaporeanMathPuzzle.cpp
-
+test: main.cpp singaporePuzzle.cpp sdl_win_wrap.cpp texture.cpp
+	g++ $^ -o test -g -gdwarf-2 -I/usr/local/include -L/usr/local/lib  -lSDL2 -lSDL2_image -lSDL2_ttf
 
 clean:
-	rm *o singapore
+	rm test

@@ -1,14 +1,7 @@
-all: hangman
+all: test
 
-hangman: main.o hangman.o 
-	g++ main.o hangman.o -o hangman
-
-main.o: main.cpp
-	g++ -c main.cpp
-
-hangman.o: hangman.cpp
-	g++ -c hangman.cpp
-
+test: main.cpp hangman.cpp sdl_win_wrap.cpp texture.cpp
+	g++ $^ -o test -g -gdwarf-2 -I/usr/local/include -L/usr/local/lib  -lSDL2 -lSDL2_image -lSDL2_ttf
 
 clean:
-	rm *o hangman
+	rm test
