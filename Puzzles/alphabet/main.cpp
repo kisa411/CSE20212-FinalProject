@@ -15,13 +15,20 @@
 #include <sstream>
 #include "alphabetPuzzle.h"
 #include "texture.h"
-#include "SDL_Win_Wrap.h"
+#include "sdl_win_wrap.h"
 using namespace std;
 
 int main () {
+	int points = 100;
     SDL_Win_Wrap window_instance; //SDL window object
     AlphabetPuzzle puzzle( window_instance.getWindow(), window_instance.getRenderer() ); //AlphabetPuzzle object
-    for(int i = 0; i < 5000; i++){
-    	puzzle.displayPuzzle();}
-    // puzzle.playPuzzle();
+    // for ( int i=0; i<3000; i++ ) {
+    // 	puzzle.displayTown();
+    // }
+
+    while (points>0) {
+	    // puzzle.displayPuzzle();
+	    points = puzzle.playPuzzle();
+	    cout << "Player's points: " << points << endl;
+	}
 }
