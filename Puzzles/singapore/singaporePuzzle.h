@@ -18,7 +18,7 @@ class SingaporeanPuzzle {
     
 public:
     SingaporeanPuzzle( SDL_Window*, SDL_Renderer* ); //constructor
-    ~SingaporeanPuzzle(); //desturctor
+    ~SingaporeanPuzzle(); //destructor
     void displayRobber(); //display the puzzle picture
     int playPuzzle(); //check for user input and see if input is correct - returns the amount of points that should be deducted from player's total
     int determineEnding(); //determing the results of the game

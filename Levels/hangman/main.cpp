@@ -7,8 +7,8 @@
 //
 
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -21,9 +21,20 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     SDL_Win_Wrap window_instance; //SDL window object
-    
+
+    int points = -100;
+
     Hangman game(window_instance.getWindow(), window_instance.getRenderer()); //instantiate new object of Hangman game
-    game.playPuzzle(); //play the game
+    
+    // for ( int i=0; i<2000; i++ ) {
+    // 	game.displayOpening();
+    // }
+
+    while (points<0) {
+	    points = game.playPuzzle();
+	    cout << "Player's points: " << points << endl;
+	}
+
 
     return 0;
 }
