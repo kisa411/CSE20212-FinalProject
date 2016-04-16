@@ -87,10 +87,13 @@ void AlphabetPuzzle::displayPuzzle() { //return amount of points player should g
     SDL_RenderClear( gRenderer );
     //SDL code for displaying (rendering) puzzle image
     gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    
     if ( questionAnswered==false ) {
+        cout << "displaying prompt stuff" << endl;
         gPromptTextTexture.render(textXpos, textYpos);
         gInputTextTexture.render(textXpos, textYpos+gPromptTextTexture.getHeight());
     } else {
+        cout << "displaying texture stuff" << endl;
         gTextTexture.render(textXpos, textYpos);
     }
 
@@ -110,8 +113,6 @@ int AlphabetPuzzle::playPuzzle() {
         if ( endPoints <= 0 ) {
             complete = true;
         }
-        // // Update Screen
-        // SDL_RenderPresent( gRenderer );
 
     }
 
@@ -145,11 +146,12 @@ int AlphabetPuzzle::determineEnding() {
     gTextTexture.setFont(gFont);
 
     while (correct==false) {
-        // displayPuzzle();
+        displayPuzzle();
         tryNumber++;
         answer = userInput(); //returns user's input
         correct = validate(answer); //returns whether or not the input is right
         if (correct==true) {
+
             if( !gTextTexture.loadFromRenderedTextWrapped( "Congratulations! You got it correct!\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
@@ -174,7 +176,6 @@ int AlphabetPuzzle::determineEnding() {
             if( !gTextTexture.loadFromRenderedTextWrapped( "That's wrong, Try again.\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
-            // gTextTexture.render(textXpos, textYpos);
         }
 
     }
@@ -276,7 +277,9 @@ bool AlphabetPuzzle::loadMedia() {
             printf( "Failed to render prompt text!\n" );
             success = false;
         }
-         if( !gInputTextTexture.loadFromRenderedText( "Erase this and put answer here", textColor, 350 ) )
+
+        gInputTextTexture.setFont(gFont);
+        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase this and put answer here", textColor, 350 ) )
         {
             printf( "Failed to render input text!\n" );
             success = false;
@@ -313,16 +316,10 @@ string AlphabetPuzzle::userInput() {
 
     //render the question 
     gPromptTextTexture.setFont(gFont);
-    gPromptTextTexture.render(textXpos, textYpos); 
     
     //The current input text.
     string inputText = "Erase this and put answer here";
     // gInputTextTexture.setFont(gFont);
-    // if( !gInputTextTexture.loadFromRenderedText( "What is your answer?", textColor, 350 ) )
-    // {
-    //     printf( "Failed to render prompt text!\n" );
-    //     success = false;
-    // }
     // gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
     //Enable text input
@@ -333,6 +330,7 @@ string AlphabetPuzzle::userInput() {
     {
         //The rerender text flag
         bool renderText = false;
+
 
         //Handle events on queue
         while( SDL_PollEvent( &e ) != 0 )
@@ -384,15 +382,12 @@ string AlphabetPuzzle::userInput() {
         }
 
         //Clear screen
-        // SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-        // SDL_RenderClear( gRenderer );
+        //SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 
-        //Render text textures
-        // gPromptTextTexture.render(textXpos, textYpos);
-        // gInputTextTexture.render(textXpos, textYpos+gPromptTextTexture.getHeight());
+        // gTextTexture.render(textXpos, textYpos);
+        displayPuzzle();
 
         // //Update screen
-        // SDL_RenderPresent( gRenderer );
     }
     
     //Disable text input
