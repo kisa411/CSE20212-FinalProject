@@ -1,18 +1,39 @@
-/* Emily Koh
-FCII Final Project
-Spring 2016
-Singaporean Math Puzzle class
-*/
+//
+//  main.cpp
+//  singaporePuzzle
+//
+//  Created by Emily Koh on 4/9/16.
+//  Copyright © 2016 Emily Koh. All rights reserved.
+//
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <stdio.h>
+#include <string>
 #include <iostream>
-#include "singaporeanMathPuzzle.h"
+#include <sstream>
+#include "singaporePuzzle.h"
+#include "sdl_win_wrap.h"
+#include "texture.h"
 using namespace std;
 
+int main(int argc, const char * argv[]) {
+	
+	int points = 100;
+    SDL_Win_Wrap window_instance; //SDL window object
+   
+    SingaporeanPuzzle puzzle( window_instance.getWindow(), window_instance.getRenderer() ); //Singaporean Puzzle object
 
-int main () {
-	SingaporeanPuzzle game; //instantiate new object of Hangman game
-	game.displayPuzzle(); //play the game 
-	int number = game.playPuzzle(); 
-	cout << "The number of points you got: " << number << endl;
+    for ( int i=0; i<2000; i++ ) {
+    	puzzle.displayRobber();
+    }
+    
+    while (points>0) {
+	    points = puzzle.playPuzzle();
+	    cout << "Player's points: " << points << endl;
+	}
 
 }
+
+

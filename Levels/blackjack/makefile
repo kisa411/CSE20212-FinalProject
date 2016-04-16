@@ -1,13 +1,7 @@
-all: cardDeck
+all: test
 
-cardDeck: main.o cardDeck.o
-	g++ main.o cardDeck.o -o cardDeck
-
-main.o: main.cpp
-	g++ -c main.cpp
-
-cardDeck.o: cardDeck.cpp
-	g++ -c cardDeck.cpp
+test: main.cpp cardDeck.cpp sdl_win_wrap.cpp texture.cpp
+	g++ $^ -o test -g -gdwarf-2 -I/usr/local/include -L/usr/local/lib  -lSDL2 -lSDL2_image -lSDL2_ttf
 
 clean:
-	rm -f *o cardDeck
+	rm test

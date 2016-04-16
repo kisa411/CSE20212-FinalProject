@@ -10,13 +10,16 @@ class Opening {
 public:
 	Opening( SDL_Window*, SDL_Renderer* ); //constructor
     ~Opening(); //destructor
-    char display(); //display, update player gender
+    string display(); //display, update player gender
+    void displayRoom(); //display opening scene
+    string play(); //driver function
 
 private:
 	//SDL member variables and helper functions
     LTexture gBackgroundTexture;
     LTexture gInputTextTexture;
     LTexture gPromptTextTexture;
+    LTexture gTextTexture;
     
     //the window we'll be rendering to
     SDL_Window* gWindow;
@@ -27,6 +30,7 @@ private:
     TTF_Font *gFont; //font to use
     
     bool loadMedia();
+    string userInput();
 
 };
 

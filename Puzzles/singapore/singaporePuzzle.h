@@ -1,40 +1,38 @@
 //
-//  alphabetPuzzle.hpp
-//  alphabetPuzzle
+//  singaporePuzzle.hpp
+//  singaporePuzzle
 //
 //  Created by Emily Koh on 4/9/16.
 //  Copyright © 2016 Emily Koh. All rights reserved.
 //
 
-#ifndef alphabetPuzzle_h
-#define alphabetPuzzle_h
+#ifndef singaporePuzzle_h
+#define singaporePuzzle_h
 
-#include <iostream>
 #include "texture.h"
+#include <iostream>
+
 using namespace std;
 
-class AlphabetPuzzle {
+class SingaporeanPuzzle {
     
 public:
-    AlphabetPuzzle( SDL_Window*, SDL_Renderer* ); //default constructor
-    ~AlphabetPuzzle(); //destructor
-    void displayTown(); //display the town
-    // void displayPuzzle(); //display the puzzle picture
-    int playPuzzle(); //main driver function for alphabet puzzle
+    SingaporeanPuzzle( SDL_Window*, SDL_Renderer* ); //constructor
+    ~SingaporeanPuzzle(); //destructor
+    void displayRobber(); //display the puzzle picture
+    int playPuzzle(); //check for user input and see if input is correct - returns the amount of points that should be deducted from player's total
     int determineEnding(); //determing the results of the game
     
 private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     bool complete; //checks to see if user has solved puzzle or not
-    // bool questionAnswered; //checks to see if user has gotten the right answer
-
+    
     //SDL member variables and helper functions
     LTexture gBackgroundTexture;
-    LTexture gPuzzleTexture;
     LTexture gTextTexture;
-    LTexture gMathTexture;
     LTexture gInputTextTexture;
     LTexture gPromptTextTexture;
+    LTexture gPuzzleTexture;
     
     //the window we'll be rendering to
     SDL_Window* gWindow;
@@ -42,16 +40,17 @@ private:
     int SCREEN_HEIGHT;
     
     SDL_Renderer* gRenderer;
+    
     TTF_Font *gFont; //font to use
     
-   
+    bool loadMedia();
     bool completed( int tryNumber ); //determine ending depending on tryNumber
-    bool loadMedia(); //Loads necessary media
     string userInput(); //take in user input
     bool validate( string userInput ); //check user input against correct answer 
 
     
+    
 };
 
 
-#endif
+#endif 
