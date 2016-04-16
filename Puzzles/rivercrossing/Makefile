@@ -8,4 +8,4 @@ Rivercrossing: main.cpp Rivercrossing.cpp sdl_win_wrap.cpp texture.cpp
 	$(CC) $(FLAGS) $@ $^
 
 clean:
-	rm *.o $(TARGETS)
+	rm $(TARGETS)

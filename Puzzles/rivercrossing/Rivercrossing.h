@@ -35,7 +35,7 @@ class Rivercrossing {
       bool loadMedia();
 
       //manage events
-      void manageEvents(SDL_Event &e, bool &change, bool &changeboat);
+      void manageEvents(SDL_Event &e, bool &change, bool &changeboat, bool &end);
 
       //textures and clips
       LTexture gBackgroundTexture;
@@ -47,8 +47,8 @@ class Rivercrossing {
       //renderer and window
       //window we are rendering to
       SDL_Window* gWindow;
-      const int SCREEN_WIDTH;
-      const int SCREEN_HEIGHT;
+      int SCREEN_WIDTH;
+      int SCREEN_HEIGHT;
 
       //window renderer
       SDL_Renderer* gRenderer;
