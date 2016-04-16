@@ -179,12 +179,6 @@ int AlphabetPuzzle::determineEnding() {
                 //Update screen
                 SDL_RenderPresent( gRenderer );
             }
-            for ( int i=0; i<2000; i++ ) {
-                gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-                gTextTexture.render( textXpos, textYpos );
-                //Update screen
-                SDL_RenderPresent( gRenderer );
-            }
             if ( tryNumber == 1 ) { //got the answer on the first try
                 completed( tryNumber );
                 return points;
@@ -203,12 +197,12 @@ int AlphabetPuzzle::determineEnding() {
             }
 
         } else {
-            if( !gPromptTextTexture.loadFromRenderedTextWrapped( "That's wrong, Try again.\n  ", textColor, 350 ) ) {
+            if( !gTextTexture.loadFromRenderedTextWrapped( "That's wrong, Try again.\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<2000; i++ ) {
+            for ( int i=0; i<1000; i++ ) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -397,7 +391,7 @@ string AlphabetPuzzle::userInput() {
         }
 
        //Clear screen
-        SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        // SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
         SDL_RenderClear( gRenderer );
 
         //Render text textures
