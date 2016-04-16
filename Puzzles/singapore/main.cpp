@@ -7,8 +7,8 @@
 //
 
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -19,10 +19,21 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-   
+	
+	int points = 100;
     SDL_Win_Wrap window_instance; //SDL window object
-    
+   
     SingaporeanPuzzle puzzle( window_instance.getWindow(), window_instance.getRenderer() ); //Singaporean Puzzle object
-    puzzle.displayPuzzle();
-    puzzle.playPuzzle();
+
+    for ( int i=0; i<2000; i++ ) {
+    	puzzle.displayRobber();
+    }
+    
+    while (points>0) {
+	    points = puzzle.playPuzzle();
+	    cout << "Player's points: " << points << endl;
+	}
+
 }
+
+

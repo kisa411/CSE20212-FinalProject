@@ -32,7 +32,8 @@ AlphabetPuzzle::AlphabetPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer )
 }
 
 AlphabetPuzzle::~AlphabetPuzzle() { //free up all the allocated memory for the textures
-    gBackgroundTexture.free(); 
+    gBackgroundTexture.free();
+    gMathTexture.free(); 
     gTextTexture.free();
     gInputTextTexture.free();
     gPromptTextTexture.free();
@@ -319,7 +320,7 @@ string AlphabetPuzzle::userInput() {
     gPromptTextTexture.setFont(gFont);
     
     //The current input text.
-    string inputText = "Erase this and put answer here";
+    string inputText = "Erase and put answer here";
     gInputTextTexture.setFont(gFont);
     gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
