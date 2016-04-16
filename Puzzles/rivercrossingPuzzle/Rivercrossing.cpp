@@ -14,7 +14,6 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gWolf(ngWindow, ngRenderer), \
    gCabbage(ngWindow, ngRenderer), \
    gBoat(ngWindow, ngRenderer), \
-   gText
    gWindow(ngWindow), \
    gRenderer(ngRenderer)
 
@@ -182,25 +181,25 @@ void Rivercrossing::display() {
    if (position==1) {
       gBoat.render(190, 330, 80, 94, NULL);
       if (onboat==cabbage) {
-	 gCabbage.render(50+190, 155+330, 50, 42, NULL);
+	 gCabbage.render(15+190, 40+330, 50, 42, NULL);
       }
       else if (onboat==wolf) {
-	 gWolf.render(105+190, 190+330, 65, 67, NULL);
+	 gWolf.render(10+190, 20+330, 65, 67, NULL);
       }
       else if (onboat==goat) {
-	 gSheep.render(15+190, 60+550, 60, 41, NULL);
+	 gSheep.render(15+190, 40+330, 60, 41, NULL);
       }
    }
    else if (position==-1) {
       gBoat.render(285, 330, 80, 94, NULL);
       if (onboat==cabbage) {
-	 gCabbage.render(50+285, 155+330, 50, 42, NULL);
+	 gCabbage.render(15+285, 40+330, 50, 42, NULL);
       }
       else if (onboat==wolf) {
-	 gWolf.render(105+285, 190+330, 65, 67, NULL);
+	 gWolf.render(10+285, 20+330, 65, 67, NULL);
       }
       else if (onboat==goat) {
-	 gSheep.render(15+285, 60+550, 60, 41, NULL);
+	 gSheep.render(15+285, 40+330, 60, 41, NULL);
       }
    }
  
