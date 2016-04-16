@@ -28,14 +28,13 @@ class Rivercrossing {
       int end;
       int onboat;
       int position;
-      int nummoves;  //number of moves it took to finish or gameover
       int numtries;  //number of tries till finish or gameover
 
       //load pics
       bool loadMedia();
 
       //manage events
-      void manageEvents(SDL_Event &e, bool &change, bool &changeboat);
+      void manageEvents(SDL_Event &e, bool &change, bool &changeboat, bool &end);
 
       //textures and clips
       LTexture gBackgroundTexture;
@@ -43,6 +42,7 @@ class Rivercrossing {
       LTexture gWolf;
       LTexture gCabbage;
       LTexture gBoat;
+      LTexture gText;
 
       //renderer and window
       //window we are rendering to

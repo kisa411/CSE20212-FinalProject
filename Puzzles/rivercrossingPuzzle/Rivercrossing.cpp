@@ -14,6 +14,7 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gWolf(ngWindow, ngRenderer), \
    gCabbage(ngWindow, ngRenderer), \
    gBoat(ngWindow, ngRenderer), \
+   gText
    gWindow(ngWindow), \
    gRenderer(ngRenderer)
 
@@ -27,7 +28,6 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    onboat=0;
    //1=start position, -1=end position
    position=1;
-   nummoves=0;
    numtries=1;
 
    loadMedia();
@@ -61,29 +61,32 @@ void Rivercrossing::play() {
    bool changeboat;
    int points;
    char choice;
+   bool exit = false;
 
    //initial display
    display();
 
    //not game over or success
    int game=finished();
-   while (game==1) {
-      display();
+   while (game==1 && exit == false) {
       change=false;
       //change is true when position of one of 3 items is changed
-      manageEvents(e, change, changeboat);
+      manageEvents(e, change, changeboat, exit);
+      if(exit == true) {
+      	break;
+      }
       //if something changed position, render images again and display
-      if(change) {
+      if (change) {
 	 display();
       }
-      //if boat changed, chek if game over
+      //if boat changed, check if game over
       if(changeboat) {
 	 display();
 	 switch (finished()) {
 	    case 2:
 	       display();
 	       //wolf ate goat, game over! ask to try again(click y)
-	       cout << "The wolf has ate the sheep! Game over!" << endl;
+	       cout << "The wolf ate the sheep! Game over!" << endl;
 	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
 	       cin >> choice;
 	       if (choice=='y') {
@@ -99,7 +102,7 @@ void Rivercrossing::play() {
 	    case 3:
 	       display();
 	       //goat ate cabbage, game over! ask to try again(click y)
-	       cout << "The sheep has ate the cabbage! Game over!" << endl;
+	       cout << "The sheep ate the cabbage! Game over!" << endl;
 	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
 	       cin >> choice;
 	       if (choice=='y') {
@@ -108,7 +111,7 @@ void Rivercrossing::play() {
 		  game=1;
 	       }
 	       else if (choice=='n') {
-		  cout << "You tried " << numtries << " times but couldn't help the farmer! You get no points. Sorry!" << endl;
+		  cout << "You tried " << numtries << " time(s) but couldn't help the farmer! You get no points. Sorry!" << endl;
 		  game=0;
 	       }
 	       break;
@@ -116,7 +119,7 @@ void Rivercrossing::play() {
 	       display();
 	       //success!
 	       points=100/numtries;
-	       cout << "The farmer is so thankful for your help! You finished in " << numtries << " tries, so you get " << points << " points!" << endl;
+	       cout << "The farmer is so thankful for your help! You finished in " << numtries << " trie(s), so you get " << points << " points!" << endl;
 	       if (points<=40) {
 		  cout << "The farmer thanks you with his cabbage!" << endl;
 	       }
@@ -127,6 +130,8 @@ void Rivercrossing::play() {
 		  cout << "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!" << endl;
 	       }
 	       game=0;
+	       break;
+	    default:
 	       break;
 	 }
 
@@ -162,8 +167,8 @@ int Rivercrossing::finished() {
       }
    }
 
+
    return 1;
-   
 
 }
 
@@ -175,85 +180,85 @@ void Rivercrossing::display() {
 
    //render boat
    if (position==1) {
-      gBoat.render(190, 330, NULL);
+      gBoat.render(190, 330, 80, 94, NULL);
       if (onboat==cabbage) {
-	 gCabbage.render(50+190, 155+330, NULL);
+	 gCabbage.render(50+190, 155+330, 50, 42, NULL);
       }
       else if (onboat==wolf) {
-	 gWolf.render(105+190, 190+330, NULL);
+	 gWolf.render(105+190, 190+330, 65, 67, NULL);
       }
       else if (onboat==goat) {
-	 gSheep.render(15+190, 60+550, NULL);
+	 gSheep.render(15+190, 60+550, 60, 41, NULL);
       }
    }
    else if (position==-1) {
-      gBoat.render(285, 330, NULL);
+      gBoat.render(285, 330, 80, 94, NULL);
       if (onboat==cabbage) {
-	 gCabbage.render(50+285, 155+330, NULL);
+	 gCabbage.render(50+285, 155+330, 50, 42, NULL);
       }
       else if (onboat==wolf) {
-	 gWolf.render(105+285, 190+330, NULL);
+	 gWolf.render(105+285, 190+330, 65, 67, NULL);
       }
       else if (onboat==goat) {
-	 gSheep.render(15+285, 60+550, NULL);
+	 gSheep.render(15+285, 60+550, 60, 41, NULL);
       }
    }
  
    //render items
    //at start
    if (start == goat + cabbage + wolf) {
-      gSheep.render(110, 335, NULL);
-      gWolf.render(85, 390, NULL);
-      gCabbage.render(20, 345, NULL);
+      gSheep.render(110, 335, 60, 41, NULL);
+      gWolf.render(85, 390, 65, 67, NULL);
+      gCabbage.render(20, 345, 50, 42, NULL);
    }
    else if (start == goat + cabbage) {
-      gCabbage.render(20, 345, NULL);
-      gSheep.render(110, 335, NULL);
+      gCabbage.render(20, 345, 50, 42, NULL);
+      gSheep.render(110, 335, 60, 41, NULL);
    }
    else if (start == goat + wolf) {
-      gSheep.render(110, 335, NULL);
-      gWolf.render(85, 390, NULL);
+      gSheep.render(110, 335, 60, 41, NULL);
+      gWolf.render(85, 390, 65, 67, NULL);
    }
    else if (start == wolf+cabbage) {
-      gWolf.render(85, 390, NULL);
-      gCabbage.render(20, 345, NULL);
+      gWolf.render(85, 390, 65, 67, NULL);
+      gCabbage.render(20, 345, 50, 42, NULL);
    }
    else if (start == goat) {
-      gSheep.render(110, 335, NULL);
+      gSheep.render(110, 335, 60, 41, NULL);
    }
    else if (start == cabbage) {
-      gCabbage.render(20, 345, NULL);
+      gCabbage.render(20, 345, 50, 42, NULL);
    }
    else if (start == wolf) {
-      gWolf.render(85, 390, NULL);
+      gWolf.render(85, 390, 65, 67, NULL);
    }
 
    //at end
    if (end == goat + cabbage + wolf) {
-      gSheep.render(450, 340, NULL);
-      gWolf.render(410, 385, NULL);
-      gCabbage.render(380, 340, NULL);
+      gSheep.render(450, 340, 60, 41, NULL);
+      gWolf.render(410, 385, 65, 67, NULL);
+      gCabbage.render(380, 340, 50, 42, NULL);
    }
    else if (end == goat + cabbage) {
-      gCabbage.render(380, 340, NULL);
-      gSheep.render(450, 340, NULL);
+      gCabbage.render(380, 340, 50, 42, NULL);
+      gSheep.render(450, 340, 60, 41, NULL);
    }
    else if (end == goat + wolf) {
-      gSheep.render(450, 340, NULL);
-      gWolf.render(410, 385, NULL);
+      gSheep.render(450, 340, 60, 41, NULL);
+      gWolf.render(410, 385, 65, 67, NULL);
    }
    else if (end == wolf+cabbage) {
-      gWolf.render(410, 385, NULL);
-      gCabbage.render(380, 340, NULL);     
+      gWolf.render(410, 385, 65, 67, NULL);
+      gCabbage.render(380, 340, 50, 42, NULL);     
    }
    else if (end == goat) {
-       gSheep.render(450, 340, NULL);     
+       gSheep.render(450, 340, 60, 41, NULL);     
    }
    else if (end == cabbage) {
-       gCabbage.render(380, 340, NULL);  
+       gCabbage.render(380, 340, 50, 42, NULL);  
    }
    else if (end == wolf) {
-      gWolf.render(410, 385, NULL);
+      gWolf.render(410, 385, 65, 67, NULL);
    }
 
    //update screen
@@ -261,33 +266,28 @@ void Rivercrossing::display() {
 
 }
 
-void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat) {
+void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat, bool &exit) {
 
-   bool toContinue = false;
    int pos;
 
-   while(!toContinue) {
-
-      SDL_WaitEvent(NULL);
-
-      while(SDL_PollEvent(&e)) {
+   while(SDL_PollEvent(&e)) {
 
 	 if(e.type == SDL_QUIT) {
-	    toContinue = true;
+	 	exit = true;
 	 }
 
 	 //boat movement with arrow keys
 	 //click down once, it will move to opp side
 	 else if(e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 	    switch(e.key.keysym.sym) {
-	       case SDLK_LEFT:
+	       case SDLK_RIGHT:
 		  //only switch position if at start
 		  if (position==1) {
 		     position=position*(-1);
 		  }
 		  changeboat=true;
 		  break;
-	       case SDLK_RIGHT:
+	       case SDLK_LEFT:
 		  //only switch position if at end
 		  if (position==-1) {
 		     position=position*(-1);
@@ -303,33 +303,38 @@ void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat) {
 	    
 	    //check where mouse is
 	    pos=mousepos(x, y);
-	    
+
 	    switch (pos) {
 	       case wolf: //move wolf to boat and move out whatever was in boat if there was anythong
 		  drop();
 		  pickup('w');
 		  change=true;
+		  display();
 		  break;
 	       case goat: //move goat to boat and move out whatever was in boat if there was anything
 		  drop();
 		  pickup('g');
+		  display();
 		  change=true;
 		  break;
 	       case cabbage: //move cabbage to boat and move out whatever was in boat if there was anything
 		  drop();
 		  pickup('c');
+		  display();
 		  change=true;
 		  break;
 	       case 3: //boat, if boat empty, dont to anything, if not empty move whatever is on boat back to land
 		  drop();
 		  change=true;
+		  display();
 		  break;
-	       default:  //default case, dont do anything
+	       case 0:  //default case, dont do anything
+		  change=false;
 		  break;
 	    }
 	 }
-      }
-   }
+  }
+
 }
          
 
@@ -339,32 +344,32 @@ int Rivercrossing::mousepos(int x, int y) {
 
    if (position==1) { //if at start, only need to check for clicks on start side
       //start side, return positive val
-      if ((x>=50 || x<=100) && (y>=354 || y<=387)) {
+      if ((x>=20 && x<=70) && (y>=345 && y<=387)) {
 	 return cabbage;
       }
-      else if ((x>=85 || x<=150) && (y>=390 || y<=457)) {
+      else if ((x>=85 && x<=150) && (y>=390 && y<=457)) {
 	 return wolf;
       }
-      else if ((x>=110 || x<=170) && (y>=335 || y<=376)) {
+      else if ((x>=110 && x<=170) && (y>=335 && y<=376)) {
 	 return goat;
       }
-      else if ((x>=190 || x<=270) && (y>=330 || y<=242)) {
+      else if ((x>=190 && x<=270) && (y>=330 && y<=424)) {
 	 return b;
       }
    }
    else if (position==-1) {
-      //end side, return neg val
-      if ((x>=380 || x<=430) && (y>=340 || y<=382)) {
-	 return cabbage*(-1);
+      //end side
+      if ((x>=380 && x<=430) && (y>=340 && y<=382)) {
+	 return cabbage;
       }
-      else if ((x>=410 || x<=475) && (y>=385 || y<=452)) {
-	 return wolf*(-1);
+      else if ((x>=410 && x<=475) && (y>=385 && y<=452)) {
+	 return wolf;
       }
-      else if ((x>=450 || x<=510) && (y>=340 || y<=381)) {
-	 return goat*(-1);
+      else if ((x>=450 && x<=510) && (y>=340 && y<=381)) {
+	 return goat;
       }
-      else if ((x>=285 || x<=365) && (y>=330 || y<=424)) {
-	 return b*(-1);
+      else if ((x>=285 && x<=365) && (y>=330 && y<=424)) {
+	 return b;
       }
    }
 
