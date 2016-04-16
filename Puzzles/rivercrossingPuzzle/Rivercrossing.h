@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <string>
 #include"texture.h"
 #include"sdl_win_wrap.h"
-#include"boat.h"
 
 using namespace std;
 
@@ -15,13 +15,10 @@ class Rivercrossing {
       Rivercrossing(SDL_Window*, SDL_Renderer*);
       ~Rivercrossing();
       void play();
-      void currentboat();
       void pickup(char);
       void drop();
-      int finished();
-      void reset();
       void display();
-      int mousepos(int, int);
+      void displayText(int, int, string);
 
    private: 
       int start;
@@ -29,6 +26,10 @@ class Rivercrossing {
       int onboat;
       int position;
       int numtries;  //number of tries till finish or gameover
+
+      int mousepos(int, int);
+      int finished();
+      void reset();
 
       //load pics
       bool loadMedia();
@@ -44,8 +45,13 @@ class Rivercrossing {
       LTexture gBoat;
       LTexture gText;
 
-//LTexture gText;
+      //font
+      TTF_Font *gFont;
+      //font color
+      SDL_Color color = {0, 0, 0};
 
+      //user input
+      string userinput();
 
       //renderer and window
       //window we are rendering to

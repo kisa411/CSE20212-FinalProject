@@ -1,5 +1,7 @@
 #include<iostream>
 #include<cstdlib>
+#include<SDL2/SDL_ttf.h>
+#include<string>
 #include"sdl_win_wrap.h"
 #include"texture.h"
 #include"Rivercrossing.h"
@@ -63,13 +65,21 @@ void Rivercrossing::play() {
    int points;
    char choice;
    bool exit = false;
+   int xpos, ypos;
+
+   xpos = 40;
+   ypos = 40;
 
    //initial display
    display();
+   //display instructions 
+   displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boar onl holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\n");
+   //click space to cont
 
    //not game over or success
    int game=finished();
    while (game==1 && exit == false) {
+      //display other intructions
       change=false;
       //change is true when position of one of 3 items is changed
       manageEvents(e, change, changeboat, exit);
@@ -142,6 +152,17 @@ void Rivercrossing::play() {
 
 }
 
+void Rivercrossing::displayText(int x, int y, string message) {
+
+   if (!gText.loadFromRenderedTextWrapped(message.c_str(), textColor, 400)) {
+      printf("Failed to render text!\n");
+      break;
+   }
+   gText.render(x, y);
+   SDL_RenderPresent(gRenderer);
+
+}
+
 int Rivercrossing::finished() {
 
    //return 0 means finished successfully
@@ -177,7 +198,7 @@ void Rivercrossing::display() {
    SDL_RenderClear(gRenderer);
 
    //Render background
-   gBackgroundTexture.render(0, 0, NULL);
+   gBackgroundTexture.render(0, 0, 640, 480, NULL);
 
    //render boat
    if (position==1) {
@@ -450,6 +471,7 @@ bool Rivercrossing::loadMedia() {
 
    bool success = true;
 
+   //load images
    if (!gBackgroundTexture.loadFromFile("images/river.png")) {
       printf("failed to load background texture\n");
       success=false;
@@ -471,6 +493,16 @@ bool Rivercrossing::loadMedia() {
       success=false;
    }
 
+   //load text/font
+   TTF_CloseFont(gFont);
+   gFont = TTF_OpenFont("adamwarrenpro.ttf", 18);
+   if (gFont == NULL) {
+      printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+      success=false;
+   }
+   else {
+      gText.setFont(gFont);
+   }
    return success;
 
 }
