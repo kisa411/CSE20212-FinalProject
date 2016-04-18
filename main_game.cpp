@@ -38,7 +38,7 @@ int main () {
 
 	/*-----------opening instance*----------*/
 	Opening open( window_instance.getWindow(), window_instance.getRenderer() );
-	char gender = open.display(); //get the gender of the player
+	string gender = open.display(); //get the gender of the player
 	player.setGender( gender );
 
 	/*-----------cryptography instance*----------*/
@@ -89,7 +89,11 @@ int main () {
 
 	/*-----------ending instance*----------*/
 	Ending end( window_instance.getWindow(), window_instance.getRenderer(), player.getPoints(), player.getGender() );
-	end.display();
+	bool complete = false;
+
+    while (!complete) {
+    	complete = end.display();
+    }
 
 }
 
