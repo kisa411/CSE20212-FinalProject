@@ -1,4 +1,4 @@
-#include "opening.h"
+#include "ending.h"
 //Using SDL, SDL_image, SDL_ttf, standard IO, strings, and string streams
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -10,18 +10,9 @@ using namespace std;
 
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
-    Opening open( window_instance.getWindow(), window_instance.getRenderer() );
+    Ending open( window_instance.getWindow(), window_instance.getRenderer() );
 
 
-    for (int i=0; i<1000; i++) {
-		open.displayRoom();
-	}
-	string gender = "N/A";
-	while ( gender=="N/A" ) {
-		gender = open.play();
-	}
-
-	cout << "Player's gender will be: " << gender << endl;
 
 	return 0;
 }
