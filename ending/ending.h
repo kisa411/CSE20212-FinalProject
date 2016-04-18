@@ -10,12 +10,11 @@ class Ending {
 public:
 	Ending( SDL_Window*, SDL_Renderer* , int points, string g ); //default constructor
     ~Ending(); //destructor
-    void display(); //display 
+    bool display(); //display 
 
 private:
 	//SDL member variables and helper functions
     LTexture gBackgroundTexture;
-    LTexture gInputTextTexture;
     LTexture gPromptTextTexture;
     LTexture gTextTexture;
     

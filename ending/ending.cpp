@@ -4,7 +4,7 @@
 
 
 //constructor
-Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, string g ) : gBackgroundTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) {
+Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, string g ) : gBackgroundTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) {
 	pointTotal = points;
 	gender = g;
 	loadMedia();
@@ -14,13 +14,13 @@ Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, stri
 //destructor
 Ending::~Ending() {
 	gBackgroundTexture.free();
-    gInputTextTexture.free();
     gPromptTextTexture.free();
     gTextTexture.free();
 }
 
 //display storyline
-void Ending::display() {
+bool Ending::display() {
+	bool complete = false;
 
     bool success = true;
 
@@ -34,19 +34,19 @@ void Ending::display() {
 		SDL_RenderClear( gRenderer );
 		// Render Background
 		gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-		gTextTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		gTextTexture.render(textXpos+30, textYpos);
 		//Update screen
     	SDL_RenderPresent( gRenderer );
 	}
 
 	
-	if ( pointTotal> ... ) { //good ending
+	if ( pointTotal> 500 ) { //good ending
 		if ( gender == "FEMALE" ) {
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The prince says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<100; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -57,19 +57,20 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+		    	complete = true;
 		} else if ( gender == "MALE" ) {
 
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The princess says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -80,20 +81,21 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+		    	complete = true;
 		}
-	} else if ( pointTotal > ... && pointTotal < ... ) { //okay ending
+	} else if ( pointTotal > 200 && pointTotal <= 500 ) { //okay ending
 		if ( gender == "FEMALE" ) {
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The prince says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -104,18 +106,19 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+		    	complete = true;
 		} else if ( gender == "MALE" ) {
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The princess says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -126,20 +129,21 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+		    	complete = true;
 		}
-	} else { //bad ending
+	} else if ( pointTotal <= 200 ) { //bad ending
 		if ( gender == "FEMALE" ) {
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The prince says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -150,18 +154,19 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+		    	complete = true;
 		} else if ( gender == "MALE" ) {
 			if( !gTextTexture.loadFromRenderedTextWrapped( "The princess says: 'Hey! I've been waiting forever for you to get here! C'mon, let's eat! :D", textColor, 450 ) ) {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
@@ -172,14 +177,29 @@ void Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    for ( int i=0; i<500; i++ ) {
+		    for ( int i=0; i<1000; i++ ) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos+30, textYpos );
 		        //Update screen
 		        SDL_RenderPresent( gRenderer );
 		    }
+
+		    	complete = true;
 		}
 	}
+
+	if( !gTextTexture.loadFromRenderedTextWrapped( "Thanks for playing! I hope you had fun :)", textColor, 450 ) ) {
+        printf( "Failed to render text texture!\n" );
+    }
+    SDL_RenderClear( gRenderer );
+    for ( int i=0; i<800; i++ ) {
+        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gTextTexture.render( textXpos+50, textYpos );
+        //Update screen
+        SDL_RenderPresent( gRenderer );
+    }
+
+	return complete;
 }
 
 //load media
@@ -189,7 +209,7 @@ bool Ending::loadMedia() {
 	bool success = true;
 
 	//Load background texture
-	if ( pointTotal> ... ) { //good ending
+	if ( pointTotal> 500 ) { //good ending
 		if ( gender == "FEMALE" ) {
 			if( !gBackgroundTexture.loadFromFile( "endscene(boy-good).png" ))
 			{
@@ -203,7 +223,7 @@ bool Ending::loadMedia() {
 				success = false;
 			}
 		}
-	} else if ( pointTotal > ... && pointTotal < ... ) { //okay ending
+	} else if ( pointTotal > 200 && pointTotal <= 500 ) { //okay ending
 		if ( gender == "FEMALE" ) {
 			if( !gBackgroundTexture.loadFromFile( "endscene(boy-good).png" ))
 			{
@@ -217,7 +237,7 @@ bool Ending::loadMedia() {
 				success = false;
 			}
 		}
-	} else { //bad ending
+	} else if ( pointTotal <= 200 ) { //bad ending
 		if ( gender == "FEMALE" ) {
 			if( !gBackgroundTexture.loadFromFile( "endscene(boy-bad).png" ))
 			{
@@ -245,7 +265,7 @@ bool Ending::loadMedia() {
         //Render the prompt
         SDL_Color textColor = { 0, 0, 0, 0xFF };
         gTextTexture.setFont(gFont);
-        if( !gTextTexture.loadFromRenderedTextWrapped( "You've finally arrived at the palace! You see your friend has already set out a picnic blanket so you head over with your picnic basket.\n", textColor, 350 ) )
+        if( !gTextTexture.loadFromRenderedTextWrapped( "You've finally arrived at the palace! You see your friend has already set out a picnic blanket so you head over with your picnic basket.\n", textColor, 450 ) )
         {
             printf( "Failed to render prompt text!\n" );
             success = false;
