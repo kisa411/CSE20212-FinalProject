@@ -10,8 +10,12 @@ using namespace std;
 
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
-    Ending end( window_instance.getWindow(), window_instance.getRenderer() );
+    Ending end( window_instance.getWindow(), window_instance.getRenderer(), 500, "FEMALE" );
+    bool complete = false;
 
+    while (!complete) {
+    	complete = end.display();
+    }
 
 
 	return 0;
