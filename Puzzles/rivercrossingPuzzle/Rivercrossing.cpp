@@ -6,6 +6,8 @@
 #include"texture.h"
 #include"Rivercrossing.h"
 
+using namespace std;
+
 #define wolf 1
 #define goat 2
 #define cabbage 4
@@ -17,6 +19,7 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gCabbage(ngWindow, ngRenderer), \
    gBoat(ngWindow, ngRenderer), \
    gText(ngWindow, ngRenderer), \
+   gInputText (ngWindow, ngRenderer), \
    gWindow(ngWindow), \
    gRenderer(ngRenderer)
 
@@ -63,9 +66,10 @@ void Rivercrossing::play() {
    bool change;
    bool changeboat;
    int points;
-   char choice;
+   string choice;
    bool exit = false;
    int xpos, ypos;
+   string disp=" ";
 
    xpos = 40;
    ypos = 40;
@@ -73,13 +77,22 @@ void Rivercrossing::play() {
    //initial display
    display();
    //display instructions 
-   displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boar onl holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\n");
+   displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boat only holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\nPress space then enter to continue\n");
+
    //click space to cont
+   /*while (userInput()!=" ") {
+      continue;
+   }*/
+   cin >> choice;
+   while (choice!=" ") {
+      cin >> choice;
+   }
 
    //not game over or success
    int game=finished();
    while (game==1 && exit == false) {
       //display other intructions
+      displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
       change=false;
       //change is true when position of one of 3 items is changed
       manageEvents(e, change, changeboat, exit);
@@ -89,40 +102,78 @@ void Rivercrossing::play() {
       //if something changed position, render images again and display
       if (change) {
 	 display();
+	 displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
+
       }
       //if boat changed, check if game over
       if(changeboat) {
 	 display();
+	 displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
+
 	 switch (finished()) {
 	    case 2:
 	       display();
+	       displayText(xpos, ypos, "The wolf ate the sheep! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
 	       //wolf ate goat, game over! ask to try again(click y)
-	       cout << "The wolf ate the sheep! Game over!" << endl;
-	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
+	       /*choice=userInput();
+	       while (choice!="y" || choice!="n") {
+	   	  choice=userInput();
+	       }*/
 	       cin >> choice;
-	       if (choice=='y') {
+	       while(choice!="y" || choice !="n") {
+		  cin>>choice;
+	       }
+
+               if (choice=="y") {
 		  reset();
 		  numtries++;
 		  game=1;
 	       }
-	       else if (choice=='n') {
-		  cout << "You tried " << numtries << " times but couldn't help the farmer! You get no points. Sorry!" << endl;
+	       else if (choice=="n") {
+		  //convert numtries to string
+
+		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress space then enter to continue\n";
+		  displayText(xpos, ypos, disp);
+		  /*while (userInput()!=" ") {
+		     continue;
+		  }*/
+		  cin >> choice;
+		  while (choice!=" ") {
+		     cin >> choice;
+		  }
+
 		  game=0;
 	       }
 	       break;
 	    case 3:
 	       display();
 	       //goat ate cabbage, game over! ask to try again(click y)
-	       cout << "The sheep ate the cabbage! Game over!" << endl;
-	       cout << "Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue, n to quit. " << endl;
+	       displayText(xpos, ypos, "The sheep ate the cabbage! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
+	       //wolf ate goat, game over! ask to try again(click y)
+	       /*choice=userInput();
+	       while (choice!="y" || choice!="n") {
+	   	  choice=userInput();
+	       }*/
 	       cin >> choice;
-	       if (choice=='y') {
+	       while(choice!="y" || choice !="n") {
+		  cin>>choice;
+	       }
+
+               if (choice=="y") {
 		  reset();
 		  numtries++;
 		  game=1;
 	       }
-	       else if (choice=='n') {
-		  cout << "You tried " << numtries << " time(s) but couldn't help the farmer! You get no points. Sorry!" << endl;
+	       else if (choice=="n") {
+		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress space then enter to continue\n";
+		  /*displayText(xpos, ypos, disp);
+		  while (userInput()!=" ") {
+		     continue;
+		  }*/
+		  cin >> choice;
+		  while (choice!=" ") {
+		     cin >> choice;
+		  }
 		  game=0;
 	       }
 	       break;
@@ -130,15 +181,57 @@ void Rivercrossing::play() {
 	       display();
 	       //success!
 	       points=100/numtries;
-	       cout << "The farmer is so thankful for your help! You finished in " << numtries << " trie(s), so you get " << points << " points!" << endl;
+	       disp="The farmer is so thankful for your help! You finished in " + to_string(numtries) + "try/tries, so you get " + to_string(points) + " points!\nPress space then enter to continue\n";
+	       displayText(xpos, ypos, disp);
+
+	       //click space to cont
+	       /*while (userInput()!=" ") {
+		  continue;
+	       }*/
+	       cin >> choice;
+	       while (choice!=" ") {
+		  cin >> choice;
+	       }
+
+
 	       if (points<=40) {
-		  cout << "The farmer thanks you with his cabbage!" << endl;
+		  displayText(xpos, ypos, "The farmer thanks you with his cabbage!\nPress space then enter to continue\n");
+
+		  //click space to cont
+		  /*while (userInput()!=" ") {
+		     continue;
+		  }*/
+		  cin >> choice;
+		  while (choice!=" ") {
+		     cin >> choice;
+		  }
+
 	       }
 	       else if (points>40 && points <=60) {
-		  cout << "The farmer thanks you with some expensive cheese from his goats on the farm!" << endl;
+		  displayText(xpos, ypos, "The farmer thanks you with some expensive cheese from his goats on the farm!\nPress space then enter to continue\n");
+
+		  //click space to cont
+		  /*while (userInput()!=" ") {
+		     continue;
+		  }*/
+		  cin >> choice;
+		  while (choice!=" ") {
+		     cin >> choice;
+		  }
+
 	       }
 	       else if (points<=100 && points>61) {
-		  cout << "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!" << endl;
+		  displayText(xpos, ypos, "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!\nPress space then enter to continue\n");
+
+		  //click space to cont
+		  /*while (userInput()!=" ") {
+		     continue;
+		  }*/
+		  cin >> choice;
+		  while (choice!=" ") {
+		     cin >> choice;
+		  }
+
 	       }
 	       game=0;
 	       break;
@@ -152,14 +245,85 @@ void Rivercrossing::play() {
 
 }
 
+/*string Rivercrossing::userInput() {
+
+   bool enter=false;
+   int xpos=40;
+   int ypos=40;
+
+   //sdl event handler
+   SDL_Event e;
+
+   //set font
+   gInputText.setFont(gFont);
+
+   //current input text
+   string inputText=" ";
+   gInputText.loadFromRenderedText(inputText.c_str(), color);
+
+   //start text input
+   SDL_StartTextInput();
+
+   while (!enter) {
+      //renderer text flag
+      bool renderText = false;
+
+      while (SDL_PollEvent(&e)!=0) {
+         if (e.type == SDL_KEYDOWN) {
+	    //delete input
+	    if(e.key.keysym.sym==SDLK_BACKSPACE && inputText.length()>0) {
+	       inputText.pop_back();
+	       renderText=true;
+	    }
+	    //submit input
+	    else if (e.key.keysym.sym == SDLK_RETURN) {
+	       enter = true;
+	       break;
+	    }
+	 }
+	 //read text input
+	 else if (e.type == SDL_TEXTINPUT) {
+	    //not copy or pasting
+	    if (!((e.text.text[0]=='c' || e.text.text[0]=='C') && (e.text.text[0]=='v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {
+	       inputText += e.text.text;
+	       renderText=true;
+	    }
+	 }
+      }
+
+      //if input has been changed and needs to be rendered
+      if(renderText) {
+	 //if text is not empty then render
+	 if (inputText!="") {
+	    gInputText.loadFromRenderedText(inputText.c_str(), color);
+	 }
+	 else {
+	    gInputText.loadFromRenderedText(" ", color);
+	 }
+      }
+
+      gInputText.render(xpos, ypos+gText.getHeight());
+
+      SDL_RenderPresent(gRenderer);
+   }
+
+   //stop reading input
+   SDL_StopTextInput();
+
+   //return user input
+   return inputText;
+
+}*/
+
+
 void Rivercrossing::displayText(int x, int y, string message) {
 
-   if (!gText.loadFromRenderedTextWrapped(message.c_str(), textColor, 400)) {
+   /*if (!gText.loadFromRenderedTextWrapped(message.c_str(), color, 400)) {
       printf("Failed to render text!\n");
-      break;
    }
    gText.render(x, y);
-   SDL_RenderPresent(gRenderer);
+   SDL_RenderPresent(gRenderer);*/
+   cout << message << endl;
 
 }
 

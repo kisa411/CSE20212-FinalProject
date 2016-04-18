@@ -19,6 +19,7 @@ class Rivercrossing {
       void drop();
       void display();
       void displayText(int, int, string);
+      //string userInput();
 
    private: 
       int start;
@@ -26,7 +27,6 @@ class Rivercrossing {
       int onboat;
       int position;
       int numtries;  //number of tries till finish or gameover
-
       int mousepos(int, int);
       int finished();
       void reset();
@@ -44,9 +44,11 @@ class Rivercrossing {
       LTexture gCabbage;
       LTexture gBoat;
       LTexture gText;
+      LTexture gInputText;
 
       //font
       TTF_Font *gFont;
+
       //font color
       SDL_Color color = {0, 0, 0};
 
