@@ -10,14 +10,18 @@ using namespace std;
 
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
-    Opening open( window_instance.getWindow(), window_instance.getRenderer() ); //AlphabetPuzzle object
-    
-    char gender;
+    Opening open( window_instance.getWindow(), window_instance.getRenderer() );
 
-	for (int i=0; i<1000; i++) {
-		gender = open.display();
+
+    for (int i=0; i<1000; i++) {
+		open.displayRoom();
 	}
-	cout << "Player's gender will be: " << endl;
+	string gender = "N/A";
+	while ( gender=="N/A" ) {
+		gender = open.play();
+	}
+
+	cout << "Player's gender will be: " << gender << endl;
 
 	return 0;
 }

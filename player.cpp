@@ -9,7 +9,7 @@ using namespace std;
 
 Player::Player() { //default constructor
 	points = 0; //set initial amount of points to 0
-	gender = 'F'; //set initial gender of player to female
+	gender = "FEMALE"; //set initial gender of player to female
 }
 
 void Player::changePoints( int change ) { //change must be negative for subtraction, positive for addition
@@ -20,10 +20,10 @@ int Player::getPoints() { //accessor method for player's points
 	return points;
 }
 
-void Player::setGender( char g ) { //update method for player's gender
+void Player::setGender( string g ) { //update method for player's gender
 	gender = g;
 }
 
-char Player::getGender() { //accessor method for player's gender
+string Player::getGender() { //accessor method for player's gender
 	return gender;
 }

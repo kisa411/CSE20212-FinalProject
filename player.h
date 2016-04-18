@@ -15,11 +15,11 @@ public:
 	changePoints( int change ); //change the player's total points 
 	int getPoints(); //accessor method for player's points
 	void setGender( char g ); //set the gender of the player
-	char getGender(); //return player's gender
+	string getGender(); //return player's gender
 
 private:
 	int points; 
-	char gender;
+	string gender;
 
 };
 

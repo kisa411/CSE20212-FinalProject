@@ -23,16 +23,17 @@
 using namespace std;
 
 
-AlphabetPuzzle::AlphabetPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //default constructor - member initialization syntax to initialize LTexture
+AlphabetPuzzle::AlphabetPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gMathTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //default constructor - member initialization syntax to initialize LTexture
     points = 0; //set initial value of points to be 0
     complete = false;
-    questionAnswered = false;
+    // questionAnswered = false;
     loadMedia();
     SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT); //store the window dimensions
 }
 
 AlphabetPuzzle::~AlphabetPuzzle() { //free up all the allocated memory for the textures
-    gBackgroundTexture.free(); 
+    gBackgroundTexture.free();
+    gMathTexture.free(); 
     gTextTexture.free();
     gInputTextTexture.free();
     gPromptTextTexture.free();
@@ -41,7 +42,7 @@ AlphabetPuzzle::~AlphabetPuzzle() { //free up all the allocated memory for the t
 void AlphabetPuzzle::displayTown() {
     
     int textXpos = SCREEN_WIDTH/5;
-    int textYpos = (3*SCREEN_HEIGHT)/4;
+    int textYpos = (8*SCREEN_HEIGHT)/11;
 
     bool success = true;
 
@@ -52,7 +53,7 @@ void AlphabetPuzzle::displayTown() {
     //Open the font
     //Free global font
     TTF_CloseFont( gFont );
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
     if( gFont == NULL )
     {
         printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -62,13 +63,13 @@ void AlphabetPuzzle::displayTown() {
     {
         //Render text
         SDL_Color textColor = { 0, 0, 0 };
-        gTextTexture.setFont(gFont);
-        if( !gTextTexture.loadFromRenderedTextWrapped( "Hey! I'm the gate-keeper of Math Town and in order to leave you need to solve this puzzle. You only get three tries, so good luck!\n", textColor, 400 ) )
+        gMathTexture.setFont(gFont);
+        if( !gMathTexture.loadFromRenderedTextWrapped( "Hey! I'm the gate-keeper of Math Town and in order to leave you need to solve this puzzle. The exit tax amount will depend on how long it takes you to solve it! You only get three tries, so good luck!\n", textColor, 400 ) )
         {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
-        gTextTexture.render(textXpos, textYpos);
+        gMathTexture.render(textXpos, textYpos);
 
     }
 
@@ -78,45 +79,60 @@ void AlphabetPuzzle::displayTown() {
  
 }
 
-void AlphabetPuzzle::displayPuzzle() { //return amount of points player should get
+// void AlphabetPuzzle::displayPuzzle() { //return amount of points player should get
 
-    bool success = true;
-    int textXpos = (2*SCREEN_WIDTH)/7;
-    int textYpos = (3*SCREEN_HEIGHT)/4;
+//     bool success = true;
+//     int textXpos = (2*SCREEN_WIDTH)/7;
+//     int textYpos = (3*SCREEN_HEIGHT)/4;
 
-    SDL_RenderClear( gRenderer );
-    //SDL code for displaying (rendering) puzzle image
-    gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-    
-    if ( questionAnswered==false ) {
-        cout << "displaying prompt stuff" << endl;
-        gPromptTextTexture.render(textXpos, textYpos);
-        gInputTextTexture.render(textXpos, textYpos+gPromptTextTexture.getHeight());
-    } else {
-        cout << "displaying texture stuff" << endl;
-        gTextTexture.render(textXpos, textYpos);
-    }
 
-    // Update Screen
-    SDL_RenderPresent( gRenderer );
+//     SDL_RenderClear( gRenderer );
+//     //SDL code for displaying (rendering) puzzle image
+//     gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+//     gPromptTextTexture.render(textXpos, textYpos);
+
+//     // if ( questionAnswered==false ) {
+//     //     gPromptTextTexture.render(textXpos, textYpos);
+//     //     gInputTextTexture.render(textXpos, textYpos+gPromptTextTexture.getHeight());
+//     // } else {
+//     //     cout << "displaying texture stuff" << endl;
+//     //     gPromptTextTexture.render(textXpos, textYpos);
+//     //     gTextTexture.render(textXpos, textYpos);
+//     // }
+
+
+//     if ( questionAnswered==false ) {
+//         gPromptTextTexture.render(textXpos, textYpos);
+//         gInputTextTexture.render(textXpos, textYpos+gPromptTextTexture.getHeight());
+//     } else {
+//         for ( int i=0; i<1000; i++ ) {
+//             gPromptTextTexture.render(textXpos, textYpos);
+//             gTextTexture.render(textXpos, textYpos);
+//         }
+        
+//     }
+
+//     // Update Screen
+//     SDL_RenderPresent( gRenderer );
  
-}
+// }
 
 int AlphabetPuzzle::playPuzzle() {
 
     int endPoints = 100;
 
-
+ 
     while (complete==false) {
-        displayPuzzle();
+        // displayPuzzle();
         endPoints = determineEnding(); //display the main background
         if ( endPoints <= 0 ) {
             complete = true;
         }
-
+        // displayPuzzle();
     }
 
     return endPoints;
+
 
 }
 
@@ -124,7 +140,7 @@ int AlphabetPuzzle::determineEnding() {
     string answer;
     bool correct = false;
     int tryNumber=0;
-    int textXpos = (2*SCREEN_WIDTH)/7;
+    int textXpos = (2*SCREEN_WIDTH)/9;
     int textYpos = (3*SCREEN_HEIGHT)/4;
 
     //Loading success flag
@@ -137,7 +153,7 @@ int AlphabetPuzzle::determineEnding() {
     SDL_Color textColor = { 0, 0, 0 };
 
     TTF_CloseFont( gFont );
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
     if( gFont == NULL )
     {
         printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -146,28 +162,37 @@ int AlphabetPuzzle::determineEnding() {
     gTextTexture.setFont(gFont);
 
     while (correct==false) {
-        displayPuzzle();
+        // displayPuzzle();
         tryNumber++;
+        // cout << "Question Answered? " << questionAnswered << endl;
+
         answer = userInput(); //returns user's input
         correct = validate(answer); //returns whether or not the input is right
         if (correct==true) {
-
+            // questionAnswered=true;
             if( !gTextTexture.loadFromRenderedTextWrapped( "Congratulations! You got it correct!\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
+            SDL_RenderClear( gRenderer );
+            for ( int i=0; i<2000; i++ ) {
+                gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+                gTextTexture.render( textXpos, textYpos );
+                //Update screen
+                SDL_RenderPresent( gRenderer );
+            }
             if ( tryNumber == 1 ) { //got the answer on the first try
-                handleEvent( e, tryNumber );
+                completed( tryNumber );
                 return points;
             } else if ( tryNumber == 2 ) { //got the answer on the second try
-                handleEvent( e, tryNumber );
+                completed( tryNumber );
                 points-=30;
                 return points;
             } else if ( tryNumber == 3 ) { //got the answer on the third try
-                handleEvent( e, tryNumber );
+                completed( tryNumber );
                 points-=60;
                 return points;
             } else { //if player is unable to solve the puzzle in 3 tries
-                handleEvent( e, tryNumber );
+                completed( tryNumber );
                 points-=100;
                 return points;
             }
@@ -176,64 +201,89 @@ int AlphabetPuzzle::determineEnding() {
             if( !gTextTexture.loadFromRenderedTextWrapped( "That's wrong, Try again.\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
+            // questionAnswered=false;
+            SDL_RenderClear( gRenderer );
+            for ( int i=0; i<1000; i++ ) {
+                gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+                gTextTexture.render( textXpos, textYpos );
+                //Update screen
+                SDL_RenderPresent( gRenderer );
+            }
         }
 
     }
 }
 
-bool AlphabetPuzzle::handleEvent( SDL_Event &e, int tryNumber ) {
+bool AlphabetPuzzle::completed( int tryNumber ) {
 
     //Loading success flag
     bool success = true;
 
-    int textXpos = SCREEN_WIDTH/5;
-    int textYpos = (3*SCREEN_HEIGHT)/4;
+    int textXpos = (1*SCREEN_WIDTH)/7;
+    int textYpos = (8*SCREEN_HEIGHT)/11;
 
-    SDL_Color textColor = { 0, 0, 0 };
-    TTF_CloseFont( gFont );
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
-    if( gFont == NULL )
-    {
-        printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
-        success = false;
-    }
-    else
-    {
-        //Render text
-        SDL_Color textColor = { 0, 0, 0 };
-        gTextTexture.setFont(gFont);
-    }
+    SDL_Color textColor = { 0, 0, 0, 0xFF };
+    gTextTexture.setFont(gFont);
 
-   
     if (tryNumber==1) { //load text for first try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct on your first try, so you can leave the town for free!\n  ", textColor, 350 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct on your first try, so you can leave the town for free!\n  ", textColor, 450 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-
+        SDL_RenderClear( gRenderer );
+        for ( int i=0; i<2000; i++ ) {
+            gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
         complete = true;
     } else if (tryNumber==2) { //load text for second try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct but on your second try, but I got hungry waiting for you to solve it so give me some of your food!\n Oh no! You are forced to share 30 points worth of ingredients from your bag.\n ", textColor, 350 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct but on your second try, and I got hungry waiting so give me some of your food!\n Oh no! You are forced to share 30 points worth of ingredients from your bag.\n ", textColor, 450 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-
+        SDL_RenderClear( gRenderer );
+        for ( int i=0; i<2000; i++ ) {
+            gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
         complete = true;
         return complete;
     } else if (tryNumber==3) { //load text for third try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct but on your third try, but I got hungry waiting for you to solve it so give me some of your food!\n Oh no! You are forced to share 60 points worth of ingredients from your bag.\n ", textColor, 350 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it correct but on your third try, and I got hungry waiting so give me some of your food!\n Oh no! You are forced to share 60 points worth of ingredients from your bag.\n ", textColor, 450 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-
+        SDL_RenderClear( gRenderer );
+        for ( int i=0; i<2000; i++ ) {
+            gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
         complete = true;
         return complete;
     } else { //load text for failed attempt
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it right but it took you too long!\n", textColor, 350 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The gatekeeper says: You got it right but it took you too long!\n", textColor, 450 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The gate-keeper ate 100 points worth of ingredients from your bag! At least you finally get to exit the Math Town.\n", textColor, 350 ) ) {
+        SDL_RenderClear( gRenderer );
+        for ( int i=0; i<2000; i++ ) {
+            gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The gate-keeper ate 100 points worth of ingredients from your bag! At least you finally get to exit the Math Town.\n", textColor, 450 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-
+        SDL_RenderClear( gRenderer );
+        for ( int i=0; i<2000; i++ ) {
+            gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
         complete = true;
         return complete;
     }
@@ -241,54 +291,6 @@ bool AlphabetPuzzle::handleEvent( SDL_Event &e, int tryNumber ) {
     return complete;
 }
 
-bool AlphabetPuzzle::loadMedia() {
-    
-    //Loading success flag
-    bool success = true;
-    
-    //Open the background picture
-    if( !gBackgroundTexture.loadFromFile( "alphabet.png" ))
-    {
-        printf( "Failed to load background texture!\n" );
-        success = false;
-    }
-
-    //Open puzzle picture
-    if( !gPuzzleTexture.loadFromFile( "alphabetpuzzle.png" ))
-    {
-        printf( "Failed to load background texture!\n" );
-        success = false;
-    }
-    
-    //Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
-    if( gFont == NULL )
-    {
-        printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
-        success = false;
-    }
-    else
-    {
-        //Render the prompt
-        SDL_Color textColor = { 0, 0, 0, 0xFF };
-        gPromptTextTexture.setFont(gFont);
-        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "What is your answer?", textColor, 350 ) )
-        {
-            printf( "Failed to render prompt text!\n" );
-            success = false;
-        }
-
-        gInputTextTexture.setFont(gFont);
-        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase this and put answer here", textColor, 350 ) )
-        {
-            printf( "Failed to render input text!\n" );
-            success = false;
-        }
-    }
-    
-    
-    return success;
-}
 
 string AlphabetPuzzle::userInput() {
 
@@ -307,7 +309,7 @@ string AlphabetPuzzle::userInput() {
     SDL_Color textColor = { 0, 0, 0, 0xFF };
 
     //Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
     if( gFont == NULL )
     {
         printf( "Failed to load adamwarrenpro font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -318,12 +320,13 @@ string AlphabetPuzzle::userInput() {
     gPromptTextTexture.setFont(gFont);
     
     //The current input text.
-    string inputText = "Erase this and put answer here";
-    // gInputTextTexture.setFont(gFont);
-    // gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
+    string inputText = "Erase and put answer here";
+    gInputTextTexture.setFont(gFont);
+    gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
     //Enable text input
     SDL_StartTextInput();
+
 
     //While application is running
     while( !enter )
@@ -335,8 +338,15 @@ string AlphabetPuzzle::userInput() {
         //Handle events on queue
         while( SDL_PollEvent( &e ) != 0 )
         {
+            // User requests quit
+            if( e.type == SDL_QUIT )
+            {
+                enter = true;
+                // complete = true;
+                break;
+            }
             //Special key input
-            if( e.type == SDL_KEYDOWN )
+            else if( e.type == SDL_KEYDOWN )
             {
                 //Handle backspace
                 if( e.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0 )
@@ -381,20 +391,26 @@ string AlphabetPuzzle::userInput() {
             }
         }
 
-        //Clear screen
-        //SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+       //Clear screen
+        // SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        SDL_RenderClear( gRenderer );
 
-        // gTextTexture.render(textXpos, textYpos);
-        displayPuzzle();
+        //Render text textures
+        gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gPromptTextTexture.render( textXpos, textYpos );
+        gInputTextTexture.render( textXpos, textYpos+gPromptTextTexture.getHeight() );
 
-        // //Update screen
+        //Update screen
+        SDL_RenderPresent( gRenderer );
     }
     
     //Disable text input
     SDL_StopTextInput();
-    questionAnswered=true;
+    // questionAnswered=true;
 
     return inputText;
+
+
 }
 
 
@@ -411,4 +427,54 @@ bool AlphabetPuzzle::validate( string userInput ) { //determines whether user in
     return correct;
 
 }
+
+bool AlphabetPuzzle::loadMedia() {
+    
+    //Loading success flag
+    bool success = true;
+    
+    //Open the background picture
+    if( !gBackgroundTexture.loadFromFile( "alphabet.png" ))
+    {
+        printf( "Failed to load background texture!\n" );
+        success = false;
+    }
+
+    //Open puzzle picture
+    if( !gPuzzleTexture.loadFromFile( "alphabetpuzzle.png" ))
+    {
+        printf( "Failed to load background texture!\n" );
+        success = false;
+    }
+    
+    //Open the font
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
+    if( gFont == NULL )
+    {
+        printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
+        success = false;
+    }
+    else
+    {
+        //Render the prompt
+        SDL_Color textColor = { 0, 0, 0, 0xFF };
+        gPromptTextTexture.setFont(gFont);
+        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "What is your answer?", textColor, 350 ) )
+        {
+            printf( "Failed to render prompt text!\n" );
+            success = false;
+        }
+
+        gInputTextTexture.setFont(gFont);
+        if( !gInputTextTexture.loadFromRenderedTextWrapped( " ", textColor, 350 ) )
+        {
+            printf( "Failed to render input text!\n" );
+            success = false;
+        }
+    }
+    
+    
+    return success;
+}
+
 
