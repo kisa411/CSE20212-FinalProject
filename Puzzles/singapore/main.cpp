@@ -25,9 +25,9 @@ int main(int argc, const char * argv[]) {
    
     SingaporeanPuzzle puzzle( window_instance.getWindow(), window_instance.getRenderer() ); //Singaporean Puzzle object
 
-    // for ( int i=0; i<2500; i++ ) {
-    // 	puzzle.displayRobber();
-    // }
+    for ( int i=0; i<2500; i++ ) {
+    	puzzle.displayRobber();
+    }
     
     while (points>0) {
 	    points = puzzle.playPuzzle();
