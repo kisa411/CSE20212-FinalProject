@@ -1,7 +1,8 @@
 #include "puzzle.h"
 #include "sdl_win_wrap.h"
 #include <SDL2/SDL_ttf.h>
-
+#include <ctime>
+#include <string.h>
 
 void Puzzle::setCheck()
 {
@@ -13,22 +14,25 @@ void Puzzle::setCheck()
 
 
 Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
-	gSpriteSheetTexture(ngWindow, ngRenderer), \
-	gBackgroundTexture(ngWindow, ngRenderer), \
-	gSelectorTexture(ngWindow, ngRenderer), \
-	message(ngWindow, ngRenderer),\
+	gSpriteSheetTexture(ngWindow, ngRenderer), 
+	gBackgroundTexture(ngWindow, ngRenderer), 
+	gSelectorTexture(ngWindow, ngRenderer), 
+	messageTextTexture(ngWindow, ngRenderer),
+	timeTextTexture(ngWindow, ngRenderer),
 	gWindow(ngWindow), gRenderer(ngRenderer)
 	
 {
 	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 20);
 	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
-	if(bodyFont == NULL || titleFont == NULL)
+	timeFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 16);
+	if(bodyFont == NULL || titleFont == NULL || timeFont == NULL)
 	{
 		cout << "Could not load font" << endl;
 		correctlyInitialized = false;
 		return;
 	}
-	message.setFont(bodyFont);
+	messageTextTexture.setFont(bodyFont);
+	timeTextTexture.setFont(timeFont);
 	
 	fontColor = {0,0,0}; // Black
 	
@@ -135,7 +139,8 @@ Puzzle::~Puzzle()
 	gSpriteSheetTexture.free();
 	gSelectorTexture.free();
 	gBackgroundTexture.free();
-	message.free();
+	messageTextTexture.free();
+	timeTextTexture.free();
 	for(auto& x: instructions) delete x;
 	
 }
@@ -205,7 +210,7 @@ bool Puzzle::checkSolved()
 	return true;
 }
 
-void Puzzle::interactive()
+int Puzzle::interactive()
 {
 	if(!correctlyInitialized)
 	{
@@ -219,12 +224,23 @@ void Puzzle::interactive()
 	bool gameover = false;
 	SDL_Event e;
 	bool changeValue;
+	bool giveUp;
+	time_t start, current;
+	int min;
+	int sec;
+	int tot_sec;
 	
-	while(!gameover)
+	time(&start);
+	
+	while(!gameover && !giveup)
 	{
 		changeValue = false;
-		display();
-		manageEvents(e, value, gameover, changeValue);
+		time(&current);
+		tot_sec = difftime(current, start);
+		min = tot_sec/60; // Truncates
+		sec = tot_sec % 60; // Mods
+		display(min, sec);
+		manageEvents(e, value, gameover, changeValue, giveUp);
 		
 		if(changeValue)
 		{
@@ -243,15 +259,25 @@ void Puzzle::interactive()
 			if(checkSolved())
 			{
 				gameover = true;
-				display();
 				updateMessage("Congratulations! You solved the puzzle!");
 			}
 		}
 	}
+	
+	if(giveUp)
+	    clear();
+	    solve();
+	    displayGiveUpEnding();
+	else
+	    displayRegularEnding();
+	if(min < 11 && !giveUp)
+	    return(100 - min*10);
+	else
+	    return 0;
 }
 
 
-void Puzzle::display()
+void Puzzle::display(int min, int sec)
 {
 	int num;
 	int corner_x = 12;
@@ -265,6 +291,7 @@ void Puzzle::display()
 	// Render Text
 	displayInstructions();
 	displayMessage();
+	displayTime(min, sec);
 	
 	// Render Numbers on Screen
 	for(int row = 0; row < 9; row++)
@@ -273,7 +300,18 @@ void Puzzle::display()
 		{
 			num = thePuzzle[row][col].getValue();
 			if(num != 0)
-				gSpriteSheetTexture.render((int)(corner_x + (box_w+5.0)*col + 2), (int)(corner_y+(box_h+6.0)*row + 1), (int)box_w, (int)box_h, &gSpriteClips[num]);
+			{
+			    if(thePuzzle[row][col].getIsConstant())
+			    {
+				    gSpriteSheetTexture.render((int)(corner_x + (box_w+5.0)*col + 2), 
+				        (int)(corner_y+(box_h+6.0)*row + 1), (int)box_w, (int)box_h, &gSpriteClipsRed[num]);
+				}
+				else
+				{
+				    gSpriteSheetTexture.render((int)(corner_x + (box_w+5.0)*col + 2), 
+				        (int)(corner_y+(box_h+6.0)*row + 1), (int)box_w, (int)box_h, &gSpriteClipsBlue[num]);
+				}
+			}
 			//cout << (int)(corner_y+(box_h+6.0)*row) <<":"<<row<<":"<<col<<endl;
 			
 		}
@@ -456,13 +494,11 @@ void Puzzle::solve()
 	if(checkSolved())
 	{
 		cout << "Here is the solution!" << endl;
-		display();
 	}
 	else
 	{
 		cout << "A solution could not be found" << endl;
 		cout << "This is what we got" << endl;
-		display();
 	}
 }
 
@@ -481,7 +517,6 @@ vector< vector <int> > Puzzle::getIntVector()
 	return intVector;
 }
 
-void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool& changeValue)
 {
 	while(SDL_PollEvent(&e))
 	{
@@ -580,14 +615,15 @@ void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool& change
 
 bool Puzzle::loadMedia()
 {
-	const int startx = 0;
-	const int starty = 142;
-	const int width = 88;
-	const int height = 104;
+	int startx = 0;
+	int starty = 142;
+    int width = 88;
+	int height = 104;
+	int space = 4;
 	//Loading success flag
 	bool success = true;
 
-	//Load sprite sheet texture
+	//Load sprite sheet textures
 	if( !gSpriteSheetTexture.loadFromFile( "numbers.png" ) )
 	{
 		printf( "Failed to load sprite sheet texture!\n" );
@@ -598,12 +634,24 @@ bool Puzzle::loadMedia()
 		//Make Sprite clips from spriteSheet
 		for(int i = 0; i < 10; i++)
 		{
-			gSpriteClips[i].x = startx + width*i + 4*i;
-			gSpriteClips[i].y = starty;
-			gSpriteClips[i].w = width;
-			gSpriteClips[i].h = height;
+			gSpriteClipsRed[i].x = startx + width*i + space*i;
+			gSpriteClipsRed[i].y = starty;
+			gSpriteClipsRed[i].w = width;
+			gSpriteClipsRed[i].h = height;
+		}
+		space = 3;
+		starty =336; // Only these Values change. Everything else is the same
+		//Make Sprite clips from spriteSheet
+		for(int i = 0; i < 10; i++)
+		{
+			gSpriteClipsBlue[i].x = startx + width*i + space*i;
+			gSpriteClipsBlue[i].y = starty;
+			gSpriteClipsBlue[i].w = width;
+			gSpriteClipsBlue[i].h = height;
 		}
 	}
+
+	   
 	
 	if( !gBackgroundTexture.loadFromFile( "sudoku_background.png" ))
 	{
@@ -650,12 +698,46 @@ void Puzzle::displayMessage()
 	text_ref.x = 12;
 	text_ref.y = 430;
 	
-	message.render(text_ref.x, text_ref.y);
+	messageTextTexture.render(text_ref.x, text_ref.y);
 }
 
 void Puzzle::updateMessage(string nMessage)
 {
-	message.free();
+	messageTextTexture.free();
 	
-	message.loadFromRenderedText(nMessage.c_str(), fontColor); 
+	messageTextTexture.loadFromRenderedText(nMessage.c_str(), fontColor); 
+}
+
+void Puzzle::displayTime(int min, int sec)
+{
+    char min_str[10];
+    char sec_str[10];
+    char time_str[10];
+    sprintf(min_str, "%i", min);
+    if(strlen(min_str) == 1)
+    {
+        sprintf(min_str, "0%i", min);
+    }
+    sprintf(sec_str, "%i", sec);
+    if(strlen(sec_str) == 1)
+    {
+        sprintf(sec_str, "0%i", sec);
+    }
+    sprintf(time_str, "%s:%s", min_str, sec_str);
+    timeTextTexture.loadFromRenderedText(time_str, fontColor);
+    timeTextTexture.render(430,5);
+}
+
+void clear()
+{
+    for(int row = 0; row < 9; row++)
+    {
+        for(int col = 0; col < 9; col++)
+        {
+            if(!thePuzzle[row][col].getIsConstant())
+            {
+                thePuzzle[row][col].setValue(0);
+            }
+        }
+    }
 }

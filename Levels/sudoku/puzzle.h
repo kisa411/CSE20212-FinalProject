@@ -20,8 +20,7 @@ class Puzzle
 	public:
 	Puzzle(string fileName, SDL_Window*, SDL_Renderer*); // constructor
 	~Puzzle(); // Destructor
-	void interactive();
-	void solve();
+	int interactive(); // Returns points to add to player
 	private:
 	// Sudoku Management
 	vector< vector <int> > getIntVector();
@@ -32,19 +31,23 @@ class Puzzle
 	bool checkSolved();
 	bool checkAllowed(int);
 	void setCheck();
+	void clear(); // Clear all of the user numbers
 	
 	// solver functions
+	void solve();
 	int singleton();
 	int single_possibility();
 	vector<int> check;
 	
 	//Textures and Clips
-	SDL_Rect gSpriteClips[10];
+	SDL_Rect gSpriteClipsRed[10]; // To be used with puzzle numbers
+	SDL_Rect gSpriteClipsBlue[10]; // To be used with user numbers
 	LTexture gSpriteSheetTexture;
 	LTexture gBackgroundTexture;
 	LTexture gSelectorTexture;
 	vector <LTexture*> instructions; // pointer to array of textures containing lines
-	LTexture message; // Text texture to display messages to user
+	LTexture messageTextTexture; // Text texture to display messages to user
+	LTexture timeTextTexture; // Text to display current time
 	bool loadMedia();
 	
 	// Renderer and Window
@@ -57,11 +60,12 @@ class Puzzle
 	SDL_Renderer* gRenderer;
 	
 	// SDL Management
-	void display();
+	void display(int min, int sec);
 	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue); // Function to manage events
 	bool setInstructions();
 	void displayInstructions();
 	void displayMessage();
+	void displayTime(int min, int sec);
 	void updateMessage(string);
 	
 	// Other Member FunctionFILE* file;
@@ -71,6 +75,7 @@ class Puzzle
 	bool correctlyInitialized; // Checks if sudoku was correctly initialized
 	TTF_Font *bodyFont;
 	TTF_Font *titleFont;
+	TTF_Font *timeFont;
 	SDL_Color fontColor;
 };
 

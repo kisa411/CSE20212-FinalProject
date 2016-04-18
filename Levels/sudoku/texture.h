@@ -21,14 +21,16 @@ class LTexture
 		//Loads image at specified path
 		bool loadFromFile(string path );
 
-#ifdef _SDL_TTF_H
-    //Creates image from font string
-    bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
-    bool loadFromRenderedTextWrapped(string textrueText, SDL_Color textColor, int wrapLength);
-#endif
+
+        //Creates image from font string
+        bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+        bool loadFromRenderedTextWrapped(string textrueText, SDL_Color textColor, int wrapLength);
 
 		//Deallocates texture
 		void free();
+		
+		// Image Modulation
+		void setColor( SDL_Color color );
 
 		//Renders texture at given point
 		void render( int x, int y, double wprop, double hprop, SDL_Rect* clip = NULL ); // Renders image with altered proportions.

@@ -214,6 +214,12 @@ LTexture::~LTexture()
 	free();
 }
 
+void LTexture::setColor( SDL_Color color ) 
+{ 
+    //Modulate texture 
+    SDL_SetTextureColorMod( mTexture, color.r, color.g, color.b ); 
+}
+
 
 int LTexture::getWidth()
 {
