@@ -49,6 +49,7 @@ private:
     bool loadMedia(); //Loads necessary media
     string userInput(); //take in user input
     bool validate( string userInput ); //check user input against correct answer 
+    bool continueText( SDL_Event & e ); //allows user to press 'enter' to progress through text
 
     
 };
