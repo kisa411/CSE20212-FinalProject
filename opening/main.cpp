@@ -10,17 +10,17 @@ using namespace std;
 
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
-    Opening open( window_instance.getWindow(), window_instance.getRenderer() ); //AlphabetPuzzle object
-    
-    string gender;
+    Opening open( window_instance.getWindow(), window_instance.getRenderer() );
 
-    for (int i=0; i<1000; i++) {
-		open.displayRoom();
-	}
 
-	for (int i=0; i<1000; i++) {
+ //    for (int i=0; i<1000; i++) {
+	// 	open.displayRoom();
+	// }
+	string gender = "N/A";
+	while ( gender=="N/A" ) {
 		gender = open.play();
 	}
+
 	cout << "Player's gender will be: " << gender << endl;
 
 	return 0;
