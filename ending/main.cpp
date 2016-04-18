@@ -10,7 +10,7 @@ using namespace std;
 
 int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
-    Ending open( window_instance.getWindow(), window_instance.getRenderer() );
+    Ending end( window_instance.getWindow(), window_instance.getRenderer() );
 
 
 
