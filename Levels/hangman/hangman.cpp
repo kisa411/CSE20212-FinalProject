@@ -12,15 +12,18 @@
 #include <SDL2/SDL_ttf.h>
 #include <algorithm>
 #include <string>
+#include <cstring>
 #include <string.h>
 #include <ctype.h>
 #include <vector>
 using namespace std;
 
-Hangman::Hangman(SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //constructor
+Hangman::Hangman(SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //constructor
     points = 0; //set default point value as 0
     loadMedia();
     SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT); //store the window dimensions
+    word = "PUFFERFISH"; //answer to hangman puzzle
+    display = ".........."; //if user gets a letter right, then the letter will show; if not then it remains an "_"
 }
 
 Hangman::~Hangman() {
@@ -28,7 +31,6 @@ Hangman::~Hangman() {
     gTextTexture.free();
     gInputTextTexture.free();
     gPromptTextTexture.free();
-    gPuzzleTexture.free();
 }
 
 void Hangman::displayOpening() {
@@ -44,7 +46,7 @@ void Hangman::displayOpening() {
     //Open the font
     //Free global font
     TTF_CloseFont( gFont );
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -86,101 +88,79 @@ int Hangman::playPuzzle() {
 
 bool Hangman::validate( string letter ) { //play the puzzle
     bool complete = false;
+    // bool checked = false;
     int textXpos = (2*SCREEN_WIDTH)/9;
     int textYpos = (3*SCREEN_HEIGHT)/4;
     SDL_Color textColor = { 0, 0, 0 };
 
+    int npos=-1;
 
-    int guess=0, tries=12, npos=-1;
 
-    vector <string> guessedLetters;
-    string word = ("PUFFERFISH"); //answer to hangman puzzle
-    string display = ".........."; //if user gets a letter right, then the letter will show; if not then it remains an "_"
+    for ( int j=0; j<letter.length(); j++ ) {
+        letter[j] = ::toupper(letter[j]); //make the answer uppercase
+    }
+    cout << word << endl;
+    cout << display.c_str() << endl;
     
-    //word to solve is: pufferfish
-    while ( !complete ) {
-        guess++; //increment the number of guesses the player takes to solve the puzzle
-
+    //add the letter to guessed letters if it was guessed before
+    if ( find(guessedLetters.begin(), guessedLetters.end(), letter) != guessedLetters.end() ) {
         
-        for ( int j=0; j<letter.length(); j++ ) {
-            letter[j] = ::toupper(letter[j]); //make the answer uppercase
-        }
-
-        
-        if( !gPuzzleTexture.loadFromRenderedText( display.c_str(), textColor ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "You already guessed that letter, try another letter.\n", textColor, 350 ) ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<2000; i++ ) {
+        for ( int i=0; i<300; i++ ) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-            gPuzzleTexture.render(100, 100);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
         }
+        return complete;
+    } else {
+        guessedLetters.push_back(letter); //add the letter to guessed letters
+    }
 
-        
-        //add the letter to guessed letters
-        if ( find(guessedLetters.begin(), guessedLetters.end(), letter) != guessedLetters.end() ) {
-            
-            if( !gTextTexture.loadFromRenderedText( "You already guessed that letter, try another letter.\n", textColor ) ) {
-                printf( "Failed to render text texture!\n" );
-            }
-            SDL_RenderClear( gRenderer );
-            for ( int i=0; i<2000; i++ ) {
-                gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-                gPuzzleTexture.render(100, 100);
-                gTextTexture.render( textXpos, textYpos );
-                //Update screen
-                SDL_RenderPresent( gRenderer );
-            }
-            guess--;
-            continue;
-        } else {
-            guessedLetters.push_back(letter); //add the letter to guessed letters
-        }
+    letter = letter.c_str();
+    
+    while ( word.find(letter) != npos ) { //look for the letter in the word
+        int letterPosition = word.find(letter);
+        word[letterPosition] = '.'; //change the letter to . so that it won't be found again
+        display[letterPosition] = letter[0]; //display the letter in the hangman game
+        word.find(letter);
+    }
 
-        letter = letter.c_str();
-        
-        while ( word.find(letter) != npos ) { //look for the letter in the word
-            int letterPosition = word.find(letter);
-            word[letterPosition] = '.'; //change the letter to . so that it won't be found again
-            display[letterPosition] = letter[0]; //display the letter in the hangman game
-            word.find(letter);
-        }
+    cout << "Here's the word after your guess: " << display << endl;
 
-        cout << "Here's the word after your guess: " << display << endl;
-
-        if( !gTextTexture.loadFromRenderedText( "Here's the word after your guess: ", textColor ) ) {
-            printf( "Failed to render text texture!\n" );
-        }
-        SDL_RenderClear( gRenderer );
-        for ( int i=0; i<800; i++ ) {
-            gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-            gPuzzleTexture.render(100, 100);
-            gTextTexture.render( textXpos, textYpos );
-            //Update screen
-            SDL_RenderPresent( gRenderer );
-        }
-        if( !gTextTexture.loadFromRenderedText( display.c_str(), textColor ) ) {
-            printf( "Failed to render text texture!\n" );
-        }
-        SDL_RenderClear( gRenderer );
-        for ( int i=0; i<2000; i++ ) {
-            gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-            gPuzzleTexture.render(100, 100);
-            gTextTexture.render( textXpos, textYpos );
-            //Update screen
-            SDL_RenderPresent( gRenderer );
-        }
-        
-        if ( display.find('.') == npos) { //underscores no longer exist in the display string, the word was completed, hangman puzzle was solved
-            complete = true;
-        }
-        
+    if( !gTextTexture.loadFromRenderedText( "Here's the word after your guess: ", textColor ) ) {
+        printf( "Failed to render text texture!\n" );
     }
     
-    return complete; //this is the amount of points to add to the player's total points
+    SDL_RenderClear( gRenderer );
+    for ( int i=0; i<200; i++ ) {
+        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gTextTexture.render( textXpos, textYpos );
+        //Update screen
+        SDL_RenderPresent( gRenderer );
+    }
+    if( !gTextTexture.loadFromRenderedText( display.c_str(), textColor ) ) {
+        printf( "Failed to render text texture!\n" );
+    }
+
+    SDL_RenderClear( gRenderer );
+    for ( int i=0; i<600; i++ ) {
+        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gTextTexture.render( textXpos+130, textYpos+50 );
+        //Update screen
+        SDL_RenderPresent( gRenderer );
+    }
+    
+    if ( display.find('.') == npos) { //underscores no longer exist in the display string, the word was completed, hangman puzzle was solved
+        cout <<"puzzle is complete." << endl;
+        complete = true;
+    }
+
+    
+    return complete; //if hangman puzzle is completed, returns true
     
 }
 
@@ -200,7 +180,7 @@ int Hangman::determineEnding() {
     SDL_Event e;
 
     TTF_CloseFont( gFont );
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -218,24 +198,22 @@ int Hangman::determineEnding() {
                 printf( "Failed to render text texture!\n" );
             }
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<2000; i++ ) {
+            for ( int i=0; i<500; i++ ) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-                gPuzzleTexture.render(100, 100);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
                 SDL_RenderPresent( gRenderer );
             }
             completed( tryNumber );
             return points;
-        } else {
+        } else if (correct==false) {
             if( !gTextTexture.loadFromRenderedTextWrapped( "You still have some empty spaces!\n  ", textColor, 350 ) ) {
                 printf( "Failed to render text texture!\n" );
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<1000; i++ ) {
+            for ( int i=0; i<500; i++ ) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-                gPuzzleTexture.render(100, 100);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
                 SDL_RenderPresent( gRenderer );
@@ -250,7 +228,7 @@ void Hangman::completed( int guess ) {
     //Loading success flag
     bool success = true;
 
-    int textXpos = (1*SCREEN_WIDTH)/7;
+    int textXpos = ((2*SCREEN_WIDTH)/8)-30;
     int textYpos = (8*SCREEN_HEIGHT)/11;
 
     SDL_Color textColor = { 0, 0, 0, 0xFF };
@@ -259,12 +237,12 @@ void Hangman::completed( int guess ) {
 
 
     if ( guess>=1 && guess<9 ) { //player receives quality sushi (1~8)
-        if( !gTextTexture.loadFromRenderedText( "Wow! You got the word right in less than 9 guesses! You were able to quickly save the cat and the cat was so impressed with you he gave you some A-grade quality sushi for your recipe!\n", textColor ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "Wow! You got the word right in less than 9 guesses! You were able to quickly save the cat and the cat was so impressed with you it gave you some A-grade quality sushi for your recipe!\n", textColor, 420 ) ) {
             printf( "Failed to render text texture!\n" );
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<1000; i++ ) {
+        for ( int i=0; i<3000; i++ ) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -273,12 +251,12 @@ void Hangman::completed( int guess ) {
         points = 100;
         
     } else if ( guess>=9 && guess<11 ) { //player receives raw fish (9~10)
-        if( !gTextTexture.loadFromRenderedText( "Wow! You were able to solve the puzzle in less than 11 guesses! You were able to save the cat and the cat was pretty happy with you so he gave you a raw fish for your recipe!\n", textColor ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "Wow! You were able to solve the puzzle in less than 11 guesses! You were able to save the cat and the cat was pretty happy with you so he gave you a raw fish for your recipe!\n", textColor, 420 ) ) {
             printf( "Failed to render text texture!\n" );
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<1000; i++ ) {
+        for ( int i=0; i<3000; i++ ) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -286,13 +264,13 @@ void Hangman::completed( int guess ) {
         }
         points = 70;
         
-    } else if ( guess>=11 && guess<15 ) { //player receives fish bones (11~12)
-        if( !gTextTexture.loadFromRenderedText( "Hm...well you were able to solve the puzzle in less than 13 guesses and were able to save the cat before he fell off the tree. The cat gave you some of his leftover fish bones partly because he was grateful but mostly out of relief that he hadn't fallen completely out of the tree.\n", textColor ) ) {
+    } else if ( guess>=11 && guess<15 ) { //player receives fish bones (11~)
+        if( !gTextTexture.loadFromRenderedTextWrapped( "Hm...well you were able to solve the puzzle in less than 15 guesses and were able to save the cat before he fell off the tree. The cat gave you some of his leftover fish bones partly because he was grateful but mostly out of relief that he hadn't fallen completely out of the tree.\n", textColor, 420 ) ) {
             printf( "Failed to render text texture!\n" );
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<1000; i++ ) {
+        for ( int i=0; i<3000; i++ ) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -301,12 +279,12 @@ void Hangman::completed( int guess ) {
         points = 40;
         
     } else {
-        if( !gTextTexture.loadFromRenderedText( "You took so long in solving the puzzle the cat fell off the tree and was too angry to give you anything cool except for some scratches on your face. Sorry! :(\n", textColor ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "You took so long in solving the puzzle the cat fell off the tree and was too angry to give you anything cool except for some scratches on your face. Sorry! :(\n", textColor, 420 ) ) {
             printf( "Failed to render text texture!\n" );
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<1000; i++ ) {
+        for ( int i=0; i<3000; i++ ) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -318,7 +296,7 @@ void Hangman::completed( int guess ) {
 
 string Hangman::userInput() {
 
-    int textXpos = (2*SCREEN_WIDTH)/7;
+    int textXpos = (2*SCREEN_WIDTH)/9;
     int textYpos = (3*SCREEN_HEIGHT)/4;
 
     //Main loop flag
@@ -344,7 +322,7 @@ string Hangman::userInput() {
     gPromptTextTexture.setFont(gFont);
     
     //The current input text.
-    string inputText = "Erase and put letter here";
+    string inputText = "Replace text with letter";
     gInputTextTexture.setFont(gFont);
     gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
@@ -422,7 +400,7 @@ string Hangman::userInput() {
         //Render text textures
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gPromptTextTexture.render( textXpos, textYpos );
-        gInputTextTexture.render( textXpos, textYpos+gPromptTextTexture.getHeight() );
+        gInputTextTexture.render( textXpos+50, textYpos+gPromptTextTexture.getHeight() );
 
         //Update screen
         SDL_RenderPresent( gRenderer );
@@ -451,7 +429,7 @@ bool Hangman::loadMedia() {
 
     
     //Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -462,14 +440,14 @@ bool Hangman::loadMedia() {
         //Render the prompt
         SDL_Color textColor = { 0, 0, 0, 0xFF };
         gPromptTextTexture.setFont(gFont);
-        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "Which letter would you like to guess?", textColor, 350 ) )
+        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "Which letter would you like to guess?", textColor, 400 ) )
         {
             printf( "Failed to render prompt text!\n" );
             success = false;
         }
 
         gInputTextTexture.setFont(gFont);
-        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase this and put guess here", textColor, 350 ) )
+        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase and put guess here", textColor, 350 ) )
         {
             printf( "Failed to render input text!\n" );
             success = false;

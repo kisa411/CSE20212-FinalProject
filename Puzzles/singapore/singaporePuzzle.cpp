@@ -44,8 +44,9 @@ int SingaporeanPuzzle::playPuzzle() {
 
 void SingaporeanPuzzle::displayRobber() {
 
-    int textXpos = SCREEN_WIDTH/5;
-    int textYpos = (8*SCREEN_HEIGHT)/11;
+    int textXpos = (SCREEN_WIDTH/5)+40;
+    int textYpos = ((8*SCREEN_HEIGHT)/11)-45;
+
 
     bool success = true;
 
@@ -67,7 +68,7 @@ void SingaporeanPuzzle::displayRobber() {
         //Render text
         SDL_Color textColor = { 0, 0, 0 };
         gTextTexture.setFont(gFont);
-        if( !gTextTexture.loadFromRenderedTextWrapped( "Boo! Finally caught you! I've been after the yummy stuff in your basket for a while! If you want to escape from me without any conseqences then you need to be able to prove to me that you're smart enough to solve this brainteaser. If not, then I'm going to steal some of your ingredients! Are you ready? Here's the question!\n", textColor, 400 ) )
+        if( !gTextTexture.loadFromRenderedTextWrapped( "Boo! Finally caught you! I've been after the yummy stuff in your basket for a while! If you want to escape from me without any conseqences then you need to be able to prove to me that you're smart enough to solve this brainteaser. If not, then I'm going to steal some of your ingredients! Are you ready? Here's the question!\n", textColor, 420 ) )
         {
             printf( "Failed to render text texture!\n" );
             success = false;
@@ -86,8 +87,9 @@ int SingaporeanPuzzle::determineEnding() {
     string answer;
     bool correct = false;
     int tryNumber=0;
-    int textXpos = (2*SCREEN_WIDTH)/9;
-    int textYpos = (3*SCREEN_HEIGHT)/4;
+
+    int textXpos = ((1*SCREEN_WIDTH)/7)+45;
+    int textYpos = (6*SCREEN_HEIGHT)/7;
 
     //Loading success flag
     bool success = true;
@@ -118,7 +120,7 @@ int SingaporeanPuzzle::determineEnding() {
                 printf( "Failed to render text texture!\n" );
             }
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<2000; i++ ) {
+            for ( int i=0; i<400; i++ ) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -147,9 +149,9 @@ int SingaporeanPuzzle::determineEnding() {
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<1000; i++ ) {
+            for ( int i=0; i<300; i++ ) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-                gTextTexture.render( textXpos, textYpos );
+                gTextTexture.render( textXpos+65, textYpos );
                 //Update screen
                 SDL_RenderPresent( gRenderer );
             }
@@ -164,14 +166,22 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
     //Loading success flag
     bool success = true;
 
-    int textXpos = (1*SCREEN_WIDTH)/7;
-    int textYpos = (8*SCREEN_HEIGHT)/11;
+    int textXpos = ((1*SCREEN_WIDTH)/7)+70;
+    int textYpos = ((8*SCREEN_HEIGHT)/11)-5;
 
     SDL_Color textColor = { 0, 0, 0, 0xFF };
+    TTF_CloseFont( gFont );
+    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 16 );
+    if( gFont == NULL )
+    {
+        printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
+        success = false;
+    }
     gTextTexture.setFont(gFont);
 
+
     if (tryNumber==1) { //load text for first try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct on your first try, so I won't steal anything from you this time!\n", textColor, 450 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct on your first try, so I won't steal anything from you this time!\n", textColor, 400 ) ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
@@ -183,7 +193,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
         }
         complete = true;
     } else if (tryNumber==2) { //load text for second try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct but on your second try - for wasting my time I'm going to take some stuff from you!\nOh no! The robber stole 30 points worth of ingredients from your bag!\n ", textColor, 450 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct but on your second try - for wasting my time I'm going to take some stuff from you!\nOh no! The robber stole 30 points worth of ingredients from your bag!\n ", textColor, 400 ) ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
@@ -196,7 +206,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
         complete = true;
         return complete;
     } else if (tryNumber==3) { //load text for third try
-        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct but on your third try - for wasting my time I'm going to take some stuff from you! \nOh no! The robber stole 60 points worth of ingredients from your bag!", textColor, 450 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "The robber says: You got it correct but on your third try - for wasting my time I'm going to take some stuff from you! \nOh no! The robber stole 60 points worth of ingredients from your bag!", textColor, 400 ) ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
@@ -219,7 +229,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
             //Update screen
             SDL_RenderPresent( gRenderer );
         }
-        if( !gTextTexture.loadFromRenderedTextWrapped( "Oh no! The robber stole 100 points worth of ingredients from your bag! You need to brush up on your logical thinking skills!\n", textColor, 450 ) ) {
+        if( !gTextTexture.loadFromRenderedTextWrapped( "Oh no! The robber stole 100 points worth of ingredients from your bag! You need to brush up on your logical thinking skills!\n", textColor, 400 ) ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
@@ -239,8 +249,8 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
 
 string SingaporeanPuzzle::userInput() {
 
-    int textXpos = (2*SCREEN_WIDTH)/7;
-    int textYpos = (3*SCREEN_HEIGHT)/4;
+    int textXpos = ((2*SCREEN_WIDTH)/7)-5;
+    int textYpos = ((3*SCREEN_HEIGHT)/4)+8;
 
     //Main loop flag
     bool quit = false;
@@ -408,7 +418,7 @@ bool SingaporeanPuzzle::loadMedia() {
         //Render the prompt
         SDL_Color textColor = { 0, 0, 0, 0xFF };
         gPromptTextTexture.setFont(gFont);
-        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "What is your answer?", textColor, 350 ) )
+        if( !gPromptTextTexture.loadFromRenderedTextWrapped( "What is your answer? (Format: MONTH-DD)", textColor, 350 ) )
         {
             printf( "Failed to render prompt text!\n" );
             success = false;

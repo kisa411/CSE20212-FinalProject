@@ -18,9 +18,12 @@
 
 #include "player.h"
 #include "opening.h"
-#include "alphabetPuzzle.h"
+//include cryptography
 #include "hangman.h"
-#include "cardDeck.h"
+//include river crossing
+//include sudoku
+#include "alphabetPuzzle.h"
+//include blackjack
 #include "singaporePuzzle.h"
 #include "ending.h"
 
@@ -42,7 +45,15 @@ int main () {
 
 
 	/*-----------hangman instance*----------*/
-
+	Hangman game( window_instance.getWindow(), window_instance.getRenderer() );
+	for ( int i=0; i<1500; i++ ) { //display opening sequence
+		game.displayOpening();
+	}
+	int temp = -100;
+	while (temp<0) {
+		temp = game.playPuzzle();
+	}
+	player.changePoints( temp );
 
 	/*-----------river crossing instance*----------*/
 
@@ -51,12 +62,29 @@ int main () {
 
 
 	/*-----------alphabet puzzle instance*----------*/
-
+	AlphabetPuzzle game( window_instance.getWindow(), window_instance.getRenderer() );
+	for ( int i=0; i<2000; i++ ) { //display opening sequence
+		game.displayTown();
+	}
+	temp = 100;
+	while ( temp>0 ) {
+		temp = game.playPuzzle();
+	}
+	player.changePoints( temp );
 
 	/*-----------blackjack instance*----------*/
 
 
 	/*-----------singapore instance*----------*/
+	SingaporeanPuzzle game( window_instance.getWindow(), window_instance.getRenderer() );
+	for ( int i=0; i<2000; i++ ) { //display opening sequence
+		game.displayRobber();
+	}
+	temp = 100;
+	while ( temp>0 ) {
+		temp = game.playPuzzle();
+	}
+	player.changePoints( temp );
 
 
 	/*-----------ending instance*----------*/

@@ -6,6 +6,7 @@
 //constructor
 Opening::Opening( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer)  {
 	loadMedia();
+    SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 }
 
 //destructor
@@ -19,14 +20,15 @@ Opening::~Opening() {
 
 void Opening::displayRoom() {
 
-    int textXpos = SCREEN_WIDTH/5;
-    int textYpos = (8*SCREEN_HEIGHT)/11;
+    int textXpos = (2*SCREEN_WIDTH)/6;
+    int textYpos = (9*SCREEN_HEIGHT)/11;
 
     bool success = true;
 
     SDL_RenderClear( gRenderer );
     //SDL code for displaying (rendering) puzzle image
     gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    
 
     //Open the font
     //Free global font
@@ -50,6 +52,7 @@ void Opening::displayRoom() {
         gTextTexture.render(textXpos, textYpos);
 
     }
+
 
 
     // Update Screen
@@ -78,8 +81,8 @@ string Opening::display() {
 	 //Loading success flag
     bool success = true;
 
-    int textXpos = (1*SCREEN_WIDTH)/7;
-    int textYpos = (8*SCREEN_HEIGHT)/11;
+    int textXpos = ((1*SCREEN_WIDTH)/7)-10;
+    int textYpos = ((8*SCREEN_HEIGHT)/11)-8;
 
     SDL_Color textColor = { 0, 0, 0, 0xFF };
     gTextTexture.setFont(gFont);
@@ -92,36 +95,39 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<2000; i++ ) {
+    for ( int i=0; i<500; i++ ) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-        gTextTexture.render( textXpos, textYpos );
+        gTextTexture.render( textXpos+30, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
     }
 
-	string gender = userInput(); //get the gender 
+    string gender = "N/A";
+    while (gender=="N/A") {
+    	gender = userInput(); //get the gender 
+    }
 
 	for ( int j=0; j<gender.length(); j++ ) {
         gender[j] = ::toupper(gender[j]); //make the answer lower-case
     }
 
 
-	if( !gTextTexture.loadFromRenderedTextWrapped( "Good morning! Today's the day for your picnic with your best friend, who also happens to be the ruler of the kingdom! You've been planning this day for a while, when you go check your fridge you don't actually have anything to make food for the picnic with.", textColor, 450 ) ) {
+	if( !gTextTexture.loadFromRenderedTextWrapped( "Good morning! Today's the day for your picnic with your best friend, who also happens to be the ruler of the kingdom! You want to pack lunch for the two of you, but when you go check your fridge you don't have any food for the picnic.", textColor, 470 ) ) {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<2000; i++ ) {
+    for ( int i=0; i<1500; i++ ) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
 	}
 
-	if( !gTextTexture.loadFromRenderedTextWrapped( "You should try going outside to see if there's any ingredients that you might be able to find along the way to the palace!", textColor, 450 ) ) {
+	if( !gTextTexture.loadFromRenderedTextWrapped( "You should try going outside to see if there's any ingredients that you might be able to find along the way to the palace!", textColor, 470 ) ) {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<2000; i++ ) {
+    for ( int i=0; i<1500; i++ ) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
