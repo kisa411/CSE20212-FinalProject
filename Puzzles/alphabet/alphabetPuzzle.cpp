@@ -69,10 +69,9 @@ void AlphabetPuzzle::displayTown() {
     int textYpos = (8*SCREEN_HEIGHT)/11;
 
     bool success = true;
+    bool next = false;
 
-    SDL_RenderClear( gRenderer );
-    //SDL code for displaying (rendering) puzzle image
-    gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    SDL_Event e;
 
     //Open the font
     //Free global font
@@ -93,13 +92,18 @@ void AlphabetPuzzle::displayTown() {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
-        gMathTexture.render(textXpos, textYpos);
 
     }
 
-
-    // Update Screen
-    SDL_RenderPresent( gRenderer );
+    SDL_RenderClear( gRenderer );
+    while (!next) {
+        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gMathTexture.render( textXpos, textYpos );
+        //Update screen
+        SDL_RenderPresent( gRenderer );
+        next=continueText(e);
+    }
+    next = false;
  
 }
 

@@ -48,6 +48,7 @@ private:
     void completed( int tryNumber ); //determine ending depending on tryNumber
     string userInput(); //take in user input
     bool validate( string letter ); //check user input against correct answer 
+    bool continueText( SDL_Event & e ); ////allows user to press 'enter' to progress through text
     
 };
 

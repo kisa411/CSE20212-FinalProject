@@ -35,13 +35,14 @@ Hangman::~Hangman() {
 
 void Hangman::displayOpening() {
     bool success = true;
+    bool next = false;
+
+    SDL_Event e;
+
     int textXpos = SCREEN_WIDTH/5;
     int textYpos = (8*SCREEN_HEIGHT)/11;
     SDL_Color textColor = { 0, 0, 0 };
 
-    SDL_RenderClear( gRenderer );
-    //SDL code for displaying (rendering) puzzle image
-    gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
     //Open the font
     //Free global font
@@ -62,17 +63,24 @@ void Hangman::displayOpening() {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
-        gTextTexture.render(textXpos, textYpos);
 
     }
-    SDL_RenderPresent( gRenderer );
-
+    SDL_RenderClear( gRenderer );
+    while (!next) {
+        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+        gTextTexture.render( textXpos, textYpos );
+        //Update screen
+        SDL_RenderPresent( gRenderer );
+        next=continueText(e);
+    }
+    next = false;
 }
 
 int Hangman::playPuzzle() {
 
     int endPoints = -100;
     bool complete = false;
+
 
     while (complete==false) {
         endPoints = determineEnding(); //determine the ending of the puzzle based on tryNumber
@@ -88,6 +96,9 @@ int Hangman::playPuzzle() {
 
 bool Hangman::validate( string letter ) { //play the puzzle
     bool complete = false;
+    bool next = false;
+
+    SDL_Event e;
     // bool checked = false;
     int textXpos = (2*SCREEN_WIDTH)/9;
     int textYpos = (3*SCREEN_HEIGHT)/4;
@@ -109,12 +120,14 @@ bool Hangman::validate( string letter ) { //play the puzzle
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<300; i++ ) {
+        while (!next) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
+            next=continueText(e);
         }
+        next = false;
         return complete;
     } else {
         guessedLetters.push_back(letter); //add the letter to guessed letters
@@ -129,30 +142,34 @@ bool Hangman::validate( string letter ) { //play the puzzle
         word.find(letter);
     }
 
-    cout << "Here's the word after your guess: " << display << endl;
+    // cout << "Here's the word after your guess: " << display << endl;
 
     if( !gTextTexture.loadFromRenderedText( "Here's the word after your guess: ", textColor ) ) {
         printf( "Failed to render text texture!\n" );
     }
     
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<200; i++ ) {
+    while (!next) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
+        next=continueText(e);
     }
+    next = false;
     if( !gTextTexture.loadFromRenderedText( display.c_str(), textColor ) ) {
         printf( "Failed to render text texture!\n" );
     }
 
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<600; i++ ) {
+    while (!next) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-        gTextTexture.render( textXpos+130, textYpos+50 );
+        gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
+        next=continueText(e);
     }
+    next = false;
     
     if ( display.find('.') == npos) { //underscores no longer exist in the display string, the word was completed, hangman puzzle was solved
         cout <<"puzzle is complete." << endl;
@@ -162,6 +179,29 @@ bool Hangman::validate( string letter ) { //play the puzzle
     
     return complete; //if hangman puzzle is completed, returns true
     
+}
+
+bool Hangman::continueText(SDL_Event & e) {
+    bool quit = false;
+    bool enter = false;
+
+    while( SDL_PollEvent( &e ) != 0 )
+    {
+        //User requests quit
+        if( e.type == SDL_QUIT )
+        {
+            quit = true;
+        }
+        else if ( e.type == SDL_KEYDOWN ) {
+            //User presses a key
+            if( e.key.keysym.sym == SDLK_RETURN )
+            {
+                enter = true;
+            }
+        }
+    }
+
+    return enter;
 }
 
 int Hangman::determineEnding() {
@@ -174,7 +214,8 @@ int Hangman::determineEnding() {
 
     //Loading success flag
     bool success = true;
-    
+    bool next = false;
+
 
     //Event handler
     SDL_Event e;
@@ -198,12 +239,14 @@ int Hangman::determineEnding() {
                 printf( "Failed to render text texture!\n" );
             }
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<500; i++ ) {
+            while (!next) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
                 SDL_RenderPresent( gRenderer );
+                next=continueText(e);
             }
+            next = false;
             completed( tryNumber );
             return points;
         } else if (correct==false) {
@@ -212,12 +255,14 @@ int Hangman::determineEnding() {
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            for ( int i=0; i<500; i++ ) {
+            while (!next) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
                 SDL_RenderPresent( gRenderer );
+                next=continueText(e);
             }
+            next = false;
         }
 
     }
@@ -227,6 +272,9 @@ void Hangman::completed( int guess ) {
 
     //Loading success flag
     bool success = true;
+    bool next = false;
+
+    SDL_Event e;
 
     int textXpos = ((2*SCREEN_WIDTH)/8)-30;
     int textYpos = (8*SCREEN_HEIGHT)/11;
@@ -242,12 +290,14 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<3000; i++ ) {
+        while (!next) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
+            next=continueText(e);
         }
+        next = false;
         points = 100;
         
     } else if ( guess>=9 && guess<11 ) { //player receives raw fish (9~10)
@@ -256,13 +306,14 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<3000; i++ ) {
+        while (!next) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
+            next=continueText(e);
         }
-        points = 70;
+        next = false;        points = 70;
         
     } else if ( guess>=11 && guess<15 ) { //player receives fish bones (11~)
         if( !gTextTexture.loadFromRenderedTextWrapped( "Hm...well you were able to solve the puzzle in less than 15 guesses and were able to save the cat before he fell off the tree. The cat gave you some of his leftover fish bones partly because he was grateful but mostly out of relief that he hadn't fallen completely out of the tree.\n", textColor, 420 ) ) {
@@ -270,12 +321,14 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<3000; i++ ) {
+        while (!next) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
+            next=continueText(e);
         }
+        next = false;
         points = 40;
         
     } else {
@@ -284,12 +337,14 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        for ( int i=0; i<3000; i++ ) {
+        while (!next) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
             SDL_RenderPresent( gRenderer );
+            next=continueText(e);
         }
+        next = false;
     }
 
 }
