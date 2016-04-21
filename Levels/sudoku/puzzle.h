@@ -45,6 +45,9 @@ class Puzzle
 	LTexture gSpriteSheetTexture;
 	LTexture gBackgroundTexture;
 	LTexture gSelectorTexture;
+	LTexture giveUpEndingBackground;
+	LTexture successEndingBackground;
+	LTextere introBackground;
 	vector <LTexture*> instructions; // pointer to array of textures containing lines
 	LTexture messageTextTexture; // Text texture to display messages to user
 	LTexture timeTextTexture; // Text to display current time
@@ -61,7 +64,8 @@ class Puzzle
 	
 	// SDL Management
 	void display(int min, int sec);
-	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue); // Function to manage events
+	void displayIntro(bool &quit);
+	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &quit); // Function to manage events
 	bool setInstructions();
 	void displayInstructions();
 	void displayMessage();

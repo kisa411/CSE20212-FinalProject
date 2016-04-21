@@ -19,8 +19,10 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	gSelectorTexture(ngWindow, ngRenderer), 
 	messageTextTexture(ngWindow, ngRenderer),
 	timeTextTexture(ngWindow, ngRenderer),
-	gWindow(ngWindow), gRenderer(ngRenderer)
-	
+	gWindow(ngWindow), gRenderer(ngRenderer),
+    giveUpEndingBackground(ngWindow, ngRenderer),
+	successEndingBackground(ngWindow, ngRenderer),
+	introBackground(ngWindow, ngRenderer)
 {
 	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 20);
 	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
@@ -140,6 +142,9 @@ Puzzle::~Puzzle()
 	gSelectorTexture.free();
 	gBackgroundTexture.free();
 	messageTextTexture.free();
+	giveUpEndingBackground.free();
+	successEndingBackground.free();
+	introBackground.free();
 	timeTextTexture.free();
 	for(auto& x: instructions) delete x;
 	
@@ -215,7 +220,7 @@ int Puzzle::interactive()
 	if(!correctlyInitialized)
 	{
 		cout << "Sudoku was not initialized correctly. Cannot play" << endl;
-		return;
+		return -1;
 	}
 	
 	int value = 'a'; // dumb value to start loop
@@ -224,7 +229,9 @@ int Puzzle::interactive()
 	bool gameover = false;
 	SDL_Event e;
 	bool changeValue;
-	bool giveUp;
+	bool giveUp = false;
+	bool quit = false;
+	bool toClear = false;
 	time_t start, current;
 	int min;
 	int sec;
@@ -232,7 +239,7 @@ int Puzzle::interactive()
 	
 	time(&start);
 	
-	while(!gameover && !giveup)
+	while(!gameover && !giveUp && !quit)
 	{
 		changeValue = false;
 		time(&current);
@@ -240,8 +247,13 @@ int Puzzle::interactive()
 		min = tot_sec/60; // Truncates
 		sec = tot_sec % 60; // Mods
 		display(min, sec);
-		manageEvents(e, value, gameover, changeValue, giveUp);
+		manageEvents(e, value, gameover, changeValue, giveUp, toClear, quit);
 		
+		if(toClear)
+		{
+		    clear();
+		    toClear = false;
+		}
 		if(changeValue)
 		{
 			if( thePuzzle[selector.y][selector.x].getIsConstant())
@@ -265,17 +277,57 @@ int Puzzle::interactive()
 	}
 	
 	if(giveUp)
+	{
 	    clear();
 	    solve();
-	    displayGiveUpEnding();
+	    //displayGiveUpEnding();
+	}
 	else
-	    displayRegularEnding();
+	    ;
+	    //displayRegularEnding();
 	if(min < 11 && !giveUp)
 	    return(100 - min*10);
 	else
 	    return 0;
 }
 
+void displayIntro(bool &quit)
+{
+    LTexture text;
+    text.loadFromRenderedTextWrapped("
+    promptTextTexture.loadFromRenderedTextWrapped("Congratulations! You solved the puzzle!", textColor, 300);
+	instructionsTextTexture.loadFromRenderedText("Press enter to continue", textColor);
+	bool enter = false;
+	
+	int start_width = 20;
+	int start_height =170;
+	
+	SDL_Event e;
+	while(!enter && !quit)
+	{
+			// Manage Events
+			while( SDL_PollEvent( &e ) != 0 )
+			{
+		    	if( e.type == SDL_KEYDOWN )
+		        {
+		        	if( e.key.keysym.sym == SDLK_RETURN )
+		        		enter = true;
+		        }
+		        else if(e.type == SDL_QUIT)
+		        {
+		        	quit = true;
+		        	break;
+		        }
+		    }
+		    SDL_RenderClear(gRenderer);
+		    background3Texture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		    promptTextTexture.render(start_width, start_height);
+		    instructionsTextTexture.render(start_width, start_height + promptTextTexture.getHeight() + 20);
+		    SDL_RenderPresent( gRenderer );
+		    
+	}
+}
+}
 
 void Puzzle::display(int min, int sec)
 {
@@ -356,9 +408,9 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 			count = 0;
 			for(col = 0; col < 9; col++)
 			{
-				if(thePuzzle[row][col].getValue() == '0') // Check that location is empty
+				if(thePuzzle[row][col].getValue() == 0) // Check that location is empty
 				{
-					if(checkValue(test_num + '0', row, col))
+					if(checkValue(test_num, row, col))
 					{
 						count++;
 						// If there is only one, the following will contain the right position
@@ -369,7 +421,7 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 			}
 			if(count == 1) // If only one square can contain the tested number, place is there.
 			{
-				thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+				thePuzzle[rightRow][rightCol].setValue(test_num);
 				inserts++;
 			}
 		}
@@ -383,9 +435,9 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 			count = 0;
 			for(row = 0; row < 9; row++)
 			{
-				if(thePuzzle[row][col].getValue() == '0') // Check that location is empty
+				if(thePuzzle[row][col].getValue() == 0) // Check that location is empty
 				{
-					if(checkValue(test_num + '0', row, col))
+					if(checkValue(test_num, row, col))
 					{
 						count++;
 						// If there is only one, the following will contain the right position
@@ -396,7 +448,7 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 			}
 			if(count == 1)
 			{
-				thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+				thePuzzle[rightRow][rightCol].setValue(test_num);
 				inserts++;
 			}
 		}
@@ -420,9 +472,9 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 				{
 					for(col=colmin; col < colmax; col++)
 					{
-						if(thePuzzle[row][col].getValue() == '0')
+						if(thePuzzle[row][col].getValue() == 0)
 						{
-							if(checkValue(test_num + '0', row, col))
+							if(checkValue(test_num, row, col))
 							{
 								count++;
 								// If there is only one, the following will contain the right position
@@ -434,7 +486,7 @@ int Puzzle::singleton() // Checks whether a value is only possible in one of the
 				}
 				if(count == 1)
 				{
-					thePuzzle[rightRow][rightCol].setValue(test_num + '0');
+					thePuzzle[rightRow][rightCol].setValue(test_num);
 					inserts++;
 				}
 			}
@@ -457,11 +509,11 @@ int Puzzle::single_possibility() // Checks
 		for(col = 0; col < 9; col++)
 		{
 			count = 0;
-			if(thePuzzle[row][col].getValue() == '0')
+			if(thePuzzle[row][col].getValue() == 0)
 			{
 				for(test_num = 1; test_num < 10; test_num++)
 				{
-					if(checkValue(test_num + '0', row, col))
+					if(checkValue(test_num, row, col))
 					{
 						count++;
 						// If there is only one number that can be placed, the following will contain the right number after the loop
@@ -470,7 +522,7 @@ int Puzzle::single_possibility() // Checks
 				}
 				if(count == 1)
 				{
-					thePuzzle[row][col].setValue(rightNum + '0');
+					thePuzzle[row][col].setValue(rightNum);
 					inserts++;
 				}
 			}
@@ -489,7 +541,8 @@ void Puzzle::solve()
 		inserts += singleton();
 		inserts += single_possibility();
 
-	} while (inserts > 0);
+	} 
+	while (inserts > 0);
 	
 	if(checkSolved())
 	{
@@ -516,13 +569,13 @@ vector< vector <int> > Puzzle::getIntVector()
 	}
 	return intVector;
 }
-
+void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &quit) // Function to manage events
 {
 	while(SDL_PollEvent(&e))
 	{
 		if(e.type == SDL_QUIT)
 		{
-			gameover = true;
+			quit = true;
 		}
 		else if(e.type == SDL_KEYDOWN)
 		{
@@ -602,10 +655,12 @@ vector< vector <int> > Puzzle::getIntVector()
 					value = 9;
 					changeValue = true;
 					break;
-				case SDLK_q:
-					gameover=1;
-					changeValue = true;
-					break;
+				case SDLK_c:
+				    toClear = 1;
+				    break;
+				case SDLK_g:
+				    giveUp =1;
+				    break;
 				default:
 					;
 			}
@@ -651,9 +706,17 @@ bool Puzzle::loadMedia()
 		}
 	}
 
-	   
-	
-	if( !gBackgroundTexture.loadFromFile( "sudoku_background.png" ))
+	if( !giveUpEndingBackground.loadFromFile( "sudoku_background.png" ))
+	{
+		printf( "Failed to load sprite sheet texture!\n" );
+		success = false;
+	}
+	if( !successEndingBackground.loadFromFile( "sudoku_background.png" ))
+	{
+		printf( "Failed to load sprite sheet texture!\n" );
+		success = false;
+	}
+	if( !introBackground.loadFromFile( "sudoku_background.png" ))
 	{
 		printf( "Failed to load sprite sheet texture!\n" );
 		success = false;
@@ -728,7 +791,7 @@ void Puzzle::displayTime(int min, int sec)
     timeTextTexture.render(430,5);
 }
 
-void clear()
+void Puzzle::clear()
 {
     for(int row = 0; row < 9; row++)
     {
