@@ -1,10 +1,10 @@
 CC=		g++
-FLAGS=		-g -gdwarf-2 -lSDL2_image -lSDL2_ttf -static-libstdc++ -std=c++11 -I/usr/local/include -L/usr/local/lib -o
+FLAGS=		-g -gdwarf-2 -lSDL2_image -lSDL2_ttf -static-libstdc++ -std=gnu++11 -std=c++11 -o
 TARGETS=	Blackjack
 
 all: $(TARGETS)
 
-Rivercrossing: main.cpp Blackjack.cpp CardDeck.cpp sdl_win_wrap.cpp texture.cpp 
+Blackjack: main.cpp Blackjack.cpp CardDeck.cpp sdl_win_wrap.cpp texture.cpp 
 	$(CC) $(FLAGS) $@ $^
 
 clean:

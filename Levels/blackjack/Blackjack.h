@@ -3,6 +3,9 @@
 
 #include<iostream>
 #include<deque>
+#include<SDL2/SDL_image.h>
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_ttf.h>
 #include"CardDeck.h"
 #include"texture.h"
 #include"sdl_win_wrap.h"
@@ -19,7 +22,7 @@ class Blackjack {
       void deal();
       void display();
       void menu();  //displays menu and returns choice as int
-      void play(); //plays game
+      int play(); //plays game
       void displaycards(deque<int>);   //displays users cards
       void displaydcards(deque<int>, int);  //displays dealers cards
       void displayWTL(int, int, int);  //displays wins ties losses on screen
