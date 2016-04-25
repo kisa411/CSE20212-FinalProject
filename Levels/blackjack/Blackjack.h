@@ -42,7 +42,7 @@ class Blackjack {
       bool loadMedia();
 
       //manage events
-      void manageEvents(SDL_Event &e, bool &change, bool &drawcard, bool &stop, bool &exit);
+      void manageEvents(SDL_Event &e, bool &drawcard, bool &stop, bool &exit);
 
       //returns click choice with mouse position
       int mousepos(int, int);

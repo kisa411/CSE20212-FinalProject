@@ -14,13 +14,14 @@
 using namespace std;
 
 Blackjack::Blackjack(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
-   gBackground(ngWindow, ngRenderer), \
-   gText(ngWindow, ngRenderer), \
-   gInputText(ngWindow, ngRenderer), \
-   gWins(ngWindow, ngRenderer), \
-   gLosses(ngWindow, ngRenderer), \
-   gTies(ngWindow, ngRenderer), \
-   gRenderer(ngRenderer), \
+   gBackground(ngWindow, ngRenderer),
+   gText(ngWindow, ngRenderer),
+   gInputText(ngWindow, ngRenderer),
+   gWins(ngWindow, ngRenderer),
+   gLosses(ngWindow, ngRenderer),
+   gTies(ngWindow, ngRenderer),
+   gCardDeck(ngWindow, ngRenderer),
+   gRenderer(ngRenderer),
    gWindow(ngWindow)
 {
 
@@ -65,26 +66,6 @@ void Blackjack::display() {
    //Render background
    gBackground.render(0, 0, 640, 480, NULL);
 
-   //render wins, ties, and losses
-   if (!gWins.loadFromRenderedTextWrapped((to_string(wins)).c_str(), color, 20)) {
-       printf("Failed to render wins!\n");
-   }
-   else {
-      gWins.render(20, 340);
-   }
-   if (!gTies.loadFromRenderedTextWrapped((to_string(ties)).c_str(), color, 20)) {
-       printf("Failed to render ties!\n");
-   }
-   else {
-      gTies.render(60, 340);
-   }
-   if (!gLosses.loadFromRenderedTextWrapped((to_string(losses)).c_str(), color, 20)) {
-       printf("Failed to render ties!\n");
-   }
-   else {
-      gLosses.render(100, 340);
-   }
-
    SDL_RenderPresent(gRenderer);
 
 }
@@ -93,8 +74,8 @@ void Blackjack::display() {
 void Blackjack::displaycards(deque<int> d) {
 
    //render cards 
-   int starty=380;
-   int startx=20;
+   int starty=375;
+   int startx=15;
    int space=25;
    int width=49;
    int height=77;
@@ -103,7 +84,7 @@ void Blackjack::displaycards(deque<int> d) {
 
    //players cards
    for (i=d.begin(); i!=d.end(); ++i) {
-      gCardDeck.render(startx+(j*space), starty, width, height, &gCards[*i]);
+      gCardDeck.render(startx+(j*space), starty, width, height, &gCards[*i-1]); 
       j++;
    }
 
@@ -113,21 +94,21 @@ void Blackjack::displaycards(deque<int> d) {
 void Blackjack::displaydcards(deque<int> d, int numcards) {
 
    //render cards 
-   int starty=200;
+   int starty=193;
    int startx=100;
    int space=15;
-   int width=32;
-   int height=51;
+   int width=40;
+   int height=64;
    deque<int>::const_iterator i;
    int j=0;
 
    //players cards
    if (numcards==1) { //display only one card
-       gCardDeck.render(startx, starty, width, height, &gCards[*(d.begin())]);
+       gCardDeck.render(startx, starty, width, height, &gCards[*(d.begin())-1]);
    }
    else { //display all cards
       for (i=d.begin(); i!=d.end(); ++i) {
-	 gCardDeck.render(startx+(j*space), starty, width, height, &gCards[*i]);
+	 gCardDeck.render(startx+(j*space), starty, width, height, &gCards[*i-1]);
 	 j++;
       }
    }
@@ -139,17 +120,17 @@ void Blackjack::displayWTL(int w, int t, int l) { //displays number of wins/ties
    if (!gWins.loadFromRenderedTextWrapped(to_string(w), color, 250)) {
       printf("Failed to render wins!\n");
    }
-   gWins.render(30, 300);
+   gWins.render(25, 300);
 
    if (!gTies.loadFromRenderedTextWrapped(to_string(t), color, 250)) {
       printf("Failed to render ties!\n");
    }
-   gTies.render(70, 300);
+   gTies.render(80, 300);
  
    if (!gLosses.loadFromRenderedTextWrapped(to_string(l), color, 250)) {
       printf("Failed to render losses!\n");
    }
-   gLosses.render(110, 300);
+   gLosses.render(135, 300);
 
    SDL_RenderPresent(gRenderer);
 
@@ -158,7 +139,7 @@ void Blackjack::displayWTL(int w, int t, int l) { //displays number of wins/ties
 
 void Blackjack::displaytext(int x, int y, string message) {
 
-   if (!gText.loadFromRenderedTextWrapped(message.c_str(), color, 250)) {
+   if (!gText.loadFromRenderedTextWrapped(message.c_str(), color, 190)) {
       printf("Failed to render text!\n");
    }
    gText.render(x, y);
@@ -168,7 +149,7 @@ void Blackjack::displaytext(int x, int y, string message) {
 
 void Blackjack::menu() {
 
-   displaytext(40, 40, "To play, you need the sum of your cards to be greater than the dealers sum and to add up to 21 but no morethan that! Go over, and you lose. Face cards are worth 10 each and the Ace is worth 11. Click 'Hit' to draw a card, 'Stand' to stop drawing. Good luck!");
+   displaytext(20, 20, "To play, the sum of your cards should be greater than the dealer's but less than 21. Face cards are worth 10 each and the Ace is worth 11. Click 'Hit' to draw a card, 'Stand' to stop drawing. Good luck!");
 
 }
 
@@ -246,7 +227,7 @@ int Blackjack::play() {
    //initial display
    SDL_RenderClear(gRenderer);
    display();
-   displaytext(40, 40, "Let's play Blackjack! Press enter to start!");
+   displaytext(20, 20, "Let's play Blackjack! Press enter to start!");
 
    //press enter to continue
    while (userInput()!=" ") {
@@ -264,72 +245,83 @@ int Blackjack::play() {
 
       deal(); //deal cards
 
-      //players turn
-      while (game) { 
-	 //deal a card to dealer and show to user
-	 dcard=convertToCard(dealer[0]);
+      //show one of dealers cards
+      dcard=convertToCard(dealer[0]);
+      SDL_RenderClear(gRenderer);
+      display(); //display background
+      menu(); //display menu text
+      displaycards(player); //display current cards
+      m="The dealer has a "+dcard;
+      displaytext(400, 20, m); //display what dealer has as text
+      displaydcards(dealer, 1); //display dealers card as image
+      displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
-	 SDL_RenderClear(gRenderer);
-	 display(); //display background
-	 menu(); //display menu text
-	 displaycards(player); //display current cards
-	 m="The dealer has a "+dcard;
-	 displaytext(400, 40, m); //display what dealer has as text
-	 displaydcards(dealer, 1); //display dealers card as image
-	 displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
+      //players turn
+      while (game) {
 
 	 total=sum(player);
 	 if (total>=21) { //stop turn
+	    SDL_RenderClear(gRenderer);
+	    display(); //display background
+	    menu(); //display menu text
+	    displaytext(400, 20, "Your total is over 21! Your turn is over. Press enter to continue.");
+	    displaycards(player); //display current cards
+	    displaydcards(dealer, 1); //display dealers card as image
+	    displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 	    break;
 	 }
 
-	 manageEvents(e, change, drawcard, stop, exit);
+	 manageEvents(e, drawcard, stop, exit);
 
-	 if (change) {
-	    if (drawcard) {  //hit was clicked
-	       player.push_back(currDeck->draw());
-	       displaycards(player);
-	    }
-	    if (stop) { //stand was clicked
-	       game=0; //quit players turn
-
-	       SDL_RenderClear(gRenderer);
-	       display(); //display background
-	       menu(); //display menu text
-	       displaytext(400, 40, "Your turn is over!");
-	       displaycards(player); //display current cards
-	       displaydcards(dealer, 1); //display dealers card as image
-               displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
-
-	    }
-	    if (exit) {  //x button clicked
-	       game=0;
-	       dgame=0;
-	       break;
-	    }
+	 if (drawcard) {  //hit was clicked
+	    player.push_back(currDeck->draw());
+	    displaycards(player);
 	 }
+	 else if (stop) { //stand was clicked
+	    game=0; //quit players turn
+
+	    SDL_RenderClear(gRenderer);
+	    display(); //display background
+	    menu(); //display menu text
+	    displaytext(400, 20, "Your turn is over! Press enter to continue.");
+	    displaycards(player); //display current cards
+	    displaydcards(dealer, 1); //display dealers card as image
+	    displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
+
+	 }
+	 else if (exit) {  //x button clicked
+	    game=0;
+	    dgame=0;
+	    break;
+	 }
+	 
 
       }
 
-      //pause 3 secs before going to dealers turn
-      std::this_thread::sleep_for(std::chrono::seconds(3));
+      //press enter to continue
+      while (userInput()!=" ") {
+	 continue;
+      }
+
+      SDL_RenderClear(gRenderer);
+      display(); //display background
+      menu(); //display menu text
+      displaydcards(dealer, 0); //display current dealers cards
+      displaycards(player); //keep players cards displayed
+      displaytext(400, 20, "Dealers turn. Press enter to continue.");
+      displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
+
+      //press enter to continue
+      while (userInput()!=" ") {
+	 continue;
+      }
 
       //dealers turn
       while (dgame) {
 	 dtotal=sum(dealer);
 
-	 SDL_RenderClear(gRenderer);
-	 display(); //display background
-	 menu(); //display menu text
-	 displaydcards(dealer, 0); //display current dealers cards
-	 displaycards(player); //keep players cards displayed
-	 displaytext(400, 40, "Your turn is over! Dealers turn.");
-         displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
-
 	 if (dtotal<17) { //if dealer has total sum of less that 17, must draw
 	    dealer.push_back(currDeck->draw());
-	    std::this_thread::sleep_for(std::chrono::seconds(1)); //sleep for a second before displaying next card
-
 	    SDL_RenderClear(gRenderer);
 	    display(); //display background
 	    menu(); //display menu text
@@ -337,6 +329,7 @@ int Blackjack::play() {
 	    displaycards(player); //keep players cards displayed
 	    displaytext(400, 40, "Dealers turn");
 	    displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
+	    std::this_thread::sleep_for(std::chrono::seconds(1)); //sleep for a second before displaying next card
 	 }
 	 else {
 	    dgame=0;
@@ -372,13 +365,19 @@ int Blackjack::play() {
 	    m="Both your and the dealer's sums are over 21, dealer wins!";
 	    losses++;
 	 }
-	 //TODO: update losses and ties and wins value
+	 //update losses and ties and wins value
 	 SDL_RenderClear(gRenderer);
 	 display(); //display background
 	 menu(); //display menu text
 	 displaydcards(dealer, 0); //display current cards
 	 displaycards(player); //keep players cards displayed
-	 displaytext(400, 40, m);
+	 if (wins+ties+losses>=5) {
+	    m+=" You played 5 games! Pres y then enter to continue";
+	 }
+	 else {
+	    m+=" Press y to continue, n to quit, then press enter.";
+	 }
+	 displaytext(400, 20, m);
 	 displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
 	 choice=userInput();
@@ -421,7 +420,7 @@ int Blackjack::play() {
 	 display(); //display background
 	 displaydcards(dealer, 0); //display current dealers cards
 	 displaycards(player); //keep players cards displayed
-	 displaytext(40, 40, m);
+	 displaytext(20, 20, m);
 	 displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
          //press enter to continue
@@ -436,11 +435,11 @@ int Blackjack::play() {
    return points;
 }
 
-void Blackjack::manageEvents(SDL_Event &e, bool &change, bool &drawcard, bool &stop, bool &exit) {
+void Blackjack::manageEvents(SDL_Event &e, bool &drawcard, bool &stop, bool &exit) {
 
    int pos;
-   int hit=1;
-   int stand=2;
+   const int hit=1;
+   const int stand=2;
 
    while(SDL_PollEvent(&e)) {
 
@@ -458,14 +457,14 @@ void Blackjack::manageEvents(SDL_Event &e, bool &change, bool &drawcard, bool &s
             switch (pos) {
                case hit: 
 		  drawcard=true;
-                  change=true;
                   break;
                case stand: 
 		  stop=true;
-                  change=true;
                   break;
                case 0:  //default case, dont do anything
-                  change=false;
+		  drawcard=false;
+		  stop=false;
+		  exit=false;
                   break;
             }
          }
@@ -480,10 +479,10 @@ int Blackjack::mousepos(int x, int y) {
    //hit button = 1
    //stand button = 2
    //fix positions..
-   if ((x>=540 && x<=580) && (y>=340 && y<=380)) {
+   if ((x>=445 && x<=535) && (y>=290 && y<=330)) {
       return 1;
    }
-   else if ((x>=590 && x<= 630) && (y>=340 && y<=380)) {
+   else if ((x>=540 && x<= 630) && (y>=290 && y<=330)) {
       return 2;
    }
   
@@ -495,8 +494,8 @@ int Blackjack::mousepos(int x, int y) {
 string Blackjack::userInput() {
 
    bool enter=false;
-   int xpos=40;
-   int ypos=40;
+   int xpos=400;
+   int ypos=20;
 
 
    //sdl event handler
@@ -570,40 +569,42 @@ bool Blackjack::loadMedia() {
    int starty=0;
    int width=49;
    int height=77;
+   int k=0;
 
    bool success = true;
 
    //load images
-   if (!gBackground.loadFromFile("images/casino.png")) {
+   if (!gBackground.loadFromFile("Levels/blackjack/images/casino.png")) {
       printf("failed to load background texture\n");
       success=false;
    }
    //load deck of cards
-   if (!gCardDeck.loadFromFile("images/carddeck.png")) {
+   if (!gCardDeck.loadFromFile("Levels/blackjack/images/carddeck.png")) {
       printf("failed to load card deck texture\n");
       success=false;
    }
    else {
       for (int i=0; i<4; i++) {
 	 for (int j=0; j<13; j++) {
-	    gCards[i].x=startx+(width*j);
-	    gCards[i].y=starty+(height*i);
-	    gCards[i].w=width;
-	    gCards[i].h=height;
+	    gCards[k].x=startx+(width*j);
+	    gCards[k].y=starty+(height*i);
+	    gCards[k].w=width;
+	    gCards[k].h=height;
+	    k++;
 	 }
       }
    }
-   
 
    //load text/font
-   gFont = TTF_OpenFont("adamwarrenpro.ttf", 18);
+   gFont = TTF_OpenFont("Levels/blackjack/adamwarrenpro.ttf", 18);
 
    if (gFont == NULL) {
       printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
       success=false;
    }
    else {
-      gText.setFont(gFont);
+      gText.setFont(TTF_OpenFont("Levels/blackjack/adamwarrenpro.ttf", 14));
+      gInputText.setFont(gFont);
       gWins.setFont(gFont);
       gLosses.setFont(gFont);
       gTies.setFont(gFont);
