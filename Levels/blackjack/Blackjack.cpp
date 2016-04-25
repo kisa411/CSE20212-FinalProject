@@ -5,6 +5,7 @@
 #include<cstdio>
 #include<thread>
 #include<chrono>
+#include<SDL2/SDL_ttf.h>
 #include"Blackjack.h"
 #include"CardDeck.h"
 #include"texture.h"
@@ -19,8 +20,8 @@ Blackjack::Blackjack(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gWins(ngWindow, ngRenderer), \
    gLosses(ngWindow, ngRenderer), \
    gTies(ngWindow, ngRenderer), \
-   gWindow(ngWindow), \
-   gRenderer(ngRenderer)
+   gRenderer(ngRenderer), \
+   gWindow(ngWindow)
 {
 
    currDeck = new CardDeck(52);
@@ -225,7 +226,7 @@ int Blackjack::sum(deque<int> d) {
 
 }
 
-void Blackjack::play() {
+int Blackjack::play() {
 
    int playing=1;
    string choice; 

@@ -9,7 +9,7 @@ using namespace std;
 int main() {
 
    SDL_Win_Wrap window;
-   Blackjack myGame(52, window.getWindow(), window.getRendere());
+   Blackjack myGame(window.getWindow(), window.getRenderer());
 
    myGame.play();
 
