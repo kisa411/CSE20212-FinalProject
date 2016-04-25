@@ -25,10 +25,8 @@ int main(int argc, const char * argv[]) {
     int points = -100;
 
     Hangman game(window_instance.getWindow(), window_instance.getRenderer()); //instantiate new object of Hangman game
-    
-    for ( int i=0; i<2000; i++ ) {
-    	game.displayOpening();
-    }
+
+	game.displayOpening();
 
     while (points<0) {
 	    points = game.playPuzzle();

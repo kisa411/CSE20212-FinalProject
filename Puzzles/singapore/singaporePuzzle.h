@@ -47,6 +47,7 @@ private:
     bool completed( int tryNumber ); //determine ending depending on tryNumber
     string userInput(); //take in user input
     bool validate( string userInput ); //check user input against correct answer 
+    bool continueText( SDL_Event & e );
 
     
     
