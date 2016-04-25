@@ -1,7 +1,11 @@
-all: test
+CC=		g++
+FLAGS=		-g -gdwarf-2 -lSDL2_image -lSDL2_ttf -static-libstdc++ -std=gnu++11 -std=c++11 -o
+TARGETS=	Blackjack
 
-test: main.cpp cardDeck.cpp sdl_win_wrap.cpp texture.cpp
-	g++ $^ -o test -g -gdwarf-2 -I/usr/local/include -L/usr/local/lib  -lSDL2 -lSDL2_image -lSDL2_ttf
+all: $(TARGETS)
+
+Blackjack: main.cpp Blackjack.cpp CardDeck.cpp sdl_win_wrap.cpp texture.cpp 
+	$(CC) $(FLAGS) $@ $^
 
 clean:
-	rm test
+	rm $(TARGETS)

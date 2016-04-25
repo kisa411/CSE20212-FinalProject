@@ -377,7 +377,7 @@ string Hangman::userInput() {
     gPromptTextTexture.setFont(gFont);
     
     //The current input text.
-    string inputText = "Replace text with letter";
+    string inputText = "Guess Here";
     gInputTextTexture.setFont(gFont);
     gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
@@ -502,7 +502,7 @@ bool Hangman::loadMedia() {
         }
 
         gInputTextTexture.setFont(gFont);
-        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase and put guess here", textColor, 350 ) )
+        if( !gInputTextTexture.loadFromRenderedTextWrapped( " ", textColor, 350 ) )
         {
             printf( "Failed to render input text!\n" );
             success = false;

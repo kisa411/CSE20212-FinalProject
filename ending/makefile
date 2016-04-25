@@ -1,7 +1,7 @@
 all: test
 
 test: main.cpp ending.cpp sdl_win_wrap.cpp texture.cpp
-	g++ $^ -o ending -g -I/usr/local/include -L/usr/local/lib  -lSDL2 -lSDL2_image -lSDL2_ttf
+	g++ $^ -o alphabet -g -gdwarf-2 -static-libstdc++ -lSDL2 -lSDL2_image -lSDL2_ttf -std=c++0x
 
 clean:
 	rm ending
