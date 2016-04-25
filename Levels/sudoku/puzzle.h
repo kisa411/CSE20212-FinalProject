@@ -18,7 +18,7 @@ using namespace std;
 class Puzzle
 {
 	public:
-	Puzzle(string fileName, SDL_Window*, SDL_Renderer*); // constructor
+	Puzzle(SDL_Window*, SDL_Renderer*); // constructor
 	~Puzzle(); // Destructor
 	int interactive(); // Returns points to add to player
 	private:
@@ -45,12 +45,10 @@ class Puzzle
 	LTexture gSpriteSheetTexture;
 	LTexture gBackgroundTexture;
 	LTexture gSelectorTexture;
-	LTexture giveUpEndingBackground;
-	LTexture successEndingBackground;
-	LTextere introBackground;
 	vector <LTexture*> instructions; // pointer to array of textures containing lines
 	LTexture messageTextTexture; // Text texture to display messages to user
 	LTexture timeTextTexture; // Text to display current time
+	LTexture storyTextTexture;
 	bool loadMedia();
 	
 	// Renderer and Window
@@ -64,13 +62,18 @@ class Puzzle
 	
 	// SDL Management
 	void display(int min, int sec);
-	void displayIntro(bool &quit);
-	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &quit); // Function to manage events
+	void displayIntro();
+	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &enter); // Function to manage events
 	bool setInstructions();
 	void displayInstructions();
 	void displayMessage();
 	void displayTime(int min, int sec);
+	void displayScreen(string text, string background_filename);
+	void displayGiveUpEnding(int min, int sec);
+	void displayRegularEnding(int min, int sec);
+	bool loadBackground(string filename);
 	void updateMessage(string);
+	bool checkEnter(bool &enter, SDL_Event &e);
 	
 	// Other Member FunctionFILE* file;
 	point selector;
@@ -80,7 +83,9 @@ class Puzzle
 	TTF_Font *bodyFont;
 	TTF_Font *titleFont;
 	TTF_Font *timeFont;
+	TTF_Font *storyFont;
 	SDL_Color fontColor;
+	bool quit; // Variable to use to quit from game when x is entered
 };
 
 
