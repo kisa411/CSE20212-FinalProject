@@ -211,13 +211,13 @@ bool Ending::loadMedia() {
 	//Load background texture
 	if ( pointTotal> 500 ) { //good ending
 		if ( gender == "FEMALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(boy-good).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(boy-good).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
 			}
 		} else if ( gender == "MALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(girl-good).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(girl-good).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
@@ -225,13 +225,13 @@ bool Ending::loadMedia() {
 		}
 	} else if ( pointTotal > 200 && pointTotal <= 500 ) { //okay ending
 		if ( gender == "FEMALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(boy-good).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(boy-good).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
 			}
 		} else if ( gender == "MALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(girl-good).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(girl-good).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
@@ -239,13 +239,13 @@ bool Ending::loadMedia() {
 		}
 	} else if ( pointTotal <= 200 ) { //bad ending
 		if ( gender == "FEMALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(boy-bad).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(boy-bad).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
 			}
 		} else if ( gender == "MALE" ) {
-			if( !gBackgroundTexture.loadFromFile( "endscene(girl-bad).png" ))
+			if( !gBackgroundTexture.loadFromFile( "ending/endscene(girl-bad).png" ))
 			{
 				printf( "Failed to load sprite sheet texture!\n" );
 				success = false;
@@ -254,7 +254,7 @@ bool Ending::loadMedia() {
 	}
 	
 	//Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
+    gFont = TTF_OpenFont( "ending/adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );

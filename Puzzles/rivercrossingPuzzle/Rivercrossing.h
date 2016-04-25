@@ -4,8 +4,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include"texture.h"
-#include"sdl_win_wrap.h"
+#include"../../sharedClasses/texture.h"
+#include"../../sharedClasses/sdl_win_wrap.h"
 
 using namespace std;
 

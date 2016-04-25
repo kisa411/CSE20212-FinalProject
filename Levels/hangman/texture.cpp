@@ -2,7 +2,7 @@
 //  texture.cpp
 
 
-#include "texture.h"
+#include "../../sharedClasses/texture.h"
 #include <iostream>
 using namespace std;
 

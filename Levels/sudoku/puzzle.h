@@ -7,10 +7,10 @@
 #include <cctype>
 #include <iostream>
 #include "puzzleElement.h"
-#include "texture.h"
+#include "../../sharedClasses/texture.h"
 #include "puzzle.h"
 #include "stdio.h"
-#include "sdl_win_wrap.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
 #include "point.h"
 
 using namespace std;

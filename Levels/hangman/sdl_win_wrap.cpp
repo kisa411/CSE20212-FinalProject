@@ -1,4 +1,4 @@
-#include "sdl_win_wrap.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
 using namespace std;
 
 SDL_Win_Wrap::SDL_Win_Wrap(int nScreenWidth, int nScreenHeight):

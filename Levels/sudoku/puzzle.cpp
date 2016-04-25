@@ -1,5 +1,5 @@
 #include "puzzle.h"
-#include "sdl_win_wrap.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
 #include <SDL2/SDL_ttf.h>
 #include <ctime>
 #include <string>
