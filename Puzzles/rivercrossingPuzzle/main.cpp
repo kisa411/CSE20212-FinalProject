@@ -8,8 +8,6 @@ int main() {
    SDL_Win_Wrap window;
    Rivercrossing game(window.getWindow(), window.getRenderer());
    
-   //LTexture texture(window.gWindow, window.gRenderer, window.getScreenWidth(), window.getScreenHeight());
-
    game.play();
 
 }

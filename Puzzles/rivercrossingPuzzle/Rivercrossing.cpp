@@ -60,7 +60,7 @@ void Rivercrossing::reset() {   //reset all values to replay
 
 }
 
-void Rivercrossing::play() {
+int Rivercrossing::play() {
 
    SDL_Event e;
    bool change;
@@ -75,161 +75,151 @@ void Rivercrossing::play() {
    ypos = 40;
 
    //initial display
+   SDL_RenderClear(gRenderer);
    display();
    //display instructions 
-   displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boat only holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\nPress space then enter to continue\n");
+   displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boat only holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\nPress enter to continue\n");
 
-   //click space to cont
-   /*while (userInput()!=" ") {
+   //click enter to cont
+   while (userInput()!=" ") {
       continue;
-   }*/
-   cin >> choice;
-   while (choice!=" ") {
-      cin >> choice;
    }
-
+   //display other intructions
+   SDL_RenderClear(gRenderer);
+   display();
+   displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
+  
    //not game over or success
    int game=finished();
    while (game==1 && exit == false) {
-      //display other intructions
-      displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
+
       change=false;
+      changeboat=false;
       //change is true when position of one of 3 items is changed
       manageEvents(e, change, changeboat, exit);
       if(exit == true) {
       	break;
       }
       //if something changed position, render images again and display
-      if (change) {
-	 display();
+      if (change || changeboat) {
+         /*SDL_RenderClear(gRenderer);
+ 	 display();
 	 displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
 
       }
       //if boat changed, check if game over
-      if(changeboat) {
+      if(changeboat) {*/
+	 SDL_RenderClear(gRenderer);
 	 display();
 	 displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
 
 	 switch (finished()) {
 	    case 2:
+               SDL_RenderClear(gRenderer);
 	       display();
 	       displayText(xpos, ypos, "The wolf ate the sheep! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
 	       //wolf ate goat, game over! ask to try again(click y)
-	       /*choice=userInput();
-	       while (choice!="y" || choice!="n") {
+	       choice=userInput();
+	       while (choice!=" y" && choice!=" n") {
 	   	  choice=userInput();
-	       }*/
-	       cin >> choice;
-	       while(choice!="y" || choice !="n") {
-		  cin>>choice;
+		  //cout << choice << endl;
 	       }
 
-               if (choice=="y") {
+               if (choice==" y") {
 		  reset();
+		  SDL_RenderClear(gRenderer);
+		  display();
+	 	  displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
 		  numtries++;
 		  game=1;
 	       }
-	       else if (choice=="n") {
+	       else if (choice==" n") {
 		  //convert numtries to string
-
-		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress space then enter to continue\n";
+                  SDL_RenderClear(gRenderer);
+		  display();
+		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress enter to continue\n";
 		  displayText(xpos, ypos, disp);
-		  /*while (userInput()!=" ") {
+		  while (userInput()!=" ") {
 		     continue;
-		  }*/
-		  cin >> choice;
-		  while (choice!=" ") {
-		     cin >> choice;
 		  }
 
 		  game=0;
 	       }
 	       break;
 	    case 3:
+               SDL_RenderClear(gRenderer);
 	       display();
 	       //goat ate cabbage, game over! ask to try again(click y)
 	       displayText(xpos, ypos, "The sheep ate the cabbage! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
 	       //wolf ate goat, game over! ask to try again(click y)
-	       /*choice=userInput();
-	       while (choice!="y" || choice!="n") {
+	       choice=userInput();
+	       while (choice!=" y" && choice!=" n") {
 	   	  choice=userInput();
-	       }*/
-	       cin >> choice;
-	       while(choice!="y" || choice !="n") {
-		  cin>>choice;
 	       }
 
-               if (choice=="y") {
+               if (choice==" y") {
 		  reset();
+		  SDL_RenderClear(gRenderer);
+		  display();
+	 	  displayText(xpos, ypos, "If you leave the wolf and the sheep alone, the wolf will eat the sheep. If you leave the sheep and cabbage alone, the sheep will eat the cabbage. Can you take all three objects across the river successfully?");
 		  numtries++;
 		  game=1;
 	       }
-	       else if (choice=="n") {
-		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress space then enter to continue\n";
-		  /*displayText(xpos, ypos, disp);
+	       else if (choice==" n") {
+                  SDL_RenderClear(gRenderer);
+		  display();
+		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress enter to continue\n";
+		  displayText(xpos, ypos, disp);
 		  while (userInput()!=" ") {
 		     continue;
-		  }*/
-		  cin >> choice;
-		  while (choice!=" ") {
-		     cin >> choice;
 		  }
+
 		  game=0;
 	       }
 	       break;
 	    case 0:
+               SDL_RenderClear(gRenderer);
 	       display();
 	       //success!
 	       points=100/numtries;
-	       disp="The farmer is so thankful for your help! You finished in " + to_string(numtries) + "try/tries, so you get " + to_string(points) + " points!\nPress space then enter to continue\n";
+	       disp="The farmer is so thankful for your help! You finished in " + to_string(numtries) + "try/tries, so you get " + to_string(points) + " points!\nPress enter to continue\n";
 	       displayText(xpos, ypos, disp);
 
-	       //click space to cont
-	       /*while (userInput()!=" ") {
+	       //click enter to cont
+	       while (userInput()!=" ") {
 		  continue;
-	       }*/
-	       cin >> choice;
-	       while (choice!=" ") {
-		  cin >> choice;
 	       }
 
-
 	       if (points<=40) {
-		  displayText(xpos, ypos, "The farmer thanks you with his cabbage!\nPress space then enter to continue\n");
+		  SDL_RenderClear(gRenderer);
+		  display();
+		  displayText(xpos, ypos, "The farmer thanks you with his cabbage!\nPress enter to continue\n");
 
-		  //click space to cont
-		  /*while (userInput()!=" ") {
+		  //click enter to cont
+		  while (userInput()!=" ") {
 		     continue;
-		  }*/
-		  cin >> choice;
-		  while (choice!=" ") {
-		     cin >> choice;
 		  }
 
 	       }
 	       else if (points>40 && points <=60) {
-		  displayText(xpos, ypos, "The farmer thanks you with some expensive cheese from his goats on the farm!\nPress space then enter to continue\n");
+		  SDL_RenderClear(gRenderer);
+		  display();
+		  displayText(xpos, ypos, "The farmer thanks you with some expensive cheese from his goats on the farm!\nPress enter to continue\n");
 
-		  //click space to cont
-		  /*while (userInput()!=" ") {
+		  //click enter to cont
+		  while (userInput()!=" ") {
 		     continue;
-		  }*/
-		  cin >> choice;
-		  while (choice!=" ") {
-		     cin >> choice;
 		  }
 
 	       }
 	       else if (points<=100 && points>61) {
-		  displayText(xpos, ypos, "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!\nPress space then enter to continue\n");
+		  SDL_RenderClear(gRenderer);
+		  display();
+		  displayText(xpos, ypos, "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!\nPress enter to continue\n");
 
-		  //click space to cont
-		  /*while (userInput()!=" ") {
+		  //click enter to cont
+		  while (userInput()!=" ") {
 		     continue;
-		  }*/
-		  cin >> choice;
-		  while (choice!=" ") {
-		     cin >> choice;
 		  }
 
 	       }
@@ -243,13 +233,16 @@ void Rivercrossing::play() {
 
    }
 
+   return points;
+
 }
 
-/*string Rivercrossing::userInput() {
+string Rivercrossing::userInput() {
 
    bool enter=false;
    int xpos=40;
    int ypos=40;
+
 
    //sdl event handler
    SDL_Event e;
@@ -313,18 +306,17 @@ void Rivercrossing::play() {
    //return user input
    return inputText;
 
-}*/
+}
 
 
 void Rivercrossing::displayText(int x, int y, string message) {
 
-   /*if (!gText.loadFromRenderedTextWrapped(message.c_str(), color, 400)) {
+   if (!gText.loadFromRenderedTextWrapped(message.c_str(), color, 500)) {
       printf("Failed to render text!\n");
    }
    gText.render(x, y);
-   SDL_RenderPresent(gRenderer);*/
-   cout << message << endl;
-
+   SDL_RenderPresent(gRenderer);
+   
 }
 
 int Rivercrossing::finished() {
@@ -658,7 +650,6 @@ bool Rivercrossing::loadMedia() {
    }
 
    //load text/font
-   TTF_CloseFont(gFont);
    gFont = TTF_OpenFont("adamwarrenpro.ttf", 18);
    if (gFont == NULL) {
       printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
@@ -667,6 +658,7 @@ bool Rivercrossing::loadMedia() {
    else {
       gText.setFont(gFont);
    }
+
    return success;
 
 }

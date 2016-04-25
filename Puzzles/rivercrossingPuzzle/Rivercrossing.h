@@ -14,12 +14,12 @@ class Rivercrossing {
    public:
       Rivercrossing(SDL_Window*, SDL_Renderer*);
       ~Rivercrossing();
-      void play();
+      int play();
       void pickup(char);
       void drop();
       void display();
       void displayText(int, int, string);
-      //string userInput();
+      string userInput();
 
    private: 
       int start;
