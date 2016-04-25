@@ -110,8 +110,8 @@ bool Hangman::validate( string letter ) { //play the puzzle
     for ( int j=0; j<letter.length(); j++ ) {
         letter[j] = ::toupper(letter[j]); //make the answer uppercase
     }
-    cout << word << endl;
-    cout << display.c_str() << endl;
+    // cout << word << endl;
+    // cout << display.c_str() << endl;
     
     //add the letter to guessed letters if it was guessed before
     if ( find(guessedLetters.begin(), guessedLetters.end(), letter) != guessedLetters.end() ) {
@@ -377,7 +377,7 @@ string Hangman::userInput() {
     gPromptTextTexture.setFont(gFont);
     
     //The current input text.
-    string inputText = "Replace text with letter";
+    string inputText = "Guess Here";
     gInputTextTexture.setFont(gFont);
     gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor );
 
@@ -502,7 +502,7 @@ bool Hangman::loadMedia() {
         }
 
         gInputTextTexture.setFont(gFont);
-        if( !gInputTextTexture.loadFromRenderedTextWrapped( "Erase and put guess here", textColor, 350 ) )
+        if( !gInputTextTexture.loadFromRenderedTextWrapped( " ", textColor, 350 ) )
         {
             printf( "Failed to render input text!\n" );
             success = false;

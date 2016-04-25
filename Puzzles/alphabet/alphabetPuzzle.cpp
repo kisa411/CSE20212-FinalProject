@@ -17,8 +17,8 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include "sdl_win_wrap.h"
-#include "texture.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
+#include "../../sharedClasses/texture.h"
 
 using namespace std;
 

@@ -265,14 +265,14 @@ bool Opening::loadMedia() {
 	bool success = true;
 
 	//Load background texture	
-	if( !gBackgroundTexture.loadFromFile( "opening.png" ))
+	if( !gBackgroundTexture.loadFromFile( "opening/opening.png" ))
 	{
-		printf( "Failed to load sprite sheet texture!\n" );
+		printf( "Failed to load  opening.png!\n" );
 		success = false;
 	}
 	
 	//Open the font
-    gFont = TTF_OpenFont( "adamwarrenpro.ttf", 18 );
+    gFont = TTF_OpenFont( "opening/adamwarrenpro.ttf", 18 );
     if( gFont == NULL )
     {
         printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );

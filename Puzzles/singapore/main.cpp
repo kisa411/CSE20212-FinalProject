@@ -14,8 +14,8 @@
 #include <iostream>
 #include <sstream>
 #include "singaporePuzzle.h"
-#include "sdl_win_wrap.h"
-#include "texture.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
+#include "../../sharedClasses/texture.h"
 using namespace std;
 
 int main(int argc, const char * argv[]) {

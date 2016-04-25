@@ -10,7 +10,7 @@
 #define alphabetPuzzle_h
 
 #include <iostream>
-#include "texture.h"
+#include "../../sharedClasses/texture.h"
 using namespace std;
 
 class AlphabetPuzzle {

@@ -1,8 +1,10 @@
 #include "puzzle.h"
-#include "sdl_win_wrap.h"
+#include "../../sharedClasses/sdl_win_wrap.h"
 #include <SDL2/SDL_ttf.h>
 #include <ctime>
-#include <string.h>
+#include <string>
+#include <ctime>
+#include <cstdlib>
 
 void Puzzle::setCheck()
 {
@@ -13,28 +15,34 @@ void Puzzle::setCheck()
 }
 
 
-Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	gSpriteSheetTexture(ngWindow, ngRenderer), 
 	gBackgroundTexture(ngWindow, ngRenderer), 
 	gSelectorTexture(ngWindow, ngRenderer), 
 	messageTextTexture(ngWindow, ngRenderer),
 	timeTextTexture(ngWindow, ngRenderer),
-	gWindow(ngWindow), gRenderer(ngRenderer),
-    giveUpEndingBackground(ngWindow, ngRenderer),
-	successEndingBackground(ngWindow, ngRenderer),
-	introBackground(ngWindow, ngRenderer)
+	storyTextTexture(ngWindow, ngRenderer),
+	gWindow(ngWindow), gRenderer(ngRenderer)
 {
-	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 20);
+	// Initialize Values
+	quit = false; // Variable to use to quit from game when x is entered
+	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 18);
 	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
+	storyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 16);
 	timeFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 16);
+	
+	// Check Fonts
 	if(bodyFont == NULL || titleFont == NULL || timeFont == NULL)
 	{
 		cout << "Could not load font" << endl;
 		correctlyInitialized = false;
 		return;
 	}
+	
+	// Load Texts
 	messageTextTexture.setFont(bodyFont);
 	timeTextTexture.setFont(timeFont);
+	storyTextTexture.setFont(storyFont);
 	
 	fontColor = {0,0,0}; // Black
 	
@@ -53,10 +61,13 @@ Puzzle::Puzzle(string fileName, SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	SDL_GetWindowSize(ngWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 	// Open File
 	FILE *puzzleFile;
-	
-	if((puzzleFile = fopen(fileName.c_str(), "r")) == NULL)
+	char filename [40];
+	srand(time(NULL));
+	int filenum = (rand() % 40) + 1;
+	sprintf(filename, "puzzles/sudoku%i.txt",filenum);
+	if((puzzleFile = fopen(filename, "r")) == NULL)
 	{
-		cout << "Error: Could not open file: " << fileName << endl << endl;
+		cout << "Error: Could not open file: " << filename << endl << endl;
 		correctlyInitialized = false;
 		return;
 	}
@@ -128,12 +139,12 @@ bool Puzzle::setInstructions()
 	if((instructions[0]->loadFromRenderedText("INSTRUCTIONS", fontColor)) &&
 		(instructions[1]->loadFromRenderedTextWrapped("Move Selector Using Arrows", fontColor, 192)) &&
 		(instructions[2]->loadFromRenderedTextWrapped("Press a number key to set value", fontColor, 192)) &&
-		(instructions[3]->loadFromRenderedTextWrapped("Remove entry by pressing 0", fontColor, 192)))
+		(instructions[3]->loadFromRenderedTextWrapped("Remove entry by pressing \"0\"", fontColor, 192)) &&
+		(instructions[4]->loadFromRenderedTextWrapped("Submit solution by pressing \"ENTER\"", fontColor, 192)) &&
+		(instructions[5]->loadFromRenderedTextWrapped("Clear board by pressing \"c\"", fontColor, 192)) &&
+		(instructions[6]->loadFromRenderedTextWrapped("To give up press \"g\"", fontColor, 192)))
 		return true;
 	return false;
-	
-	
-	
 }
 
 Puzzle::~Puzzle()
@@ -142,12 +153,8 @@ Puzzle::~Puzzle()
 	gSelectorTexture.free();
 	gBackgroundTexture.free();
 	messageTextTexture.free();
-	giveUpEndingBackground.free();
-	successEndingBackground.free();
-	introBackground.free();
 	timeTextTexture.free();
 	for(auto& x: instructions) delete x;
-	
 }
 
 bool Puzzle::checkCol(int value, int col)
@@ -230,24 +237,29 @@ int Puzzle::interactive()
 	SDL_Event e;
 	bool changeValue;
 	bool giveUp = false;
-	bool quit = false;
+	bool enter = false;
 	bool toClear = false;
 	time_t start, current;
 	int min;
 	int sec;
 	int tot_sec;
 	
-	time(&start);
+	displayScreen("You entered a town full of nerds!", "pre_screen1.png");
+	displayScreen("A poor nerd needs help solving a puzzle! You decide to help him before moving forward.",
+						"pre_screen2.png");
 	
+	loadBackground("sudoku_background.png");
+	time(&start);
 	while(!gameover && !giveUp && !quit)
 	{
 		changeValue = false;
+		enter = false;
 		time(&current);
 		tot_sec = difftime(current, start);
 		min = tot_sec/60; // Truncates
 		sec = tot_sec % 60; // Mods
 		display(min, sec);
-		manageEvents(e, value, gameover, changeValue, giveUp, toClear, quit);
+		manageEvents(e, value, gameover, changeValue, giveUp, toClear, enter);
 		
 		if(toClear)
 		{
@@ -268,10 +280,16 @@ int Puzzle::interactive()
 			{
 				updateMessage("Value cannot be placed there");
 			}
+		}
+		if(enter)
+		{
 			if(checkSolved())
 			{
 				gameover = true;
-				updateMessage("Congratulations! You solved the puzzle!");
+			}
+			else
+			{
+				updateMessage("That is not the right solution to the puzzle!");
 			}
 		}
 	}
@@ -280,53 +298,37 @@ int Puzzle::interactive()
 	{
 	    clear();
 	    solve();
-	    //displayGiveUpEnding();
+	    displayGiveUpEnding(min, sec);
 	}
 	else
-	    ;
-	    //displayRegularEnding();
+	{
+	    displayRegularEnding(min, sec);
+	}
 	if(min < 11 && !giveUp)
 	    return(100 - min*10);
 	else
 	    return 0;
 }
 
-void displayIntro(bool &quit)
+void Puzzle::displayScreen(string text, string background_filename)
 {
-    LTexture text;
-    text.loadFromRenderedTextWrapped("
-    promptTextTexture.loadFromRenderedTextWrapped("Congratulations! You solved the puzzle!", textColor, 300);
-	instructionsTextTexture.loadFromRenderedText("Press enter to continue", textColor);
+   	storyTextTexture.loadFromRenderedTextWrapped(text.c_str(), fontColor, 550);
+   	loadBackground(background_filename);
 	bool enter = false;
 	
-	int start_width = 20;
-	int start_height =170;
+	int start_width = 40;
+	int start_height =345;
 	
 	SDL_Event e;
 	while(!enter && !quit)
 	{
-			// Manage Events
-			while( SDL_PollEvent( &e ) != 0 )
-			{
-		    	if( e.type == SDL_KEYDOWN )
-		        {
-		        	if( e.key.keysym.sym == SDLK_RETURN )
-		        		enter = true;
-		        }
-		        else if(e.type == SDL_QUIT)
-		        {
-		        	quit = true;
-		        	break;
-		        }
-		    }
+			checkEnter(enter, e);
 		    SDL_RenderClear(gRenderer);
-		    background3Texture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
-		    promptTextTexture.render(start_width, start_height);
-		    instructionsTextTexture.render(start_width, start_height + promptTextTexture.getHeight() + 20);
+		    gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		    storyTextTexture.render(start_width, start_height);
 		    SDL_RenderPresent( gRenderer );
 		    
 	}
-}
 }
 
 void Puzzle::display(int min, int sec)
@@ -543,16 +545,6 @@ void Puzzle::solve()
 
 	} 
 	while (inserts > 0);
-	
-	if(checkSolved())
-	{
-		cout << "Here is the solution!" << endl;
-	}
-	else
-	{
-		cout << "A solution could not be found" << endl;
-		cout << "This is what we got" << endl;
-	}
 }
 
 vector< vector <int> > Puzzle::getIntVector()
@@ -569,7 +561,7 @@ vector< vector <int> > Puzzle::getIntVector()
 	}
 	return intVector;
 }
-void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &quit) // Function to manage events
+void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &enter) // Function to manage events
 {
 	while(SDL_PollEvent(&e))
 	{
@@ -661,6 +653,9 @@ void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &change
 				case SDLK_g:
 				    giveUp =1;
 				    break;
+				case SDLK_RETURN:
+					enter =1 ;
+					break;
 				default:
 					;
 			}
@@ -706,22 +701,6 @@ bool Puzzle::loadMedia()
 		}
 	}
 
-	if( !giveUpEndingBackground.loadFromFile( "sudoku_background.png" ))
-	{
-		printf( "Failed to load sprite sheet texture!\n" );
-		success = false;
-	}
-	if( !successEndingBackground.loadFromFile( "sudoku_background.png" ))
-	{
-		printf( "Failed to load sprite sheet texture!\n" );
-		success = false;
-	}
-	if( !introBackground.loadFromFile( "sudoku_background.png" ))
-	{
-		printf( "Failed to load sprite sheet texture!\n" );
-		success = false;
-	}
-	
 	if( !(gSelectorTexture.loadFromFile("selector.png")))
 	{
 		printf("Failed to load selector\n");
@@ -768,7 +747,7 @@ void Puzzle::updateMessage(string nMessage)
 {
 	messageTextTexture.free();
 	
-	messageTextTexture.loadFromRenderedText(nMessage.c_str(), fontColor); 
+	messageTextTexture.loadFromRenderedTextWrapped(nMessage.c_str(), fontColor, 400);
 }
 
 void Puzzle::displayTime(int min, int sec)
@@ -791,6 +770,16 @@ void Puzzle::displayTime(int min, int sec)
     timeTextTexture.render(430,5);
 }
 
+bool Puzzle::loadBackground(string filename)
+{
+	if( !gBackgroundTexture.loadFromFile( filename.c_str() ))
+	{
+		printf( "Failed to load background texture!\n" );
+		return false;
+	}
+	return true;
+}
+
 void Puzzle::clear()
 {
     for(int row = 0; row < 9; row++)
@@ -803,4 +792,48 @@ void Puzzle::clear()
             }
         }
     }
+}
+
+bool Puzzle::checkEnter(bool &enter, SDL_Event& e)
+{
+	// Manage Events
+	while( SDL_PollEvent( &e ) != 0 )
+	{
+    	if( e.type == SDL_KEYDOWN )
+    	{
+        	if( e.key.keysym.sym == SDLK_RETURN )
+        		enter = true;
+        }
+         else if( e.type == SDL_QUIT)
+		 {
+			quit = true;
+			break;
+		}
+    }
+}
+
+void Puzzle::displayGiveUpEnding(int min, int sec)
+{
+	bool enter = false;
+	SDL_Event e;
+	updateMessage("You get no points. Here is the solution. Press enter to continue");
+	while(!enter && !quit)
+	{
+		display(min, sec);
+		checkEnter(enter, e);
+	}
+}
+
+void Puzzle::displayRegularEnding(int min, int sec)
+{
+	bool enter = false;
+	SDL_Event e;
+	updateMessage("Congratulations! You solved the Puzzle!");
+	while(!enter && !quit)
+	{
+		display(min, sec);
+		checkEnter(enter, e);
+	}
+	displayScreen("The ner is so happy he gives you a pie! Congratulations!","happy_ending.png");
+	
 }

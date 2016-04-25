@@ -3,7 +3,7 @@
 int main(void)
 {
 	SDL_Win_Wrap window_instance;
-	Puzzle tPuzzle("medium.txt", window_instance.getWindow(), window_instance.getRenderer());
+	Puzzle tPuzzle(window_instance.getWindow(), window_instance.getRenderer());
 	
 	tPuzzle.interactive();
 }
