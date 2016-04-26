@@ -574,7 +574,7 @@ bool Blackjack::loadMedia() {
    bool success = true;
 
    //load images
-   if (!gBackground.loadFromFile("Levels/blackjack/images/casino.-png")) {
+   if (!gBackground.loadFromFile("Levels/blackjack/images/casino.png")) {
       printf("failed to load background texture\n");
       success=false;
    }

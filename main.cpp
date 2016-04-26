@@ -27,7 +27,7 @@
 #include "Puzzles/singapore/singaporePuzzle.h"
 #include "Puzzles/cryptography/cryptography.h"
 #include "Puzzles/rivercrossingPuzzle/Rivercrossing.h"
-//#include "Levels/blackjack/Blackjack.h"
+#include "Levels/blackjack/Blackjack.h"
 #include "Levels/hangman/hangman.h"
 #include "ending/ending.h"
 
@@ -43,9 +43,7 @@ int main () {
 
 	/*-----------opening instance*----------*/
 	Opening open(gWindow, gRenderer);
-	for (int i=0; i<1000; i++) {
-		open.displayRoom();
-	}
+	open.displayRoom();
 	string gender = "N/A";
 	while ( gender=="N/A" ) {
 		gender = open.play();
@@ -58,9 +56,7 @@ int main () {
 	player.changePoints( temp );
 	/*-----------hangman instance*----------*/
 	Hangman hangGame( gWindow, gRenderer );
-	for ( int i=0; i<1500; i++ ) { //display opening sequence
-		hangGame.displayOpening();
-	}
+	hangGame.displayOpening();
 	temp = -100;
 	while (temp<0) {
 		temp = hangGame.playPuzzle();
@@ -77,10 +73,8 @@ int main () {
 	player.changePoints(temp);
 	
 	/*-----------alphabet puzzle instance*----------*/
-	AlphabetPuzzle alphaGame( window_instance.getWindow(), window_instance.getRenderer() );
-	for ( int i=0; i<2000; i++ ) { //display opening sequence
-		alphaGame.displayTown();
-	}
+	AlphabetPuzzle alphaGame( gWindow, gRenderer );
+	alphaGame.displayTown();
 	temp = 100;
 	while ( temp>0 ) {
 		temp = alphaGame.playPuzzle();
@@ -88,13 +82,13 @@ int main () {
 	player.changePoints( temp );
 
 	/*-----------blackjack instance*----------*/
-
+	Blackjack bgame(gWindow, gRenderer);
+	temp = bgame.play();
+	player.changePoints(temp);
 
 	/*-----------singapore instance*----------*/
 	SingaporeanPuzzle singaGame( window_instance.getWindow(), window_instance.getRenderer() );
-	for ( int i=0; i<2000; i++ ) { //display opening sequence
-		singaGame.displayRobber();
-	}
+	singaGame.displayRobber();
 	temp = 100;
 	while ( temp>0 ) {
 		temp = singaGame.playPuzzle();
@@ -103,7 +97,7 @@ int main () {
 
 
 	/*-----------ending instance*----------*/
-	Ending end( window_instance.getWindow(), window_instance.getRenderer(), player.getPoints(), player.getGender() );
+	Ending end( gWindow, gRenderer, player.getPoints(), player.getGender() );
 	bool complete = false;
 
     while (!complete) {

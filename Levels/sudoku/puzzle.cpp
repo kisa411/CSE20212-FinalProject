@@ -64,7 +64,7 @@ Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	char filename [40];
 	srand(time(NULL));
 	int filenum = (rand() % 40) + 1;
-	sprintf(filename, "puzzles/sudoku%i.txt",filenum);
+	sprintf(filename, "Levels/sudoku/puzzles/sudoku%i.txt",filenum);
 	if((puzzleFile = fopen(filename, "r")) == NULL)
 	{
 		cout << "Error: Could not open file: " << filename << endl << endl;
