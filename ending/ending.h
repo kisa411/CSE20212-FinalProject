@@ -27,6 +27,7 @@ private:
     TTF_Font *gFont; //font to use
     
     bool loadMedia();
+    bool continueText(SDL_Event & e);
 
     int pointTotal;
     string gender;
