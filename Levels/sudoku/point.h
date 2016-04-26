@@ -1,3 +1,6 @@
+/* Luis Prieb
+ * struct that helps organize coordinate values
+ */
 #ifndef POINT_H
 #define POINT_H
 

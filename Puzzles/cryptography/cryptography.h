@@ -1,3 +1,8 @@
+/* Luis Prieb
+ * This class runs the cryptography games. It performs three types of cryptographic
+ * encoding of a message and chooses a message from the list of messages.
+ */
+
 #ifndef CRYPTO_H
 #define CRYPTO_H
 
