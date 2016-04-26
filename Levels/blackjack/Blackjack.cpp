@@ -260,7 +260,7 @@ int Blackjack::play() {
       while (game) {
 
 	 total=sum(player);
-	 if (total>=21) { //stop turn
+	 if (total>21) { //stop turn
 	    SDL_RenderClear(gRenderer);
 	    display(); //display background
 	    menu(); //display menu text
