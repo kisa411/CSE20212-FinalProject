@@ -440,14 +440,14 @@ bool AlphabetPuzzle::loadMedia() {
     bool success = true;
     
     //Open the background picture
-    if( !gBackgroundTexture.loadFromFile( "alphabet.png" ))
+    if( !gBackgroundTexture.loadFromFile( "Puzzles/alphabet/alphabet.png" ))
     {
         printf( "Failed to load background texture!\n" );
         success = false;
     }
 
     //Open puzzle picture
-    if( !gPuzzleTexture.loadFromFile( "alphabetpuzzle.png" ))
+    if( !gPuzzleTexture.loadFromFile( "Puzzles/alphabet/alphabetpuzzle.png" ))
     {
         printf( "Failed to load background texture!\n" );
         success = false;

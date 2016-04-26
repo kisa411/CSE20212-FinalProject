@@ -8,8 +8,8 @@
 #include<SDL2/SDL_ttf.h>
 #include"Blackjack.h"
 #include"CardDeck.h"
-#include"texture.h"
-#include"sdl_win_wrap.h"
+#include"../../sharedClasses/texture.h"
+#include"../../sharedClasses/sdl_win_wrap.h"
 
 using namespace std;
 
@@ -574,7 +574,7 @@ bool Blackjack::loadMedia() {
    bool success = true;
 
    //load images
-   if (!gBackground.loadFromFile("Levels/blackjack/images/casino.png")) {
+   if (!gBackground.loadFromFile("Levels/blackjack/images/casino.-png")) {
       printf("failed to load background texture\n");
       success=false;
    }

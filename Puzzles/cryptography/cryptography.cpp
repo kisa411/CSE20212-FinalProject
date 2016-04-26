@@ -245,17 +245,17 @@ bool crypto::loadMedia()
     bool success = true;
     
     //Open background pictures
-    if( !background1Texture.loadFromFile( "blockedroad.png"))
+    if( !background1Texture.loadFromFile( "Puzzles/cryptography/blockedroad.png"))
     {
         printf( "Failed to load background texture!\n" );
         success = false;
     }
-    if( !background2Texture.loadFromFile( "cryptography.png"))
+    if( !background2Texture.loadFromFile( "Puzzles/cryptography/cryptography.png"))
     {
         printf( "Failed to load background texture!\n" );
         success = false;
     }
-    if( !background3Texture.loadFromFile( "unlock.png"))
+    if( !background3Texture.loadFromFile( "Puzzles/cryptography/unlock.png"))
     {
         printf( "Failed to load background texture!\n" );
         success = false;

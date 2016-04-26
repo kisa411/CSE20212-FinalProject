@@ -42,10 +42,15 @@ int main () {
 	Player player;
 
 	/*-----------opening instance*----------*/
-	Opening open( gWindow, gRenderer );
-	string gender = open.display(); //get the gender of the player
-	player.setGender( gender );
-
+	Opening open(gWindow, gRenderer);
+	for (int i=0; i<1000; i++) {
+		open.displayRoom();
+	}
+	string gender = "N/A";
+	while ( gender=="N/A" ) {
+		gender = open.play();
+	}
+	player.setGender(gender);
 	/*-----------cryptography instance*----------*/
 	int temp;
 	crypto cryptoGame(gWindow, gRenderer);

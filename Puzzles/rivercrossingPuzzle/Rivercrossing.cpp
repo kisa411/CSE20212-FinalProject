@@ -628,23 +628,23 @@ bool Rivercrossing::loadMedia() {
    bool success = true;
 
    //load images
-   if (!gBackgroundTexture.loadFromFile("images/river.png")) {
+   if (!gBackgroundTexture.loadFromFile("Puzzles/rivercrossingPuzzle/images/river.png")) {
       printf("failed to load background texture\n");
       success=false;
    }
-   if (!gSheep.loadFromFile("images/sheep.png")) {
+   if (!gSheep.loadFromFile("Puzzles/rivercrossingPuzzle/images/sheep.png")) {
       printf("failed to load sheep texture\n");
       success=false;
    }
-   if (!gWolf.loadFromFile("images/wolf.png")) {
+   if (!gWolf.loadFromFile("Puzzles/rivercrossingPuzzle/images/wolf.png")) {
       printf("failed to load wolf texture\n");
       success=false;
    }
-   if (!gCabbage.loadFromFile("images/cabbage.png")) {
+   if (!gCabbage.loadFromFile("Puzzles/rivercrossingPuzzle/images/cabbage.png")) {
       printf("failed to load cabbage texture\n");
       success=false;
    }
-   if (!gBoat.loadFromFile("images/farmerandboat1.png")) {
+   if (!gBoat.loadFromFile("Puzzles/rivercrossingPuzzle/images/farmerandboat1.png")) {
       printf("failed to load boat texture\n");
       success=false;
    }

@@ -440,14 +440,14 @@ bool SingaporeanPuzzle::loadMedia() {
     bool success = true;
     
     //Open the background picture
-    if( !gBackgroundTexture.loadFromFile( "singapore.png" ))
+    if( !gBackgroundTexture.loadFromFile( "Puzzles/singaporesingapore.png" ))
     {
         printf( "Failed to load background texture!\n" );
         success = false;
     }
 
     //Open the puzzle picture
-    if( !gPuzzleTexture.loadFromFile( "puzzle.png" ))
+    if( !gPuzzleTexture.loadFromFile( "Puzzles/singapore/puzzle.png" ))
     {
         printf( "Failed to load background texture!\n" );
         success = false;
