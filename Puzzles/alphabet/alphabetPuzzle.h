@@ -1,6 +1,6 @@
 //
 //  alphabetPuzzle.hpp
-//  alphabetPuzzle
+//  alphabetPuzzle class loads alphabet logic game
 //
 //  Created by Emily Koh on 4/9/16.
 //  Copyright © 2016 Emily Koh. All rights reserved.
@@ -19,14 +19,12 @@ public:
     AlphabetPuzzle( SDL_Window*, SDL_Renderer* ); //default constructor
     ~AlphabetPuzzle(); //destructor
     void displayTown(); //display the town
-    // void displayPuzzle(); //display the puzzle picture
     int playPuzzle(); //main driver function for alphabet puzzle
     int determineEnding(); //determing the results of the game
     
 private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     bool complete; //checks to see if user has solved puzzle or not
-    // bool questionAnswered; //checks to see if user has gotten the right answer
 
     //SDL member variables and helper functions
     LTexture gBackgroundTexture;

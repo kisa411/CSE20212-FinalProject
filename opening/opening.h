@@ -1,3 +1,6 @@
+//Opening - loads opening sequence
+//Emily Koh
+
 #ifndef OPENING_H
 #define OPENING_H
 
@@ -29,9 +32,9 @@ private:
     SDL_Renderer* gRenderer;
     TTF_Font *gFont; //font to use
     
-    bool loadMedia();
-    string userInput();
-    bool continueText(SDL_Event & e);
+    bool loadMedia(); //loads media
+    string userInput(); //checks for user input
+    bool continueText(SDL_Event & e); //continues text
 
 };
 

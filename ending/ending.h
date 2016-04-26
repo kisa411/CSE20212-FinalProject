@@ -1,3 +1,7 @@
+//ENDING
+//Emily Koh
+//loads ending scene
+
 #ifndef ENDING_H
 #define ENDING_H
 
@@ -26,8 +30,8 @@ private:
     SDL_Renderer* gRenderer;
     TTF_Font *gFont; //font to use
     
-    bool loadMedia();
-    bool continueText(SDL_Event & e);
+    bool loadMedia(); //loads media
+    bool continueText(SDL_Event & e); //continues text
 
     int pointTotal;
     string gender;
