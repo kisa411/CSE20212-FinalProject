@@ -17,7 +17,7 @@ using namespace std;
 class Rivercrossing {
 
    public:
-      Rivercrossing(SDL_Window*, SDL_Renderer*); //constructor
+      Rivercrossing(SDL_Window*, SDL_Renderer*, bool *quit); //constructor
       ~Rivercrossing(); //deconstructor
       int play();  //play main game
       void pickup(char); //pick up an object
@@ -32,6 +32,7 @@ class Rivercrossing {
       int onboat;
       int position;
       int numtries;  //number of tries till finish or gameover
+      bool *quit;
       int mousepos(int, int); //takes in mouse position as inputs and returns a number indicating where the user clicked
       int finished(); //checks if game is successfully completed
       void reset();  //resets game if user loses and wants to try again

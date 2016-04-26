@@ -11,7 +11,7 @@ using namespace std;
 class Opening {
 
 public:
-	Opening( SDL_Window*, SDL_Renderer* ); //constructor
+	Opening( SDL_Window*, SDL_Renderer*, bool *quit ); //constructor
     ~Opening(); //destructor
     string display(); //display, update player gender
     void displayRoom(); //display opening scene
@@ -35,6 +35,7 @@ private:
     bool loadMedia(); //loads media
     string userInput(); //checks for user input
     bool continueText(SDL_Event & e); //continues text
+    bool *quit; // Allows quit function
 
 };
 

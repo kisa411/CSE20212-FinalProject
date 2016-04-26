@@ -22,7 +22,7 @@ using namespace std;
 class Blackjack {
 
    public:
-      Blackjack(SDL_Window*, SDL_Renderer*);  //constructor
+      Blackjack(SDL_Window*, SDL_Renderer*, bool *quit);  //constructor
       ~Blackjack(); //deconstructor
       void deal();  //deal initial cards to dealer and user
       void display(); //display background
@@ -39,6 +39,7 @@ class Blackjack {
       CardDeck *currDeck;
       deque<int> player;
       deque<int> dealer;
+      bool *quit;
       
       //values for number of wins, losses, and ties
       int wins, losses, ties;

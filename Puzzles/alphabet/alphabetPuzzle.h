@@ -16,7 +16,7 @@ using namespace std;
 class AlphabetPuzzle {
     
 public:
-    AlphabetPuzzle( SDL_Window*, SDL_Renderer* ); //default constructor
+    AlphabetPuzzle( SDL_Window*, SDL_Renderer*, bool *quit ); //default constructor
     ~AlphabetPuzzle(); //destructor
     void displayTown(); //display the town
     int playPuzzle(); //main driver function for alphabet puzzle
@@ -25,6 +25,7 @@ public:
 private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     bool complete; //checks to see if user has solved puzzle or not
+    bool *quit;
 
     //SDL member variables and helper functions
     LTexture gBackgroundTexture;

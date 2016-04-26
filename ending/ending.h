@@ -12,7 +12,7 @@ using namespace std;
 class Ending {
 	
 public:
-	Ending( SDL_Window*, SDL_Renderer* , int points, string g ); //default constructor
+	Ending( SDL_Window*, SDL_Renderer* , int points, string g, bool *quit); //default constructor
     ~Ending(); //destructor
     bool display(); //display 
 
@@ -26,6 +26,7 @@ private:
     SDL_Window* gWindow;
     int SCREEN_WIDTH;
     int SCREEN_HEIGHT;
+    bool *quit;
     
     SDL_Renderer* gRenderer;
     TTF_Font *gFont; //font to use

@@ -17,7 +17,7 @@ using namespace std;
 class SingaporeanPuzzle {
     
 public:
-    SingaporeanPuzzle( SDL_Window*, SDL_Renderer* ); //constructor
+    SingaporeanPuzzle( SDL_Window*, SDL_Renderer*, bool *quit); //constructor
     ~SingaporeanPuzzle(); //destructor
     void displayRobber(); //display the puzzle picture
     int playPuzzle(); //check for user input and see if input is correct - returns the amount of points that should be deducted from player's total
@@ -26,7 +26,7 @@ public:
 private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     bool complete; //checks to see if user has solved puzzle or not
-    
+    bool *quit;
     //SDL member variables and helper functions
     LTexture gBackgroundTexture;
     LTexture gTextTexture;

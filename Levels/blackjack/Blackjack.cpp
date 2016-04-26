@@ -13,7 +13,7 @@
 
 using namespace std;
 
-Blackjack::Blackjack(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+Blackjack::Blackjack(SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit):
    gBackground(ngWindow, ngRenderer),
    gText(ngWindow, ngRenderer),
    gInputText(ngWindow, ngRenderer),
@@ -22,7 +22,8 @@ Blackjack::Blackjack(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gTies(ngWindow, ngRenderer),
    gCardDeck(ngWindow, ngRenderer),
    gRenderer(ngRenderer),
-   gWindow(ngWindow)
+   gWindow(ngWindow),
+   quit(quit)
 {
 
    currDeck = new CardDeck(52);
@@ -230,11 +231,11 @@ int Blackjack::play() {
    displaytext(20, 20, "Let's play Blackjack! Press enter to start!");
 
    //press enter to continue
-   while (userInput()!=" ") {
+   while (userInput()!=" " && !(*quit)) {
       continue;
    }
 
-   while (playing) {
+   while (playing && !(*quit)) {
       //if card deck size becomes less than 15 get a new deck
       if (currDeck->getSize()<=15) {
 	 delete currDeck;  //delete current deck
@@ -257,7 +258,7 @@ int Blackjack::play() {
       displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
       //players turn
-      while (game) {
+      while (game && !(*quit)) {
 
 	 total=sum(player);
 	 if (total>21) { //stop turn
@@ -303,7 +304,7 @@ int Blackjack::play() {
       }
 
       //press enter to continue
-      while (userInput()!=" ") {
+      while (userInput()!=" " && !(*quit)) {
 	 continue;
       }
 
@@ -316,12 +317,12 @@ int Blackjack::play() {
       displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
       //press enter to continue
-      while (userInput()!=" ") {
+      while (userInput()!=" " && !(*quit)) {
 	 continue;
       }
 
       //dealers turn
-      while (dgame) {
+      while (dgame && !(*quit)) {
 	 dtotal=sum(dealer);
 
 	 if (dtotal<17) { //if dealer has total sum of less that 17, must draw
@@ -385,7 +386,7 @@ int Blackjack::play() {
 	 displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
 	 choice=userInput();
-	 while (choice!=" y" && choice!=" n") {
+	 while (choice!=" y" && choice!=" n" && !(*quit)) {
 	    choice=userInput();
 	 }
 
@@ -428,7 +429,7 @@ int Blackjack::play() {
 	 displayWTL(wins, ties, losses); //display number of wins/ties/losses on image
 
          //press enter to continue
-	 while (userInput()!=" ") {
+	 while (userInput()!=" " && !(*quit)) {
 	    continue;
 	 }
 
@@ -445,10 +446,10 @@ void Blackjack::manageEvents(SDL_Event &e, bool &drawcard, bool &stop, bool &exi
    const int hit=1;
    const int stand=2;
 
-   while(SDL_PollEvent(&e)) {
+   while(SDL_PollEvent(&e) && !(*quit)) {
 
          if(e.type == SDL_QUIT) {
-                exit = true;
+                *quit = true;
          }
          else if(e.type == SDL_MOUSEBUTTONDOWN) {
             //get mouse position
@@ -515,11 +516,11 @@ string Blackjack::userInput() {
    //start text input
    SDL_StartTextInput();
 
-   while (!enter) {
+   while (!enter && !(*quit)) {
       //renderer text flag
       bool renderText = false;
 
-      while (SDL_PollEvent(&e)!=0) {
+      while (SDL_PollEvent(&e)!=0 && !(*quit)) {
          if (e.type == SDL_KEYDOWN) {
             //delete input
             if(e.key.keysym.sym==SDLK_BACKSPACE && inputText.length()>0) {
@@ -539,6 +540,10 @@ string Blackjack::userInput() {
                inputText += e.text.text;
                renderText=true;
             }
+         }
+         else if(e.type == SDL_QUIT)
+         {
+         	*quit = true;
          }
       }
 

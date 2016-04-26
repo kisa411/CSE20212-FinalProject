@@ -12,7 +12,7 @@
 
 using namespace std;
 
-SingaporeanPuzzle::SingaporeanPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //default constructor
+SingaporeanPuzzle::SingaporeanPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer), quit(quit) { //default constructor
     points = 0; //set initial value of points to be 0
     complete = false;
     loadMedia();
@@ -31,7 +31,7 @@ int SingaporeanPuzzle::playPuzzle() {
 
     int endPoints = 100;
 
-    while (complete==false) {
+    while (complete==false && !(*quit)) {
         endPoints = determineEnding(); //determine the ending of the puzzle based on tryNumber
         if ( endPoints <= 0 ) {
             complete = true;
@@ -78,7 +78,7 @@ void SingaporeanPuzzle::displayRobber() {
 
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -117,7 +117,7 @@ int SingaporeanPuzzle::determineEnding() {
     }
     gTextTexture.setFont(gFont);
 
-    while (correct==false) {
+    while (correct==false && !(*quit)) {
         tryNumber++;
 
         answer = userInput(); //returns user's input
@@ -128,7 +128,7 @@ int SingaporeanPuzzle::determineEnding() {
                 printf( "Failed to render text texture!\n" );
             }
             SDL_RenderClear( gRenderer );
-            while (!next) {
+            while (!next && !(*quit)) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -160,7 +160,7 @@ int SingaporeanPuzzle::determineEnding() {
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            while (!next) {
+            while (!next && !(*quit)) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -201,7 +201,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -215,7 +215,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -230,7 +230,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -245,7 +245,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -256,7 +256,7 @@ bool SingaporeanPuzzle::completed( int tryNumber ) {
         if( !gTextTexture.loadFromRenderedTextWrapped( "Oh no! The robber stole 100 points worth of ingredients from your bag! You need to brush up on your logical thinking skills!\n", textColor, 400 ) ) {
             printf( "Failed to render text texture!\n" );
         }
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -278,7 +278,6 @@ string SingaporeanPuzzle::userInput() {
     int textYpos = ((3*SCREEN_HEIGHT)/4)+8;
 
     //Main loop flag
-    bool quit = false;
     bool enter = false;
     bool success = true;
 
@@ -309,19 +308,19 @@ string SingaporeanPuzzle::userInput() {
 
 
     //While application is running
-    while( !enter )
+    while( !enter && !(*quit) )
     {
         //The rerender text flag
         bool renderText = false;
 
 
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while( SDL_PollEvent( &e ) != 0 && !(*quit))
         {
             // User requests quit
             if( e.type == SDL_QUIT )
             {
-                enter = true;
+                *quit = true;
                 // complete = true;
                 break;
             }
@@ -412,15 +411,14 @@ bool SingaporeanPuzzle::validate( string userInput ) { //determines whether user
 }
 
 bool SingaporeanPuzzle::continueText(SDL_Event & e) {
-    bool quit = false;
     bool enter = false;
 
-    while( SDL_PollEvent( &e ) != 0 )
+    while( SDL_PollEvent( &e ) != 0 && !(*quit))
     {
         //User requests quit
         if( e.type == SDL_QUIT )
         {
-            quit = true;
+            *quit = true;
         }
         else if ( e.type == SDL_KEYDOWN ) {
             //User presses a key

@@ -39,6 +39,7 @@ int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
 	SDL_Window* gWindow = window_instance.getWindow();
 	SDL_Renderer* gRenderer = window_instance.getRenderer();
+	bool quit = false;
 
 	/*----------Load music-----------------*/
 	Mix_Music *gMusic = NULL;
@@ -57,71 +58,89 @@ int main () {
 	Player player;
 
 	/*-----------opening instance*----------*/
-	Opening open(gWindow, gRenderer);
+	Opening open(gWindow, gRenderer, &quit);
 	open.displayRoom();
 	string gender = "N/A";
-	while ( gender=="N/A" ) {
+	while ( gender=="N/A" && !quit) {
 		gender = open.play();
 	}
 	player.setGender(gender);
 	/*-----------cryptography instance*----------*/
 	int temp;
-	crypto cryptoGame(gWindow, gRenderer);
-	temp = cryptoGame.play();
-	player.changePoints( temp );
+	if(!quit)
+	{
+		crypto cryptoGame(gWindow, gRenderer, &quit);
+		temp = cryptoGame.play();
+		player.changePoints( temp );
+	}
 	/*-----------hangman instance*----------*/
-	Hangman hangGame( gWindow, gRenderer );
-	hangGame.displayOpening();
-	temp = -100;
-	while (temp<0) {
-		temp = hangGame.playPuzzle();
+	if(!quit)
+	{
+		Hangman hangGame( gWindow, gRenderer, &quit );
+		hangGame.displayOpening();
+		temp = -100;
+		while (temp<0 && !quit) {
+			temp = hangGame.playPuzzle();
+		}
+		player.changePoints( temp );
 	}
-	player.changePoints( temp );
-
 	/*-----------river crossing instance*----------*/
-	Rivercrossing river(gWindow, gRenderer);
-	temp = river.play();
-	player.changePoints(temp);
-	/*-----------sudoku instance*----------*/
-	Puzzle thePuzzle(gWindow, gRenderer);
-	temp = thePuzzle.interactive();
-	player.changePoints(temp);
-	
-	/*-----------alphabet puzzle instance*----------*/
-	AlphabetPuzzle alphaGame( gWindow, gRenderer );
-	alphaGame.displayTown();
-	temp = 100;
-	while ( temp>0 ) {
-		temp = alphaGame.playPuzzle();
+	if(!quit)
+	{
+		Rivercrossing river(gWindow, gRenderer, &quit);
+		temp = river.play();
+		player.changePoints(temp);
 	}
-	player.changePoints( temp );
+	/*-----------sudoku instance*----------*/
+	if(!quit)
+	{
+		Puzzle thePuzzle(gWindow, gRenderer, &quit);
+		temp = thePuzzle.interactive();
+		player.changePoints(temp);
+	}	
+	/*-----------alphabet puzzle instance*----------*/
+	if(!quit)
+	{
+		AlphabetPuzzle alphaGame( gWindow, gRenderer, &quit );
+		alphaGame.displayTown();
+		temp = 100;
+		while ( temp>0 && !quit) {
+			temp = alphaGame.playPuzzle();
+		}
+		player.changePoints( temp );
+	}
 
 	/*-----------blackjack instance*----------*/
-	Blackjack bgame(gWindow, gRenderer);
-	temp = bgame.play();
-	player.changePoints(temp);
-
-	/*-----------singapore instance*----------*/
-	SingaporeanPuzzle singaGame( window_instance.getWindow(), window_instance.getRenderer() );
-	singaGame.displayRobber();
-	temp = 100;
-	while ( temp>0 ) {
-		temp = singaGame.playPuzzle();
+	if(!quit)
+	{
+		Blackjack bgame(gWindow, gRenderer, &quit);
+		temp = bgame.play();
+		player.changePoints(temp);
 	}
-	player.changePoints( temp );
-
-
+	/*-----------singapore instance*----------*/
+	if(!quit)
+	{
+		SingaporeanPuzzle singaGame( gWindow, gRenderer, &quit );
+		singaGame.displayRobber();
+		temp = 100;
+		while ( temp>0 && !quit) {
+			temp = singaGame.playPuzzle();
+		}
+		player.changePoints( temp );
+	}
 	/*-----------ending instance*----------*/
-	Ending end( gWindow, gRenderer, player.getPoints(), player.getGender() );
-	bool complete = false;
+	if(!quit)
+	{
+		Ending end( gWindow, gRenderer, player.getPoints(), player.getGender(), &quit );
+		bool complete = false;
 
-    while (!complete) {
-    	complete = end.display();
-    }
+		while (!complete && !quit) {
+			complete = end.display();
+		}
+	}
 
     Mix_HaltMusic(); //stop music
     Mix_FreeMusic(gMusic); //free music
-    //do we need to destroy window and renderer?
 
 
 }

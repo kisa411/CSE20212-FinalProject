@@ -23,7 +23,7 @@
 using namespace std;
 
 
-AlphabetPuzzle::AlphabetPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gMathTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //default constructor - member initialization syntax to initialize LTexture
+AlphabetPuzzle::AlphabetPuzzle( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gPuzzleTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gMathTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer), quit(quit) { //default constructor - member initialization syntax to initialize LTexture
     points = 0; //set initial value of points to be 0
     complete = false;
     // questionAnswered = false;
@@ -41,15 +41,14 @@ AlphabetPuzzle::~AlphabetPuzzle() { //free up all the allocated memory for the t
 
 
 bool AlphabetPuzzle::continueText(SDL_Event & e) {
-    bool quit = false;
     bool enter = false;
 
-    while( SDL_PollEvent( &e ) != 0 )
+    while( SDL_PollEvent( &e ) != 0 && !(*quit))
     {
         //User requests quit
         if( e.type == SDL_QUIT )
         {
-            quit = true;
+            *quit = true;
         }
         else if ( e.type == SDL_KEYDOWN ) {
             //User presses a key
@@ -96,7 +95,7 @@ void AlphabetPuzzle::displayTown() {
     }
 
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gMathTexture.render( textXpos, textYpos );
         //Update screen
@@ -113,7 +112,7 @@ int AlphabetPuzzle::playPuzzle() {
     int endPoints = 100;
 
  
-    while (complete==false) {
+    while (complete==false && !(*quit)) {
         // displayPuzzle();
         endPoints = determineEnding(); //display the main background
         if ( endPoints <= 0 ) {
@@ -150,7 +149,7 @@ int AlphabetPuzzle::determineEnding() {
     }
     gTextTexture.setFont(gFont);
 
-    while (correct==false) {
+    while (correct==false && !(*quit)) {
         // displayPuzzle();
         tryNumber++;
         // cout << "Question Answered? " << questionAnswered << endl;
@@ -164,7 +163,7 @@ int AlphabetPuzzle::determineEnding() {
             }
             SDL_RenderClear( gRenderer );
 
-            while (!next) {
+            while (!next && !(*quit)) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -195,7 +194,7 @@ int AlphabetPuzzle::determineEnding() {
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            while (!next) {
+            while (!next && !(*quit)) {
                 gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -226,7 +225,7 @@ bool AlphabetPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -240,7 +239,7 @@ bool AlphabetPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -255,7 +254,7 @@ bool AlphabetPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -270,7 +269,7 @@ bool AlphabetPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -282,7 +281,7 @@ bool AlphabetPuzzle::completed( int tryNumber ) {
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gPuzzleTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -304,7 +303,6 @@ string AlphabetPuzzle::userInput() {
     int textYpos = (3*SCREEN_HEIGHT)/4;
 
     //Main loop flag
-    bool quit = false;
     bool enter = false;
     bool success = true;
 
@@ -335,19 +333,19 @@ string AlphabetPuzzle::userInput() {
 
 
     //While application is running
-    while( !enter )
+    while( !enter && !(*quit) )
     {
         //The rerender text flag
         bool renderText = false;
 
 
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while( SDL_PollEvent( &e ) != 0 && !(*quit))
         {
             // User requests quit
             if( e.type == SDL_QUIT )
             {
-                enter = true;
+                *quit = true;
                 // complete = true;
                 break;
             }

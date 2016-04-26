@@ -5,7 +5,7 @@
 
 
 //constructor
-Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, string g ) : gBackgroundTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) {
+Ending::Ending( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, int points, string g, bool *quit ) : gBackgroundTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer), quit(quit) {
 	pointTotal = points;
 	gender = g;
 	loadMedia();
@@ -34,7 +34,7 @@ bool Ending::display() {
     gTextTexture.setFont(gFont);
 
 	SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -50,7 +50,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -63,7 +63,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -78,7 +78,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -91,7 +91,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -107,7 +107,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -120,7 +120,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -134,7 +134,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -147,7 +147,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -163,7 +163,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -176,7 +176,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -190,7 +190,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -202,7 +202,7 @@ bool Ending::display() {
 		        printf( "Failed to render text texture!\n" );
 		    }
 		    SDL_RenderClear( gRenderer );
-		    while (!next) {
+		    while (!next && !(*quit)) {
 		        gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		        gTextTexture.render( textXpos, textYpos );
 		        //Update screen
@@ -219,7 +219,7 @@ bool Ending::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -305,15 +305,14 @@ bool Ending::loadMedia() {
 }
 
 bool Ending::continueText(SDL_Event & e) {
-    bool quit = false;
     bool enter = false;
 
-    while( SDL_PollEvent( &e ) != 0 )
+    while( SDL_PollEvent( &e ) != 0 && !(*quit))
     {
         //User requests quit
         if( e.type == SDL_QUIT )
         {
-            quit = true;
+            *quit = true;
         }
         else if ( e.type == SDL_KEYDOWN ) {
             //User presses a key

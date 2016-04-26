@@ -18,7 +18,7 @@
 #include <vector>
 using namespace std;
 
-Hangman::Hangman(SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer) { //constructor
+Hangman::Hangman(SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit ) : gTextTexture(ngWindow, ngRenderer), gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer), quit(quit) { //constructor
     points = 0; //set default point value as 0
     loadMedia();
     SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT); //store the window dimensions
@@ -66,7 +66,7 @@ void Hangman::displayOpening() {
 
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -82,7 +82,7 @@ int Hangman::playPuzzle() {
     bool complete = false;
 
 
-    while (complete==false) {
+    while (complete==false && !(*quit)) {
         endPoints = determineEnding(); //determine the ending of the puzzle based on tryNumber
         if ( endPoints >= 0 ) {
             complete = true;
@@ -120,7 +120,7 @@ bool Hangman::validate( string letter ) { //play the puzzle
             printf( "Failed to render text texture!\n" );
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -135,7 +135,7 @@ bool Hangman::validate( string letter ) { //play the puzzle
 
     letter = letter.c_str();
     
-    while ( word.find(letter) != npos ) { //look for the letter in the word
+    while ( word.find(letter) != npos && !(*quit)) { //look for the letter in the word
         int letterPosition = word.find(letter);
         word[letterPosition] = '.'; //change the letter to . so that it won't be found again
         display[letterPosition] = letter[0]; //display the letter in the hangman game
@@ -149,7 +149,7 @@ bool Hangman::validate( string letter ) { //play the puzzle
     }
     
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -162,7 +162,7 @@ bool Hangman::validate( string letter ) { //play the puzzle
     }
 
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -182,15 +182,14 @@ bool Hangman::validate( string letter ) { //play the puzzle
 }
 
 bool Hangman::continueText(SDL_Event & e) {
-    bool quit = false;
     bool enter = false;
 
-    while( SDL_PollEvent( &e ) != 0 )
+    while( SDL_PollEvent( &e ) != 0 && !(*quit) )
     {
         //User requests quit
         if( e.type == SDL_QUIT )
         {
-            quit = true;
+            *quit = true;
         }
         else if ( e.type == SDL_KEYDOWN ) {
             //User presses a key
@@ -229,7 +228,7 @@ int Hangman::determineEnding() {
     }
     gTextTexture.setFont(gFont);
 
-    while (correct==false) {
+    while (correct==false && !(*quit)) {
         tryNumber++;
         guess = userInput(); //returns user's input
         correct = validate(guess); //returns whether or not the input is right
@@ -239,7 +238,7 @@ int Hangman::determineEnding() {
                 printf( "Failed to render text texture!\n" );
             }
             SDL_RenderClear( gRenderer );
-            while (!next) {
+            while (!next && !(*quit)) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -255,7 +254,7 @@ int Hangman::determineEnding() {
             }
             // questionAnswered=false;
             SDL_RenderClear( gRenderer );
-            while (!next) {
+            while (!next && !(*quit)) {
                 gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
                 gTextTexture.render( textXpos, textYpos );
                 //Update screen
@@ -290,7 +289,7 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -306,7 +305,7 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -321,7 +320,7 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -337,7 +336,7 @@ void Hangman::completed( int guess ) {
             success=false;
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -355,7 +354,6 @@ string Hangman::userInput() {
     int textYpos = (3*SCREEN_HEIGHT)/4;
 
     //Main loop flag
-    bool quit = false;
     bool enter = false;
     bool success = true;
 
@@ -386,19 +384,19 @@ string Hangman::userInput() {
 
 
     //While application is running
-    while( !enter )
+    while( !enter && !(*quit) )
     {
         //The rerender text flag
         bool renderText = false;
 
 
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while( SDL_PollEvent( &e ) != 0 && !(*quit))
         {
             // User requests quit
             if( e.type == SDL_QUIT )
             {
-                enter = true;
+                *quit = true;
                 // complete = true;
                 break;
             }

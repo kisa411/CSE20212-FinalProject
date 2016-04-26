@@ -12,7 +12,7 @@ using namespace std;
 #define goat 2
 #define cabbage 4
 
-Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer): 
+Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit): 
    gBackgroundTexture(ngWindow, ngRenderer), \
    gSheep(ngWindow, ngRenderer), \
    gWolf(ngWindow, ngRenderer), \
@@ -21,7 +21,8 @@ Rivercrossing::Rivercrossing(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
    gText(ngWindow, ngRenderer), \
    gInputText (ngWindow, ngRenderer), \
    gWindow(ngWindow), \
-   gRenderer(ngRenderer)
+   gRenderer(ngRenderer),
+   quit(quit)
 
 {
 
@@ -81,7 +82,7 @@ int Rivercrossing::play() {
    displayText(xpos, ypos, "As you continue your journey, you run into a farmer who is trying to cross a river. However his boat only holds 1 object besides himself. He wants to take a wolf, sheep, and cabbage accross.\nPress enter to continue\n");
 
    //click enter to cont
-   while (userInput()!=" ") {
+   while (userInput()!=" " && !(*quit)) {
       continue;
    }
    //display other intructions
@@ -91,7 +92,7 @@ int Rivercrossing::play() {
   
    //not game over or success
    int game=finished();
-   while (game==1 && exit == false) {
+   while (game==1 && exit == false && !(*quit)) {
 
       change=false;
       changeboat=false;
@@ -120,7 +121,7 @@ int Rivercrossing::play() {
 	       displayText(xpos, ypos, "The wolf ate the sheep! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
 	       //wolf ate goat, game over! ask to try again(click y)
 	       choice=userInput();
-	       while (choice!=" y" && choice!=" n") {
+	       while (choice!=" y" && choice!=" n" && !(*quit)) {
 	   	  choice=userInput();
 		  //cout << choice << endl;
 	       }
@@ -139,7 +140,7 @@ int Rivercrossing::play() {
 		  display();
 		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress enter to continue\n";
 		  displayText(xpos, ypos, disp);
-		  while (userInput()!=" ") {
+		  while (userInput()!=" " && !(*quit)) {
 		     continue;
 		  }
 
@@ -153,7 +154,7 @@ int Rivercrossing::play() {
 	       displayText(xpos, ypos, "The sheep ate the cabbage! Would you like to try again? If you don't help this farmer, you get 0 points! Press y to continue or n to quit, then press enter");
 	       //wolf ate goat, game over! ask to try again(click y)
 	       choice=userInput();
-	       while (choice!=" y" && choice!=" n") {
+	       while (choice!=" y" && choice!=" n" && !(*quit)) {
 	   	  choice=userInput();
 	       }
 
@@ -170,7 +171,7 @@ int Rivercrossing::play() {
 		  display();
 		  disp="You tried " + to_string(numtries) + " times but couldn't help the farmer! You get no points. Sorry!\nPress enter to continue\n";
 		  displayText(xpos, ypos, disp);
-		  while (userInput()!=" ") {
+		  while (userInput()!=" " && !(*quit)) {
 		     continue;
 		  }
 
@@ -186,7 +187,7 @@ int Rivercrossing::play() {
 	       displayText(xpos, ypos, disp);
 
 	       //click enter to cont
-	       while (userInput()!=" ") {
+	       while (userInput()!=" " && !(*quit)) {
 		  continue;
 	       }
 
@@ -196,7 +197,7 @@ int Rivercrossing::play() {
 		  displayText(xpos, ypos, "The farmer thanks you with his cabbage!\nPress enter to continue\n");
 
 		  //click enter to cont
-		  while (userInput()!=" ") {
+		  while (userInput()!=" " && !(*quit)) {
 		     continue;
 		  }
 
@@ -207,7 +208,7 @@ int Rivercrossing::play() {
 		  displayText(xpos, ypos, "The farmer thanks you with some expensive cheese from his goats on the farm!\nPress enter to continue\n");
 
 		  //click enter to cont
-		  while (userInput()!=" ") {
+		  while (userInput()!=" " && !(*quit)) {
 		     continue;
 		  }
 
@@ -218,7 +219,7 @@ int Rivercrossing::play() {
 		  displayText(xpos, ypos, "The farmer thanks you with his cabbage, some really nice goat cheese, and a cute wool scarf made from real sheep wool!\nPress enter to continue\n");
 
 		  //click enter to cont
-		  while (userInput()!=" ") {
+		  while (userInput()!=" " && !(*quit)) {
 		     continue;
 		  }
 
@@ -257,42 +258,46 @@ string Rivercrossing::userInput() {
    //start text input
    SDL_StartTextInput();
 
-   while (!enter) {
+   while (!enter && !(*quit)) {
       //renderer text flag
       bool renderText = false;
 
-      while (SDL_PollEvent(&e)!=0) {
+      while (SDL_PollEvent(&e)!=0 && !(*quit)) {
          if (e.type == SDL_KEYDOWN) {
 	    //delete input
-	    if(e.key.keysym.sym==SDLK_BACKSPACE && inputText.length()>0) {
-	       inputText.pop_back();
-	       renderText=true;
-	    }
-	    //submit input
-	    else if (e.key.keysym.sym == SDLK_RETURN) {
-	       enter = true;
-	       break;
-	    }
-	 }
-	 //read text input
-	 else if (e.type == SDL_TEXTINPUT) {
-	    //not copy or pasting
-	    if (!((e.text.text[0]=='c' || e.text.text[0]=='C') && (e.text.text[0]=='v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {
-	       inputText += e.text.text;
-	       renderText=true;
-	    }
-	 }
+			if(e.key.keysym.sym==SDLK_BACKSPACE && inputText.length()>0) {
+			   inputText.pop_back();
+			   renderText=true;
+			}
+			//submit input
+			else if (e.key.keysym.sym == SDLK_RETURN) {
+			   enter = true;
+			   break;
+			}
+	 	}
+		 //read text input
+		 else if (e.type == SDL_TEXTINPUT) {
+			//not copy or pasting
+			if (!((e.text.text[0]=='c' || e.text.text[0]=='C') && (e.text.text[0]=='v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {
+			   inputText += e.text.text;
+			   renderText=true;
+			}
+		 }
+		 else if(e.type == SDL_QUIT)
+		 {
+		 	*quit = true;
+		 }
       }
 
       //if input has been changed and needs to be rendered
       if(renderText) {
 	 //if text is not empty then render
-	 if (inputText!="") {
-	    gInputText.loadFromRenderedText(inputText.c_str(), color);
-	 }
-	 else {
-	    gInputText.loadFromRenderedText(" ", color);
-	 }
+		 if (inputText!="") {
+			gInputText.loadFromRenderedText(inputText.c_str(), color);
+		 }
+		 else {
+			gInputText.loadFromRenderedText(" ", color);
+		 }
       }
 
       gInputText.render(xpos, ypos+gText.getHeight());
@@ -448,10 +453,10 @@ void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat, b
 
    int pos;
 
-   while(SDL_PollEvent(&e)) {
+   while(SDL_PollEvent(&e) && !(*quit)) {
 
 	 if(e.type == SDL_QUIT) {
-	 	exit = true;
+	 	*quit = true;
 	 }
 
 	 //boat movement with arrow keys
@@ -511,6 +516,7 @@ void Rivercrossing::manageEvents(SDL_Event &e, bool &change, bool &changeboat, b
 		  break;
 	    }
 	 }
+	 
   }
 
 }

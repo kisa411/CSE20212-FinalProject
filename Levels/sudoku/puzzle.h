@@ -23,7 +23,7 @@ using namespace std;
 class Puzzle
 {
 	public:
-	Puzzle(SDL_Window*, SDL_Renderer*); // constructor
+	Puzzle(SDL_Window*, SDL_Renderer*, bool *quit); // constructor
 	~Puzzle(); // Destructor
 	int interactive(); // Returns points to add to player
 	private:
@@ -89,7 +89,7 @@ class Puzzle
 	TTF_Font *timeFont;
 	TTF_Font *storyFont;
 	SDL_Color fontColor;
-	bool quit; // Variable to use to quit from game when x is entered
+	bool *quit; // Variable to use to quit from game when x is entered
 };
 
 

@@ -1,7 +1,7 @@
 #include "cryptography.h"
 #include <sys/time.h>
 
-crypto::crypto( SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+crypto::crypto( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit):
 background1Texture(ngWindow, ngRenderer),
 background2Texture(ngWindow, ngRenderer),
 background3Texture(ngWindow, ngRenderer),
@@ -11,7 +11,8 @@ inputTextTexture(ngWindow, ngRenderer),
 wrongTextTexture(ngWindow, ngRenderer),
 attemptsTextTexture(ngWindow, ngRenderer),
 instructionsTextTexture(ngWindow, ngRenderer),
-gRenderer(ngRenderer), gWindow(ngWindow)
+gRenderer(ngRenderer), gWindow(ngWindow),
+quit(quit)
 {
 	// Seed random number generator
 	srand(time(NULL));
@@ -134,12 +135,11 @@ void crypto::prepareGame()
 
 int crypto::play()
 {
-	bool quit = false;
 	if(!loadMedia())
 	{
 		return -1;
 	}
-	displayPrescreen(quit);
+	displayPrescreen();
 	
 	bool enter = false;
 	bool gameover = false;
@@ -147,10 +147,10 @@ int crypto::play()
 	char buffer[20];
 	prepareGame();
 	// Actual Game
-	while(!gameover && !quit)
+	while(!gameover && !(*quit))
 	{
 		enter = false;
-		manageEvents(answer, quit, enter);
+		manageEvents(answer, enter);
 		display(attempts);
 		if(enter)
 		{
@@ -164,7 +164,7 @@ int crypto::play()
 		}	
 	}
 	SDL_StopTextInput(); // Disable text Input
-	displayEnding(quit);
+	displayEnding();
 	// Return amount of points Earned
 	if(attempts == 1)
 		return 100;
@@ -178,7 +178,7 @@ int crypto::play()
 		return 0;
 }
 
-void crypto::displayPrescreen(bool &quit)
+void crypto::displayPrescreen()
 {
 	promptTextTexture.loadFromRenderedTextWrapped("Oh no! The road is blocked! You must decipher the password to continue!", textColor, 550);
 	instructionsTextTexture.loadFromRenderedText("Press enter to continue", textColor);
@@ -188,7 +188,7 @@ void crypto::displayPrescreen(bool &quit)
 	int start_height =345;
 	
 	SDL_Event e;
-	while(!enter && !quit)
+	while(!enter && !(*quit))
 	{
 			// Manage Events
 			while( SDL_PollEvent( &e ) != 0 )
@@ -200,7 +200,7 @@ void crypto::displayPrescreen(bool &quit)
 		        }
 		         else if( e.type == SDL_QUIT)
        			 {
-        			quit = true;
+        			*quit = true;
         			break;
         		}
 		    }
@@ -287,7 +287,7 @@ bool crypto::loadMedia()
 
 
 
-void crypto::manageEvents(string& answer, bool& quit, bool& enter) 
+void crypto::manageEvents(string& answer, bool& enter) 
 {
 
     //Main loop flag
@@ -331,7 +331,7 @@ void crypto::manageEvents(string& answer, bool& quit, bool& enter)
         }
         else if( e.type == SDL_QUIT)
         {
-        	quit = true;
+        	*quit = true;
         	break;
         }
     }
@@ -354,7 +354,7 @@ void crypto::manageEvents(string& answer, bool& quit, bool& enter)
     }
 }
 
-void crypto::displayEnding(bool &quit)
+void crypto::displayEnding()
 {
 	promptTextTexture.loadFromRenderedTextWrapped("Congratulations! You solved the puzzle!", textColor, 300);
 	instructionsTextTexture.loadFromRenderedText("Press enter to continue", textColor);
@@ -364,7 +364,7 @@ void crypto::displayEnding(bool &quit)
 	int start_height =170;
 	
 	SDL_Event e;
-	while(!enter && !quit)
+	while(!enter && !(*quit))
 	{
 			// Manage Events
 			while( SDL_PollEvent( &e ) != 0 )
@@ -376,7 +376,7 @@ void crypto::displayEnding(bool &quit)
 		        }
 		        else if(e.type == SDL_QUIT)
 		        {
-		        	quit = true;
+		        	*quit = true;
 		        	break;
 		        }
 		    }

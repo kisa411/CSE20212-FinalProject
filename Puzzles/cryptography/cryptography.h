@@ -25,7 +25,7 @@ using namespace std;
 class crypto
 {
 public:
-	crypto(SDL_Window* ngWindow, SDL_Renderer* ngRender );
+	crypto(SDL_Window* ngWindow, SDL_Renderer* ngRender, bool *quit );
 	~crypto();
 	int play();
 	
@@ -35,17 +35,18 @@ public:
 	string ascii(string message);
 	string permutation(string message);
 	bool loadMedia();
-	void displayPrescreen(bool &quit);
+	void displayPrescreen();
 	void prepareGame();
 	void display(int attempts);
-	void manageEvents(string& answer, bool& quit, bool& enter);
-	void displayEnding(bool &quit);
+	void manageEvents(string& answer, bool& enter);
+	void displayEnding();
 	
 	// Data Members
 	vector<string> list_of_messages;
 	string hint;
 	string encrypted_mes;
 	string answer;
+	bool *quit;
 	int mes_num;
 	
 	// Textures

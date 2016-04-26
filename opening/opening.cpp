@@ -4,7 +4,7 @@
 
 
 //constructor
-Opening::Opening( SDL_Window* ngWindow, SDL_Renderer* ngRenderer ) : gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer)  {
+Opening::Opening( SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit ) : gBackgroundTexture(ngWindow, ngRenderer), gInputTextTexture(ngWindow, ngRenderer), gPromptTextTexture(ngWindow, ngRenderer), gTextTexture(ngWindow, ngRenderer), gWindow(ngWindow), gRenderer(ngRenderer), quit(quit)  {
 	loadMedia();
     SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 }
@@ -49,7 +49,7 @@ void Opening::displayRoom() {
             success = false;
         }
         SDL_RenderClear( gRenderer );
-        while (!next) {
+        while (!next && !(*quit)) {
             gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
             gTextTexture.render( textXpos, textYpos );
             //Update screen
@@ -67,7 +67,7 @@ string Opening::play() {
 	bool complete = false;
     string gender = "N/A";
 
-    while (complete==false) {
+    while (complete==false && !(*quit)) {
         gender = display(); //determine the ending of the puzzle based on tryNumber
         if ( gender.compare("N/A") != 0 ) {
             complete = true;
@@ -99,7 +99,7 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -109,7 +109,7 @@ string Opening::display() {
     next = false;
 
     string gender = "N/A";
-    while (gender=="N/A") {
+    while (gender=="N/A" && !(*quit)) {
     	gender = userInput(); //get the gender 
     }
 
@@ -122,7 +122,7 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -135,7 +135,7 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    while (!next) {
+    while (!next && !(*quit)) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
@@ -153,7 +153,6 @@ string Opening::userInput() {
     int textYpos = (3*SCREEN_HEIGHT)/4;
 
     //Main loop flag
-    bool quit = false;
     bool enter = false;
     bool success = true;
 
@@ -184,19 +183,19 @@ string Opening::userInput() {
 
 
     //While application is running
-    while( !enter )
+    while( !enter && !(*quit))
     {
         //The rerender text flag
         bool renderText = false;
 
 
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while( SDL_PollEvent( &e ) != 0  && !(*quit))
         {
             // User requests quit
             if( e.type == SDL_QUIT )
             {
-                enter = true;
+                *quit = true;
                 // complete = true;
                 break;
             }
@@ -304,15 +303,14 @@ bool Opening::loadMedia() {
 }
 
 bool Opening::continueText(SDL_Event & e) {
-    bool quit = false;
     bool enter = false;
 
-    while( SDL_PollEvent( &e ) != 0 )
+    while( SDL_PollEvent( &e ) != 0 && !(*quit))
     {
         //User requests quit
         if( e.type == SDL_QUIT )
         {
-            quit = true;
+            *quit = true;
         }
         else if ( e.type == SDL_KEYDOWN ) {
             //User presses a key

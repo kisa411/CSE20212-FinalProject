@@ -17,7 +17,7 @@ using namespace std;
 class Hangman {
     
 public:
-    Hangman( SDL_Window*, SDL_Renderer* ); //constructor
+    Hangman( SDL_Window*, SDL_Renderer*, bool *quit ); //constructor
     ~Hangman();
     int playPuzzle(); //check for user input and see if input is correct - returns the amount of points that should be added to player's total
     void displayOpening(); //displays opening
@@ -27,6 +27,7 @@ private:
     int points; //depending on how many tries it took player to get right answer, points value changes
     string word;
     string display;
+    bool *quit;
     vector <string> guessedLetters;
    
     //SDL member variables and helper functions

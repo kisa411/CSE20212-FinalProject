@@ -15,17 +15,17 @@ void Puzzle::setCheck()
 }
 
 
-Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
+Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer, bool *quit):
 	gSpriteSheetTexture(ngWindow, ngRenderer), 
 	gBackgroundTexture(ngWindow, ngRenderer), 
 	gSelectorTexture(ngWindow, ngRenderer), 
 	messageTextTexture(ngWindow, ngRenderer),
 	timeTextTexture(ngWindow, ngRenderer),
 	storyTextTexture(ngWindow, ngRenderer),
-	gWindow(ngWindow), gRenderer(ngRenderer)
+	gWindow(ngWindow), gRenderer(ngRenderer),
+	quit(quit)
 {
 	// Initialize Values
-	quit = false; // Variable to use to quit from game when x is entered
 	bodyFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 18);
 	titleFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 24);
 	storyFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 16);
@@ -250,7 +250,7 @@ int Puzzle::interactive()
 	
 	loadBackground("Levels/sudoku/sudoku_background.png");
 	time(&start);
-	while(!gameover && !giveUp && !quit)
+	while(!gameover && !giveUp && !(*quit))
 	{
 		changeValue = false;
 		enter = false;
@@ -320,7 +320,7 @@ void Puzzle::displayScreen(string text, string background_filename)
 	int start_height =345;
 	
 	SDL_Event e;
-	while(!enter && !quit)
+	while(!enter && !(*quit))
 	{
 			checkEnter(enter, e);
 		    SDL_RenderClear(gRenderer);
@@ -553,7 +553,7 @@ void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &change
 	{
 		if(e.type == SDL_QUIT)
 		{
-			quit = true;
+			*quit = true;
 		}
 		else if(e.type == SDL_KEYDOWN)
 		{
@@ -792,7 +792,7 @@ bool Puzzle::checkEnter(bool &enter, SDL_Event& e)
         }
          else if( e.type == SDL_QUIT)
 		 {
-			quit = true;
+			*quit = true;
 			break;
 		}
     }
@@ -803,7 +803,7 @@ void Puzzle::displayGiveUpEnding(int min, int sec)
 	bool enter = false;
 	SDL_Event e;
 	updateMessage("You get no points. Here is the solution. Press enter to continue");
-	while(!enter && !quit)
+	while(!enter && !(*quit))
 	{
 		display(min, sec);
 		checkEnter(enter, e);
@@ -815,7 +815,7 @@ void Puzzle::displayRegularEnding(int min, int sec)
 	bool enter = false;
 	SDL_Event e;
 	updateMessage("Congratulations! You solved the Puzzle!");
-	while(!enter && !quit)
+	while(!enter && !(*quit))
 	{
 		display(min, sec);
 		checkEnter(enter, e);
