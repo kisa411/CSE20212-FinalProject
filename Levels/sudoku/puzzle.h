@@ -1,3 +1,8 @@
+/* Luis Prieb
+ * This class is the main sudoku class. Its what puts together the same, solves it if the user gives up,
+ * and determines the number of points the user earns
+ */
+
 #ifndef PUZZLE_H
 #define PUZZLE_H
 
@@ -23,21 +28,20 @@ class Puzzle
 	int interactive(); // Returns points to add to player
 	private:
 	// Sudoku Management
-	vector< vector <int> > getIntVector();
-	bool checkCol(int, int);
-	bool checkRow(int, int);
-	bool checkSquare(int, int, int);
-	bool checkValue(int, int, int);
-	bool checkSolved();
-	bool checkAllowed(int);
-	void setCheck();
+	bool checkCol(int, int); // Checks if a value can be placed in a column
+	bool checkRow(int, int); // Checks if a value can be placed in a row
+	bool checkSquare(int, int, int); // Checks if a value can be placed in a square
+	bool checkValue(int, int, int); // Checks if a value can be placed in a particular position. Calls the three above
+	bool checkSolved(); // Checks if the puzzle has been solved
+	bool checkAllowed(int); // Checks if a user input is a valid input
+	void setCheck(); // Intializes a vector containing valid numbers
 	void clear(); // Clear all of the user numbers
 	
 	// solver functions
-	void solve();
+	void solve(); // Solves the puzze
 	int singleton();
 	int single_possibility();
-	vector<int> check;
+	vector<int> check; // Vector used to store possible integers
 	
 	//Textures and Clips
 	SDL_Rect gSpriteClipsRed[10]; // To be used with puzzle numbers
@@ -61,10 +65,10 @@ class Puzzle
 	SDL_Renderer* gRenderer;
 	
 	// SDL Management
-	void display(int min, int sec);
+	void display(int min, int sec); // Displays main game
 	void displayIntro();
-	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &enter); // Function to manage events
-	bool setInstructions();
+	void manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &enter); // Function to manage SDL events
+	bool setInstructions(); // Initalizes Instructions Texture
 	void displayInstructions();
 	void displayMessage();
 	void displayTime(int min, int sec);
@@ -72,8 +76,8 @@ class Puzzle
 	void displayGiveUpEnding(int min, int sec);
 	void displayRegularEnding(int min, int sec);
 	bool loadBackground(string filename);
-	void updateMessage(string);
-	bool checkEnter(bool &enter, SDL_Event &e);
+	void updateMessage(string); // Updates message displayed to the user
+	bool checkEnter(bool &enter, SDL_Event &e); // Checks if the user has pressed enter
 	
 	// Other Member FunctionFILE* file;
 	point selector;

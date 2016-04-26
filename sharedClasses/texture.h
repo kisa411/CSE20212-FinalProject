@@ -1,3 +1,10 @@
+/* Originally taken from Lazyfoo and modified by Luis Prieb.
+ * Some code has been borrowed from LazyFoo to develop this class
+ * This class wraps sdl textures to create from both images and text
+ * It also provides multiple ways to render textures.
+ */
+
+
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
@@ -24,18 +31,18 @@ class LTexture
 
         //Creates image from font string
         bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
-        bool loadFromRenderedTextWrapped(string textrueText, SDL_Color textColor, int wrapLength);
+        bool loadFromRenderedTextWrapped(string textrueText, SDL_Color textColor, int wrapLength); // This wraps text in the image
 
 		//Deallocates texture
 		void free();
 		
 		// Image Modulation
-		void setColor( SDL_Color color );
+		void setColor( SDL_Color color ); // Modifies the colors in an image
 
 		//Renders texture at given point
 		void render( int x, int y, double wprop, double hprop, SDL_Rect* clip = NULL ); // Renders image with altered proportions.
 		void render( int x, int y, SDL_Rect* clip = NULL); // Overloaded version renders image in original size
-		void render( int x, int y, int width, int height, SDL_Rect* clip = NULL);
+		void render( int x, int y, int width, int height, SDL_Rect* clip = NULL); // Renders Image in exact size in pixels
 		
 		//Gets image dimensions
 		int getWidth();
