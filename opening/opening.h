@@ -31,6 +31,7 @@ private:
     
     bool loadMedia();
     string userInput();
+    bool continueText(SDL_Event & e);
 
 };
 

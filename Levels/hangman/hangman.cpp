@@ -476,7 +476,7 @@ bool Hangman::loadMedia() {
     bool success = true;
     
     //Open the background picture
-    if( !gBackgroundTexture.loadFromFile( "cat.png" ))
+    if( !gBackgroundTexture.loadFromFile( "Levels/hangman/cat.png" ))
     {
         printf( "Failed to load background texture!\n" );
         success = false;

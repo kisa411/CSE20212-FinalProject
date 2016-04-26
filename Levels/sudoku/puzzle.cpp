@@ -26,10 +26,10 @@ Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 {
 	// Initialize Values
 	quit = false; // Variable to use to quit from game when x is entered
-	bodyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 18);
-	titleFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 24);
-	storyFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 16);
-	timeFont = TTF_OpenFont("adam-warren-pro.regular.ttf", 16);
+	bodyFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 18);
+	titleFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 24);
+	storyFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 16);
+	timeFont = TTF_OpenFont("Levels/sudoku/adam-warren-pro.regular.ttf", 16);
 	
 	// Check Fonts
 	if(bodyFont == NULL || titleFont == NULL || timeFont == NULL)
@@ -64,7 +64,7 @@ Puzzle::Puzzle(SDL_Window* ngWindow, SDL_Renderer* ngRenderer):
 	char filename [40];
 	srand(time(NULL));
 	int filenum = (rand() % 40) + 1;
-	sprintf(filename, "puzzles/sudoku%i.txt",filenum);
+	sprintf(filename, "Levels/sudoku/puzzles/sudoku%i.txt",filenum);
 	if((puzzleFile = fopen(filename, "r")) == NULL)
 	{
 		cout << "Error: Could not open file: " << filename << endl << endl;
@@ -244,11 +244,11 @@ int Puzzle::interactive()
 	int sec;
 	int tot_sec;
 	
-	displayScreen("You entered a town full of nerds!", "pre_screen1.png");
+	displayScreen("You entered a town full of nerds!", "Levels/sudoku/pre_screen1.png");
 	displayScreen("A poor nerd needs help solving a puzzle! You decide to help him before moving forward.",
-						"pre_screen2.png");
+						"Levels/sudoku/pre_screen2.png");
 	
-	loadBackground("sudoku_background.png");
+	loadBackground("Levels/sudoku/sudoku_background.png");
 	time(&start);
 	while(!gameover && !giveUp && !quit)
 	{
@@ -674,7 +674,7 @@ bool Puzzle::loadMedia()
 	bool success = true;
 
 	//Load sprite sheet textures
-	if( !gSpriteSheetTexture.loadFromFile( "numbers.png" ) )
+	if( !gSpriteSheetTexture.loadFromFile( "Levels/sudoku/numbers.png" ) )
 	{
 		printf( "Failed to load sprite sheet texture!\n" );
 		success = false;
@@ -701,7 +701,7 @@ bool Puzzle::loadMedia()
 		}
 	}
 
-	if( !(gSelectorTexture.loadFromFile("selector.png")))
+	if( !(gSelectorTexture.loadFromFile("Levels/sudoku/selector.png")))
 	{
 		printf("Failed to load selector\n");
 		success = false;
@@ -834,6 +834,6 @@ void Puzzle::displayRegularEnding(int min, int sec)
 		display(min, sec);
 		checkEnter(enter, e);
 	}
-	displayScreen("The ner is so happy he gives you a pie! Congratulations!","happy_ending.png");
+	displayScreen("The nerd is so happy he gives you a pie! Congratulations!","Levels/sudoku/happy_ending.png");
 	
 }

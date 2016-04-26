@@ -7,8 +7,8 @@
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_ttf.h>
 #include"CardDeck.h"
-#include"texture.h"
-#include"sdl_win_wrap.h"
+#include"../../sharedClasses/texture.h"
+#include"../../sharedClasses/sdl_win_wrap.h"
 
 using namespace std; 
 

@@ -23,13 +23,12 @@ void Opening::displayRoom() {
     int textXpos = (2*SCREEN_WIDTH)/6;
     int textYpos = (9*SCREEN_HEIGHT)/11;
 
+    SDL_Event e;
+
     bool success = true;
-
-    SDL_RenderClear( gRenderer );
-    //SDL code for displaying (rendering) puzzle image
-    gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    bool next = false;
     
-
+    
     //Open the font
     //Free global font
     TTF_CloseFont( gFont );
@@ -49,14 +48,17 @@ void Opening::displayRoom() {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
-        gTextTexture.render(textXpos, textYpos);
+        SDL_RenderClear( gRenderer );
+        while (!next) {
+            gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+            gTextTexture.render( textXpos, textYpos );
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+            next=continueText(e);
+        }
+        next = false;
 
     }
-
-
-
-    // Update Screen
-    SDL_RenderPresent( gRenderer );
  
 }
 
@@ -80,12 +82,14 @@ string Opening::play() {
 string Opening::display() {
 	 //Loading success flag
     bool success = true;
+    bool next = false;
 
     int textXpos = ((1*SCREEN_WIDTH)/7)-10;
     int textYpos = ((8*SCREEN_HEIGHT)/11)-8;
 
     SDL_Color textColor = { 0, 0, 0, 0xFF };
     gTextTexture.setFont(gFont);
+    SDL_Event e;
 
 	SDL_RenderClear( gRenderer );
 	// Render Background
@@ -95,12 +99,14 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<500; i++ ) {
+    while (!next) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-        gTextTexture.render( textXpos+30, textYpos );
+        gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
+        next=continueText(e);
     }
+    next = false;
 
     string gender = "N/A";
     while (gender=="N/A") {
@@ -116,23 +122,27 @@ string Opening::display() {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<1500; i++ ) {
+    while (!next) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
-	}
+        next=continueText(e);
+    }
+    next = false;
 
 	if( !gTextTexture.loadFromRenderedTextWrapped( "You should try going outside to see if there's any ingredients that you might be able to find along the way to the palace!", textColor, 470 ) ) {
         printf( "Failed to render text texture!\n" );
     }
     SDL_RenderClear( gRenderer );
-    for ( int i=0; i<1500; i++ ) {
+    while (!next) {
         gBackgroundTexture.render(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
         gTextTexture.render( textXpos, textYpos );
         //Update screen
         SDL_RenderPresent( gRenderer );
+        next=continueText(e);
     }
+    next = false;
 
 	return gender;
 }
@@ -293,5 +303,27 @@ bool Opening::loadMedia() {
 	return success;
 }
 
+bool Opening::continueText(SDL_Event & e) {
+    bool quit = false;
+    bool enter = false;
+
+    while( SDL_PollEvent( &e ) != 0 )
+    {
+        //User requests quit
+        if( e.type == SDL_QUIT )
+        {
+            quit = true;
+        }
+        else if ( e.type == SDL_KEYDOWN ) {
+            //User presses a key
+            if( e.key.keysym.sym == SDLK_RETURN )
+            {
+                enter = true;
+            }
+        }
+    }
+
+    return enter;
+}
 
 
