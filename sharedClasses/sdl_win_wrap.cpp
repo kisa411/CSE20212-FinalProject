@@ -76,7 +76,13 @@ bool SDL_Win_Wrap::init()
 				{
 					printf( "SDL_image could not initialize! SDL_mage Error: %s\n", IMG_GetError() );
 					success = false;
-                }
+                		}
+
+				//Initialize SDL_Mixer
+				if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+				   	printf("SDL_mixer could not initialize! SDL_mixer error: %s\n", Mix_GetError());
+					success = false;
+				}
                 //Initialize SDL_ttf
                 if( TTF_Init() == -1 )
                 {

@@ -1,4 +1,4 @@
-FLAGS= -std=c++0x -lSDL2 -lSDL2_image -lSDL2_ttf -static-libstdc++ -O1
+FLAGS= -std=c++0x -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -static-libstdc++ -O1
 all: NomNom
 
 NomNom: main.o puzzle.o puzzleElement.o alphabetPuzzle.o Rivercrossing.o hangman.o Blackjack.o cryptography.o singaporePuzzle.o opening.o ending.o CardDeck.o sdl_win_wrap.o texture.o player.o

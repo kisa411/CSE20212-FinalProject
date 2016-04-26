@@ -9,6 +9,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -38,6 +39,20 @@ int main () {
 	SDL_Win_Wrap window_instance; //SDL window object
 	SDL_Window* gWindow = window_instance.getWindow();
 	SDL_Renderer* gRenderer = window_instance.getRenderer();
+
+	/*----------Load music-----------------*/
+	Mix_Music *gMusic = NULL;
+	gMusic = Mix_LoadMUS("Sweet_Success.wav");
+	if (gMusic == NULL) {
+		printf("Failed to load music! SDL_mixer error: %s\n", Mix_GetError());
+
+	}
+
+	/*----------Play music---------------*/
+	if (Mix_PlayMusic(gMusic, -1) < 0) {
+		printf("Failed to play music! SDL_mixer error: %s\n", Mix_GetError());
+	}
+
 	/*-----------player instance*----------*/
 	Player player;
 
@@ -103,6 +118,11 @@ int main () {
     while (!complete) {
     	complete = end.display();
     }
+
+    Mix_HaltMusic(); //stop music
+    Mix_FreeMusic(gMusic); //free music
+    //do we need to destroy window and renderer?
+
 
 }
 

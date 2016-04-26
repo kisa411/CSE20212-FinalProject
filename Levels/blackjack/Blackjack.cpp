@@ -271,6 +271,10 @@ int Blackjack::play() {
 	    break;
 	 }
 
+	 drawcard=false;
+	 stop=false;
+	 exit=false;
+
 	 manageEvents(e, drawcard, stop, exit);
 
 	 if (drawcard) {  //hit was clicked
