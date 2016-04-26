@@ -1,3 +1,8 @@
+/*
+ * Created by: Borah Chong
+ * This class is meant to implement a graphical game of the river crossing puzzle
+ */
+
 #ifndef RIVERCROSSING_H
 #define RIVERCROSSING_H	
 
@@ -12,14 +17,14 @@ using namespace std;
 class Rivercrossing {
 
    public:
-      Rivercrossing(SDL_Window*, SDL_Renderer*);
-      ~Rivercrossing();
-      int play();
-      void pickup(char);
-      void drop();
-      void display();
-      void displayText(int, int, string);
-      string userInput();
+      Rivercrossing(SDL_Window*, SDL_Renderer*); //constructor
+      ~Rivercrossing(); //deconstructor
+      int play();  //play main game
+      void pickup(char); //pick up an object
+      void drop();  //drop and object
+      void display();  //display images and background
+      void displayText(int, int, string); //used to display text onto screen
+      string userInput(); //takes in user input
 
    private: 
       int start;
@@ -27,9 +32,9 @@ class Rivercrossing {
       int onboat;
       int position;
       int numtries;  //number of tries till finish or gameover
-      int mousepos(int, int);
-      int finished();
-      void reset();
+      int mousepos(int, int); //takes in mouse position as inputs and returns a number indicating where the user clicked
+      int finished(); //checks if game is successfully completed
+      void reset();  //resets game if user loses and wants to try again
 
       //load pics
       bool loadMedia();
