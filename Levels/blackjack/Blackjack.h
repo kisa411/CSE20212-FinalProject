@@ -1,3 +1,8 @@
+/*
+ * Created by: Borah Chong
+ * This class is used to implement a graphical game of Blackjack.
+ */
+
 #ifndef BLACKJACK_H
 #define BLACKJACK_H
 
@@ -19,14 +24,14 @@ class Blackjack {
    public:
       Blackjack(SDL_Window*, SDL_Renderer*);  //constructor
       ~Blackjack(); //deconstructor
-      void deal();
-      void display();
+      void deal();  //deal initial cards to dealer and user
+      void display(); //display background
       void menu();  //displays menu and returns choice as int
       int play(); //plays game
       void displaycards(deque<int>);   //displays users cards
       void displaydcards(deque<int>, int);  //displays dealers cards
       void displayWTL(int, int, int);  //displays wins ties losses on screen
-      void displaytext(int, int, string);
+      void displaytext(int, int, string); //used to display text on screen
       int sum(deque<int>);    //calculates sum of cards in deck
       string convertToCard(int);   //converts number to card value
 
@@ -72,7 +77,6 @@ class Blackjack {
       SDL_Window* gWindow;
       int SCREEN_WIDTH;
       int SCREEN_HEIGHT;
-
       SDL_Renderer* gRenderer;
 
 

@@ -547,20 +547,6 @@ void Puzzle::solve()
 	while (inserts > 0);
 }
 
-vector< vector <int> > Puzzle::getIntVector()
-{
-	vector< vector <int> > intVector;
-	vector<int> buffer;
-	for(int i = 0; i < 9; i++)
-	{
-		for(int j = 0; j < 9; j++)
-		{
-			buffer.push_back(thePuzzle[i][j].getValue());
-		}
-		intVector.push_back(buffer);
-	}
-	return intVector;
-}
 void Puzzle::manageEvents(SDL_Event &e, int &value, bool &gameover, bool &changeValue, bool &giveUp, bool &toClear, bool &enter) // Function to manage events
 {
 	while(SDL_PollEvent(&e))
