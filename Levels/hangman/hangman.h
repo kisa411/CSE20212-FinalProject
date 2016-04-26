@@ -1,6 +1,6 @@
 //
 //  hangman.hpp
-//  hangman
+//  hangman game
 //
 //  Created by Emily Koh on 4/9/16.
 //  Copyright © 2016 Emily Koh. All rights reserved.
@@ -20,7 +20,7 @@ public:
     Hangman( SDL_Window*, SDL_Renderer* ); //constructor
     ~Hangman();
     int playPuzzle(); //check for user input and see if input is correct - returns the amount of points that should be added to player's total
-    void displayOpening();
+    void displayOpening(); //displays opening
     int determineEnding(); //determing the results of the game
     
 private:
@@ -44,7 +44,7 @@ private:
     
     TTF_Font *gFont; //font to use
     
-    bool loadMedia();
+    bool loadMedia(); //loads media
     void completed( int tryNumber ); //determine ending depending on tryNumber
     string userInput(); //take in user input
     bool validate( string letter ); //check user input against correct answer 

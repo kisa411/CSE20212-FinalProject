@@ -1,6 +1,6 @@
 //
 //  singaporePuzzle.hpp
-//  singaporePuzzle
+//  singaporePuzzle loads singaporean logic game
 //
 //  Created by Emily Koh on 4/9/16.
 //  Copyright © 2016 Emily Koh. All rights reserved.
@@ -43,11 +43,11 @@ private:
     
     TTF_Font *gFont; //font to use
     
-    bool loadMedia();
+    bool loadMedia(); //loads media
     bool completed( int tryNumber ); //determine ending depending on tryNumber
     string userInput(); //take in user input
     bool validate( string userInput ); //check user input against correct answer 
-    bool continueText( SDL_Event & e );
+    bool continueText( SDL_Event & e ); //continues text
 
     
     
